@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "1Hj8Q6T+TNMBe5HUPLMbgmyUtqvtILEMiaQ6bjSTxQTfVcXdqB5Ha9rgCqjNjIwieh02wuWoyTBn8M7N40Op7g==",
+  "success": true,
+  "projectFilePath": "D:\\Mon_hoc_CTU\\Luan_Van_TN\\onion architecture\\app-demo\\DemoAppLVTN\\Domain\\Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\nguye\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

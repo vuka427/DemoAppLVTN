@@ -1,0 +1,13 @@
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\bin\Debug\netstandard2.1\Application.deps.json
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\bin\Debug\netstandard2.1\Application.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\bin\Debug\netstandard2.1\Application.pdb
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\bin\Debug\netstandard2.1\Domain.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\bin\Debug\netstandard2.1\Domain.pdb
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\obj\Debug\netstandard2.1\Application.csproj.AssemblyReference.cache
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\obj\Debug\netstandard2.1\Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\obj\Debug\netstandard2.1\Application.AssemblyInfoInputs.cache
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\obj\Debug\netstandard2.1\Application.AssemblyInfo.cs
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\obj\Debug\netstandard2.1\Application.csproj.CoreCompileInputs.cache
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\obj\Debug\netstandard2.1\Application.csproj.CopyComplete
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\obj\Debug\netstandard2.1\Application.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\Application\obj\Debug\netstandard2.1\Application.pdb
