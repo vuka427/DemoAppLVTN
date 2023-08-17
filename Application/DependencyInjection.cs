@@ -1,4 +1,6 @@
-﻿using Application.Interface.IRepositorys;
+﻿using Application.Implementation.DomainServices;
+using Application.Interface.IDomainServices;
+using Application.Interface.IRepositorys;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -9,9 +11,10 @@ namespace Application
 {
     public static class DependencyInjection
     {
-        public static void AddApplicationService(this IServiceCollection services, IConfiguration configuration)
+        public static void AddApplicationCore(this IServiceCollection services, IConfiguration configuration)
         {
-            
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IRoleService, RoleService>();
         }
     }
 }

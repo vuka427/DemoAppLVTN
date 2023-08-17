@@ -88,3 +88,10 @@ D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\obj\De
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\obj\Debug\net7.0\WebApi.pdb
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\obj\Debug\net7.0\WebApi.genruntimeconfig.cache
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\obj\Debug\net7.0\ref\WebApi.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Microsoft.Extensions.Identity.Core.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Microsoft.Extensions.Identity.Stores.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

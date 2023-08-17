@@ -1,4 +1,6 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Pesistence.AppDbContext
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser,AppRole,string>
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -22,10 +24,23 @@ namespace Pesistence.AppDbContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            new CategoryConfiguration().Configure(modelBuilder.Entity<Category>());
-            new ProductConfiguration().Configure(modelBuilder.Entity<Product>());
-        }
+            base.OnModelCreating(modelBuilder);
 
+            // tên với tiền tố AspNet như: AspNetUserRoles, AspNetUser ...
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var tableName = entityType.GetTableName();
+                if (tableName.StartsWith("AspNet"))
+                {
+                    entityType.SetTableName(tableName.Substring(6));
+                }
+            }
+
+            //new CategoryConfiguration().Configure(modelBuilder.Entity<Category>());
+            new ProductConfiguration().Configure(modelBuilder.Entity<Product>());
+
+            modelBuilder.ApplyConfiguration( new CategoryConfiguration());
+        }
 
 
     }

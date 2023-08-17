@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Application.Interface.IRepositorys;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pesistence.Repositorys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +12,10 @@ namespace Pesistence
 {
     public static class DependencyInjection
     {
-        public static void AddApplicationService(this IServiceCollection services, IConfiguration configuration)
+        public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
-            
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
 
         }
     }
