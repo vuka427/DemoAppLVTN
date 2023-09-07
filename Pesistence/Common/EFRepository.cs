@@ -25,6 +25,7 @@ namespace Pesistence.Common
             if (_context != null)
             {
                 _context.Dispose();
+                
             }
         }
 

@@ -26,4 +26,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositorys\" />
+  </ItemGroup>
+
 </Project>
