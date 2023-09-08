@@ -13,5 +13,8 @@ namespace Domain.Entities
         public string Phone { get; set; }
         public string Ccccd { get; set; }
         public string AvatarUrl { get; set; }
+
+        public int UserId { get; set; }
+        public AppUser User { get; set; }
     }
 }

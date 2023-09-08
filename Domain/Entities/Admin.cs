@@ -9,5 +9,8 @@ namespace Domain.Entities
     {
         public string FullName { get; set; }
         public string AvatarUrl { get; set; }
+
+        public int UserId { get; set; }
+        public AppUser User { get; set; }
     }
 }
