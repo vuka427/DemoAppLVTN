@@ -13,7 +13,106 @@ namespace Pesistence.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<Contract> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(x => x.Id);
+            builder.ToTable(nameof(Contract));
+            builder.Property(i => i.ContractCode)
+               .HasColumnType("varchar")
+               .HasMaxLength(10);
+            builder.Property(t => t.A_Lessor)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(t => t.A_Cccd)
+               .IsRequired()
+               .HasMaxLength(12);
+            builder.Property(t => t.A_PlaceOfIssuance)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(t => t.A_PermanentAddress)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(t => t.A_Phone)
+               .IsRequired()
+               .HasMaxLength(10);
+
+            builder.Property(t => t.B_Lessee)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(t => t.B_Cccd)
+               .IsRequired()
+               .HasMaxLength(12);
+            builder.Property(t => t.B_PlaceOfIssuance)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(t => t.B_PermanentAddress)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(t => t.B_Phone)
+               .IsRequired()
+               .HasMaxLength(10);
+
+            builder.Property(b => b.RentalPrice)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired();
+            builder.Property(r => r.RoomNumber)
+                .IsRequired();
+            builder.Property(b => b.BranchName)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(b => b.BranchAddress)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(b => b.AreaName)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(r => r.Width)
+                .IsRequired();
+            builder.Property(r => r.Height)
+                .IsRequired();
+            builder.Property(r => r.Length)
+                .IsRequired();
+            builder.Property(r => r.IsMezzanine)
+                .HasDefaultValue(false)
+                .IsRequired();
+            builder.Property(b => b.Deposit)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired();
+
+            builder.HasMany<Invoice>(c => c.Invoices)
+                .WithOne(i => i.Contract)
+                .HasForeignKey(i => i.ContractId)
+                .OnDelete(DeleteBehavior.Cascade); 
+            builder.HasMany<Member>(c=>c.Members)
+                .WithOne(m=>m.Contract)
+                .HasForeignKey(m=>m.ContractId)
+                .OnDelete(DeleteBehavior.Cascade); 
+
+            builder.HasOne<Room>(c => c.Room)
+                .WithMany(r => r.Contracts)
+                .HasForeignKey(r => r.RoomId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne<Tenant>(c=>c.Tenant)
+                .WithMany(t=>t.Contracts)
+                .HasForeignKey(t=>t.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne<Landlord>(c => c.Landlord)
+                .WithMany(l => l.Contracts)
+                .HasForeignKey(l => l.LandlordId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
         }
     }
 }

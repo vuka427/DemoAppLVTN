@@ -13,7 +13,46 @@ namespace Pesistence.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<Invoice> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(x => x.Id);
+            builder.ToTable(nameof(Invoice));
+            builder.Property(i=>i.InvoiceCode)
+                .HasColumnType("varchar")
+                .HasMaxLength(10);
+            builder.Property(i => i.OldElectricNumber)
+                .IsRequired();
+            builder.Property(i => i.OldWaterNumber)
+                .IsRequired();
+            builder.Property(i => i.NewElectricNumber)
+                .IsRequired();
+            builder.Property(i => i.NewWaterNumber)
+                .IsRequired();
+
+            builder.Property(b => b.ElectricityCosts)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired();
+            builder.Property(b => b.WaterCosts)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired();
+            builder.Property(b => b.GarbageColletionFee)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired();
+            builder.Property(b => b.InternetCosts)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired();
+            builder.Property(b => b.TotalPrice)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired();
+
+            builder.HasMany<ServiceItem>(i => i.ServiceItems)
+                .WithOne(s => s.Invoice)
+                .HasForeignKey(i => i.InvoiceId);
+
+
         }
     }
 }

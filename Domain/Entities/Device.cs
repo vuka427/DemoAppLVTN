@@ -11,5 +11,8 @@ namespace Domain.Entities
         public string Description { get; set; }
         public int Quantity { get; set; }
 
+        public int RoomId { get; set; }
+        public Room Room { get; set; }
+
     }
 }

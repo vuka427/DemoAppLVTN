@@ -12,5 +12,8 @@ namespace Domain.Entities
         public string Content { get; set; }
         public PostStatus Status { get; set; }
 
+        public int RoomId { get; set; }
+        public Room Room { get; set; }
+
     }
 }

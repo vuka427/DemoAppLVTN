@@ -71,7 +71,11 @@ namespace WebApi.Controllers
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = model.Username,
+                CreatedBy = "Admin",
+                CreatedDate = DateTime.Now,
+                UpdatedBy = "Admin",
+                UpdatedDate = DateTime.Now
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
@@ -90,15 +94,31 @@ namespace WebApi.Controllers
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = model.Username,
+                CreatedBy ="Admin",
+                CreatedDate = DateTime.Now,
+                UpdatedBy = "Admin",
+                UpdatedDate = DateTime.Now
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "User creation failed! Please check user details and try again." });
             if (!await _roleManager.RoleExistsAsync(RoleName.Admin))
-                await _roleManager.CreateAsync(new AppRole() { Name =RoleName.Admin});
+                await _roleManager.CreateAsync(new AppRole() { 
+                    Name = RoleName.Admin,
+                    CreatedBy = "Admin",
+                    CreatedDate = DateTime.Now,
+                    UpdatedBy = "Admin",
+                    UpdatedDate = DateTime.Now
+                });
             if (!await _roleManager.RoleExistsAsync(RoleName.User))
-                await _roleManager.CreateAsync(new AppRole() { Name = RoleName.User });
+                await _roleManager.CreateAsync(new AppRole() { 
+                    Name = RoleName.User ,
+                    CreatedBy = "Admin",
+                    CreatedDate = DateTime.Now,
+                    UpdatedBy = "Admin",
+                    UpdatedDate = DateTime.Now
+                });
             if (await _roleManager.RoleExistsAsync(RoleName.Admin))
             {
                 await _userManager.AddToRoleAsync(user, RoleName.Admin);

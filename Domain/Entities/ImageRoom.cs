@@ -10,5 +10,7 @@ namespace Domain.Entities
         public string Name { get; set; }
         public string Url { get; set; }
 
+        public int RoomId { get; set; }
+        public Room Room { get; set; }
     }
 }

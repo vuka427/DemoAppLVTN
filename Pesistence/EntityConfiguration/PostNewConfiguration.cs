@@ -13,7 +13,17 @@ namespace Pesistence.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<PostNew> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(x => x.Id);
+            builder.ToTable(nameof(PostNew));
+            builder.Property(p => p.Title)
+                .IsRequired()
+                .HasColumnType("nvarchar")
+                .HasMaxLength(256);
+            builder.Property(p=>p.Content)
+                .IsRequired()
+                .HasColumnType("text")
+                .HasMaxLength(500);
+
         }
     }
 }

@@ -30,22 +30,29 @@ namespace Pesistence.EntityConfiguration
             builder.Property(b => b.ElectricityCosts)
                 .HasPrecision(10,0)
                 .HasDefaultValue(0)
-                .IsRequired(false);
+                .IsRequired();
             builder.Property(b => b.WaterCosts)
                 .HasPrecision(10, 0)
                 .HasDefaultValue(0)
-                .IsRequired(false);
+                .IsRequired();
             builder.Property(b => b.GarbageColletionFee)
                 .HasPrecision(10, 0)
                 .HasDefaultValue(0)
-                .IsRequired(false);
+                .IsRequired();
             builder.Property(b => b.InternetCosts)
                 .HasPrecision(10, 0)
                 .HasDefaultValue(0)
-                .IsRequired(false);
+                .IsRequired();
             builder.Property(b=>b.InternalRegulation)
-                .IsRequired(false)
+                .IsRequired()
                 .HasColumnType("text");
+
+            builder.HasMany<Area>(b => b.Areas)
+                .WithOne(a => a.Branch)
+                .HasForeignKey(b => b.BranchId);
+            builder.HasMany<Service>(b => b.Services)
+                .WithOne(s => s.Branch)
+                .HasForeignKey(s=>s.BranchId);
 
 
         }

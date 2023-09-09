@@ -5,9 +5,13 @@ using System.Text;
 
 namespace Domain.Entities
 {
+   
     public class Invoice : BaseEntity
-
     {
+
+        public Invoice() {
+            ServiceItems = new HashSet<ServiceItem>();
+        }
         public string InvoiceCode { get; set; }
         public string OldElectricNumber { get; set; }
         public string OldWaterNumber { get; set; }
@@ -19,6 +23,9 @@ namespace Domain.Entities
         public decimal GarbageColletionFee { get; set; }
         public decimal TotalPrice { get; set; }
 
+        public int ContractId { get; set; }
+        public Contract Contract { get; set; }
+        public ICollection<ServiceItem> ServiceItems { get; set; }
 
     }
 }

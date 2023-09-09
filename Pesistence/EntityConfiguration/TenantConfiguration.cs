@@ -44,11 +44,14 @@ namespace Pesistence.EntityConfiguration
                ;
             builder.HasMany<EmailSend>(t => t.EmailReceives)
                 .WithOne(t => t.Tenant)
-                .HasForeignKey(t => t.TenantId);
+                .HasForeignKey(t => t.TenantId)
+                .OnDelete(DeleteBehavior.Restrict)
+                ;
 
             builder.HasMany<Message>(t => t.Messages)
                 .WithOne(t => t.Tenant)
-                .HasForeignKey(m => m.TenantId);
+                .HasForeignKey(m => m.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
                 
                 
 

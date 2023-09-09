@@ -13,7 +13,16 @@ namespace Pesistence.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<RoomIndex> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(x => x.Id);
+            builder.ToTable(nameof(RoomIndex));
+            builder.Property(i => i.ElectricNumber)
+                .IsRequired()
+                .HasDefaultValue(0);
+            builder.Property(i=>i.WaterNumber)
+                .IsRequired()
+                .HasDefaultValue(0);
+            
+
         }
     }
 }

@@ -4,10 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace Domain.Entities
 {
+    
     public class Contract : BaseEntity
     {
+        public Contract() {
+            Invoices = new HashSet<Invoice>();
+            Members = new HashSet<Member>();
+        }
         public string ContractCode { get; set; }
         public string A_Lessor { get; set; }
         public DateTime A_DateOfBirth { get; set; }
@@ -41,6 +47,18 @@ namespace Domain.Entities
         public bool IsMezzanine { get; set; }
         public decimal Deposit { get; set; }
 
+        public int? RoomId { get; set; }
+        public Room? Room { get; set; }
+
+        public int LandlordId { get; set; }
+        public Landlord Landlord { get; set; }
+
+        public int? TenantId { get; set; }
+
+        public Tenant? Tenant { get; set; }
+
+        public ICollection<Invoice> Invoices { get; set; }
+        public ICollection<Member> Members { get; set; }
 
 
     }

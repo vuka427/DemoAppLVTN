@@ -13,7 +13,13 @@ namespace Pesistence.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<ImageRoom> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(x => x.Id);
+            builder.ToTable(nameof(ImageRoom));
+            builder.Property(i => i.Name)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnType("varchar");
+
         }
     }
 }
