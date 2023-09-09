@@ -37,11 +37,21 @@ namespace Pesistence.EntityConfiguration
                 .HasMaxLength(256);
 
 
-            builder.HasOne<AppUser>(e => e.User)
+            builder.HasOne<AppUser>(t => t.User)
                .WithOne()
-               .HasForeignKey<Tenant>(a => a.UserId)
+               .HasForeignKey<Tenant>(t => t.UserId)
                .IsRequired()
                ;
+            builder.HasMany<EmailSend>(t => t.EmailReceives)
+                .WithOne(t => t.Tenant)
+                .HasForeignKey(t => t.TenantId);
+
+            builder.HasMany<Message>(t => t.Messages)
+                .WithOne(t => t.Tenant)
+                .HasForeignKey(m => m.TenantId);
+                
+                
+
         }
     }
 }

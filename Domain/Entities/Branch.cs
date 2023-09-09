@@ -8,6 +8,8 @@ namespace Domain.Entities
 {
     public class Branch : BaseEntity
     {
+       
+
         public string BranchName { get; set; }
         public string Description { get; set; }
         public string Address { get; set; }
@@ -18,5 +20,7 @@ namespace Domain.Entities
         public string InternalRegulation { get; set; }
         public HouseType HouseType { get; set; }
 
+        public int LandlordId { get; set; }
+        public Landlord Landlord { get; set; }
     }
 }

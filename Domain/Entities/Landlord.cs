@@ -7,6 +7,10 @@ namespace Domain.Entities
 {
     public class Landlord : BaseEntity
     {
+        public Landlord() {
+            EmailSends = new HashSet<EmailSend>();
+            Messages = new HashSet<Message>();
+        }
         public string FullName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
@@ -16,5 +20,9 @@ namespace Domain.Entities
 
         public int UserId { get; set; }
         public AppUser User { get; set; }
+
+        public ICollection<EmailSend> EmailSends { get; set; }
+        public ICollection<Message> Messages { get; set; }
+        public ICollection<Branch> Branchs { get; set;}
     }
 }

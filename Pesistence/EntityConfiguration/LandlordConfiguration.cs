@@ -42,6 +42,17 @@ namespace Pesistence.EntityConfiguration
                .HasForeignKey<Landlord>(a => a.UserId)
                .IsRequired()
                ;
+
+            builder.HasMany<EmailSend>(l => l.EmailSends)
+                .WithOne(e => e.Landlord)
+                .HasForeignKey(e=>e.LandlordId);
+            builder.HasMany<Message>(l => l.Messages)
+                .WithOne(m => m.Landlord)
+                .HasForeignKey(m => m.LandlordId);
+            builder.HasMany<Branch>(l=>l.Branchs)
+                .WithOne(b=>b.Landlord)
+                .HasForeignKey (b=>b.LandlordId);
+
         }
     }
 }

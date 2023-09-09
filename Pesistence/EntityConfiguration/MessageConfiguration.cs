@@ -13,7 +13,15 @@ namespace Pesistence.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<Message> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(e => e.Id);
+            builder.ToTable(nameof(Message));
+            builder.Property(e => e.Title)
+                .IsRequired()
+                .HasColumnType("nvarchar")
+                .HasMaxLength(256);
+            builder.Property(e => e.Content)
+                .IsRequired()
+                .HasColumnType("text");
         }
     }
 }

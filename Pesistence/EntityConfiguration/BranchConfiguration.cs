@@ -13,7 +13,41 @@ namespace Pesistence.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<Branch> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(x => x.Id);
+            builder.ToTable(nameof(Branch));
+            builder.Property(b=>b.BranchName)
+                .IsRequired()
+                .HasColumnType("nvarchar")
+                .HasMaxLength(256);
+            builder.Property(b => b.Description)
+               .IsRequired(false)
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(b => b.Address)
+               .IsRequired()
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            builder.Property(b => b.ElectricityCosts)
+                .HasPrecision(10,0)
+                .HasDefaultValue(0)
+                .IsRequired(false);
+            builder.Property(b => b.WaterCosts)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired(false);
+            builder.Property(b => b.GarbageColletionFee)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired(false);
+            builder.Property(b => b.InternetCosts)
+                .HasPrecision(10, 0)
+                .HasDefaultValue(0)
+                .IsRequired(false);
+            builder.Property(b=>b.InternalRegulation)
+                .IsRequired(false)
+                .HasColumnType("text");
+
+
         }
     }
 }
