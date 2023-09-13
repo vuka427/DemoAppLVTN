@@ -1,5 +1,7 @@
-﻿using Azure;
+﻿using Application.Interface.IDomainServices;
+using Azure;
 using Domain.Entities;
+using Domain.IRepositorys;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,12 +24,14 @@ namespace WebApi.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly ILandlordService _landlordService;
 
-        public AuthController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IConfiguration configuration)
+        public AuthController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IConfiguration configuration, ILandlordService landlordService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _landlordService = landlordService;
         }
 
         [HttpPost]
@@ -83,30 +87,70 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "User creation failed! Please check user details and try again."+ result.ToString() });
             return Ok(new ResponseMessage { Status = "Success", Message = "User created successfully!" });
         }
+
+
         [HttpPost]
         [Route("registerlandlord")]
         public async Task<IActionResult> RegisterLandlord([FromBody] RegisterLandlordModel model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Tên tài khoản đã tồn tại!" });
             AppUser user = new()
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username,
-                CreatedBy = "Admin",
+                CreatedBy = model.Username,
                 CreatedDate = DateTime.Now,
-                UpdatedBy = "Admin",
+                UpdatedBy = model.Username,
                 UpdatedDate = DateTime.Now
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-            
+            var result = await _userManager.CreateAsync(user, model.Password); 
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "User creation failed! Please check user details and try again." + result.ToString() });
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError, 
+                    new ResponseMessage { 
+                        Status = "Error", 
+                        Message = "Không thể tạo người dùng! vui lòng kiểm tra lại thông tin người dùng!" + result.ToString() 
+                    }
+                );
 
-            return Ok(new ResponseMessage { Status = "Success", Message = "User created successfully!" });
+            Landlord landlord = new Landlord() { 
+                UserId = user.Id,
+                FullName = model.FullName,
+                DateOfBirth = model.DateOfBirth.Value,
+                Address = model.Address,
+                Phone = model.Phone,
+                Ccccd = model.Cccd,
+                CreatedBy = model.Username,
+                CreatedDate = DateTime.Now,
+                UpdatedBy = model.Username,
+                UpdatedDate = DateTime.Now
+            };
+
+            try
+            {
+                _landlordService.CreateNewLandlord(landlord);
+                _landlordService.SaveChanges();
+            }
+            catch
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError, 
+                    new ResponseMessage { 
+                        Status = "Error", 
+                        Message = "Không thể tạo người dùng! vui lòng kiểm tra lại thông tin người dùng!" + result.ToString() 
+                    }
+                );
+            }
+
+
+            
+           
+
+            return Ok(new ResponseMessage { Status = "Success", Message = "Tài khoản được tạo thành công!" });
         }
 
         [HttpPost]
