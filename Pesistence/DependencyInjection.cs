@@ -14,7 +14,7 @@ namespace Pesistence
     {
         public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
-          
+           
 
         }
     }

@@ -78,8 +78,34 @@ namespace WebApi.Controllers
                 UpdatedDate = DateTime.Now
             };
             var result = await _userManager.CreateAsync(user, model.Password);
+
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "User creation failed! Please check user details and try again."+ result.ToString() });
+            return Ok(new ResponseMessage { Status = "Success", Message = "User created successfully!" });
+        }
+        [HttpPost]
+        [Route("registerlandlord")]
+        public async Task<IActionResult> RegisterLandlord([FromBody] RegisterLandlordModel model)
+        {
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "User already exists!" });
+            AppUser user = new()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username,
+                CreatedBy = "Admin",
+                CreatedDate = DateTime.Now,
+                UpdatedBy = "Admin",
+                UpdatedDate = DateTime.Now
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "User creation failed! Please check user details and try again." + result.ToString() });
+
             return Ok(new ResponseMessage { Status = "Success", Message = "User created successfully!" });
         }
 
