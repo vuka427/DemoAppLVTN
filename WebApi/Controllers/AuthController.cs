@@ -26,13 +26,15 @@ namespace WebApi.Controllers
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly ILandlordService _landlordService;
+        private readonly ITenantService _tenantService;
 
-        public AuthController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IConfiguration configuration, ILandlordService landlordService)
+        public AuthController(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IConfiguration configuration, ILandlordService landlordService, ITenantService tenantService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _landlordService = landlordService;
+            _tenantService = tenantService;
         }
 
         [HttpPost]
@@ -48,13 +50,18 @@ namespace WebApi.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim("username",  user.UserName),
-                    new Claim("email",  "vu@gmail.com"),
+                    new Claim("email", "vu@gmail.com"),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
                 if (user.UserType == UserType.Tenant)
                 {
-                   
+                    var tenant = _tenantService.GetTenantByUserId(user.Id);
+                    if(tenant != null)
+                    {
+                        authClaims.Add(new Claim("fullname", tenant.FullName));
+                    }
+                    authClaims.Add(new Claim("usertype", "tenant"));
 
                 }
                 else if(user.UserType == UserType.Landlord)
@@ -90,27 +97,67 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        [Route("registertenant")]
+        public async Task<IActionResult> RegisterTenant([FromBody] RegisterTenantModel model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Tên tài khoản đã được sử dụng!" });
             AppUser user = new()
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username,
-                CreatedBy = "Admin",
+                UserType = UserType.Tenant,
+                CreatedBy = model.Username,
                 CreatedDate = DateTime.Now,
-                UpdatedBy = "Admin",
+                UpdatedBy = model.Username,
                 UpdatedDate = DateTime.Now
             };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "User creation failed! Please check user details and try again."+ result.ToString() });
-            return Ok(new ResponseMessage { Status = "Success", Message = "User created successfully!" });
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new ResponseMessage
+                    {
+                        Status = "Error",
+                        Message = "Không thể tạo người dùng! vui lòng kiểm tra lại thông tin người dùng!" + result.ToString()
+                    }
+                 );
+
+            Tenant tenant = new Tenant() {
+                UserId = user.Id,
+                FullName = model.FullName,
+                DateOfBirth = DateTime.Now,
+                Address = "",
+                Phone = "",
+                Ccccd ="",
+                CreatedBy = model.Username,
+                CreatedDate = DateTime.Now,
+                UpdatedBy = model.Username,
+                UpdatedDate = DateTime.Now
+            };
+            try
+            {
+                _tenantService.CreateNewTenant(tenant);
+                _tenantService.SaveChanges();
+            }
+            catch
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new ResponseMessage
+                    {
+                        Status = "Error",
+                        Message = "Không thể tạo người dùng! vui lòng kiểm tra lại thông tin người dùng!" + result.ToString()
+                    }
+                 );
+            }
+
+
+
+            return Ok(new ResponseMessage { Status = "Success", Message = "Tài khoản được tạo thành công!" });
         }
 
 
@@ -120,7 +167,7 @@ namespace WebApi.Controllers
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Tên tài khoản đã tồn tại!" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Tên tài khoản đã được sử dụng!" });
             AppUser user = new()
             {
                 Email = model.Email,
@@ -171,10 +218,6 @@ namespace WebApi.Controllers
                     }
                 );
             }
-
-
-            
-           
 
             return Ok(new ResponseMessage { Status = "Success", Message = "Tài khoản được tạo thành công!" });
         }
