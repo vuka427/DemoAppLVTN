@@ -1,6 +1,7 @@
 ﻿using Application.Interface.IDomainServices;
 using Azure;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.IRepositorys;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -42,14 +43,38 @@ namespace WebApi.Controllers
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
+
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim("username",  user.UserName),
-                    new Claim("fullname",  "nguyễn văn vũ"),
                     new Claim("email",  "vu@gmail.com"),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
+
+                if (user.UserType == UserType.Tenant)
+                {
+                   
+
+                }
+                else if(user.UserType == UserType.Landlord)
+                {
+                    var landlord = _landlordService.GetLandlordByUserId(user.Id);
+                    if (landlord != null)
+                    {
+                        authClaims.Add(new Claim("fullname", landlord.FullName));
+                    }
+
+                    authClaims.Add(new Claim("usertype", "landlord"));
+
+                }
+                else
+                {
+
+                }
+
+                
+               
                 foreach (var userRole in userRoles)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
@@ -100,6 +125,7 @@ namespace WebApi.Controllers
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
+                UserType = UserType.Landlord,
                 UserName = model.Username,
                 CreatedBy = model.Username,
                 CreatedDate = DateTime.Now,

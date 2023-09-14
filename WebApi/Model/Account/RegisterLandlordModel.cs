@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Model.Account
 {
@@ -16,7 +17,7 @@ namespace WebApi.Model.Account
         public DateTime? DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Số điện thoại không được bỏ trống")]
-        [MaxLength(10, ErrorMessage = "Số điện thoại có tối đa 10 ký tự"), MinLength(10, ErrorMessage = "Số điện thoại tối thiểu 3 ký tự")]
+        [MaxLength(10, ErrorMessage = "Số điện thoại có tối đa 10 ký tự"), MinLength(10, ErrorMessage = "Số điện thoại tối thiểu 10 ký tự")]
         public string? Phone { get; set; }
 
         [Required(ErrorMessage = "Địa chỉ không được bỏ trống")]
@@ -27,7 +28,8 @@ namespace WebApi.Model.Account
         [MaxLength(12,ErrorMessage ="Căn cước công dân có tối đa 12 ký tự"),MinLength(12, ErrorMessage = "Căn cước công dân tối thiểu 12 ký tự")]
         public string? Cccd { get; set; }
 
-        [EmailAddress]
+       
+        [EmailAddress(ErrorMessage ="Định dạng email không đúng !")]
         [Required(ErrorMessage = "Email không được bỏ trống")]
         [MaxLength(256, ErrorMessage = "Email có tối đa 256 ký tự"), MinLength(1, ErrorMessage = "Email tối thiểu 256 ký tự")]
         public string? Email { get; set; }

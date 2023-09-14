@@ -8,6 +8,8 @@ namespace Application.Interface.IDomainServices
     public interface ILandlordService
     {
         void CreateNewLandlord(Landlord landlord);
+        Landlord GetLandlordByUserId(string userid);
+        Landlord GetLandlordById(int landlordid);
 
         void SaveChanges();
 
