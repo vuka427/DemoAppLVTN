@@ -8,6 +8,7 @@ namespace Application.Interface.IDomainServices
     public interface ITenantService
     {
         void CreateNewTenant(Tenant tenant);
+        void DeleteTenant(int tenantid);
         Tenant GetTenantByUserId(string userid);
         Tenant GetTenantById(int tenantid);
 

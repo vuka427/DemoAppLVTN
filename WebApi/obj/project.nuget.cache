@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "BbVCF3n7nVbWZOCOP0TbGy0vNMDl1yD9tB3rBsws3fQTR1RvY1PFiwqafuBxsM/hT1G3Frsb/h4X+fzlpCyrSw==",
+  "dgSpecHash": "1++9LQThVSgD+N9nurJPlQzVttP2kJia30pFvOl8QUwLSBVdLmOQkLmHpnZr1aPpt1XpKbU8Wu9LEqX9mMFDrg==",
   "success": true,
   "projectFilePath": "D:\\Mon_hoc_CTU\\Luan_Van_TN\\onion architecture\\app-demo\\DemoAppLVTN\\WebApi\\WebApi.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\nguye\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\nguye\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",

@@ -27,7 +27,7 @@ namespace Application.Implementation.DomainServices
 
         public Landlord GetLandlordById(int landlordid)
         {
-            throw new NotImplementedException();
+            return _landlordRepository.FindById(landlordid);
         }
 
         public Landlord GetLandlordByUserId(string userid)

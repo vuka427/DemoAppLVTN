@@ -10,7 +10,6 @@ namespace Application.Interface.IDomainServices
         void CreateNewLandlord(Landlord landlord);
         Landlord GetLandlordByUserId(string userid);
         Landlord GetLandlordById(int landlordid);
-
         void SaveChanges();
 
     }

@@ -25,6 +25,11 @@ namespace Application.Implementation.DomainServices
             _tenantRepository.Add(tenant);
         }
 
+        public void DeleteTenant(int tenantid)
+        {
+           _tenantRepository.Remove(tenantid);
+        }
+
         public Tenant GetTenantById(int tenantid)
         {
             return _tenantRepository.FindById(tenantid);

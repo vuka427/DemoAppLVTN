@@ -50,6 +50,7 @@ namespace WebApi.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim("username",  user.UserName),
+                    new Claim("userid",  user.Id),
                     new Claim("email", "vu@gmail.com"),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
@@ -80,8 +81,6 @@ namespace WebApi.Controllers
 
                 }
 
-                
-               
                 foreach (var userRole in userRoles)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
@@ -128,7 +127,7 @@ namespace WebApi.Controllers
 
             Tenant tenant = new Tenant() {
                 UserId = user.Id,
-                FullName = model.FullName,
+                FullName = model.FullName ?? "no name",
                 DateOfBirth = DateTime.Now,
                 Address = "",
                 Phone = "",

@@ -13,9 +13,8 @@ namespace Application
     {
         public static void AddApplicationCore(this IServiceCollection services, IConfiguration configuration)
         {
-           
             services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<ILandlordService,LandlordService>();
+            services.AddTransient<ILandlordService, LandlordService>();
             services.AddTransient<ITenantService, TenantService>();
         }
     }
