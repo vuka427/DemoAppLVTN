@@ -9,6 +9,8 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebApi.AutoMapper;
+using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +46,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 });
 
-builder.Services.AddControllers();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -52,6 +54,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication(Configuration);// add dependency in persistence
 builder.Services.AddApplicationCore(Configuration);// add dependency in application
+builder.Services.AddAutoMapperConfiguration(Configuration);
 
 // Adding Authentication
 builder.Services.AddAuthentication(options =>
@@ -68,8 +71,10 @@ builder.Services.AddAuthentication(options =>
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
         ValidAudience = Configuration["JWT:ValidAudience"],
         ValidIssuer = Configuration["JWT:ValidIssuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
@@ -80,18 +85,17 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.AllowAnyOrigin().
-                                    AllowAnyHeader()
-                                    
-                                    ;
-                      });
+    options.AddPolicy(name: MyAllowSpecificOrigins, policy =>
+            {
+                policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+            });
 });
 
 
-
+builder.Services.AddControllers();
+               
 
 
 var app = builder.Build();
@@ -105,6 +109,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
+
 app.UseAuthentication();
 app.UseAuthorization();
 

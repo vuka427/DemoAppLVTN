@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1++9LQThVSgD+N9nurJPlQzVttP2kJia30pFvOl8QUwLSBVdLmOQkLmHpnZr1aPpt1XpKbU8Wu9LEqX9mMFDrg==",
+  "dgSpecHash": "P+GQdSq9Q3Ax1o7bSa7oq1poh4LUMHBUg643LOn9iCg4mU+jcLAGBLn4Ar0QhWGqbG3JDQ+X7sKydlklvrPlkQ==",
   "success": true,
   "projectFilePath": "D:\\Mon_hoc_CTU\\Luan_Van_TN\\onion architecture\\app-demo\\DemoAppLVTN\\WebApi\\WebApi.csproj",
   "expectedPackageFiles": [
@@ -77,6 +77,7 @@
     "C:\\Users\\nguye\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\nguye\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",

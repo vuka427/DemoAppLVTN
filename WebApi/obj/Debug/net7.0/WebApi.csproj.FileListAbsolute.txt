@@ -95,3 +95,6 @@ D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\De
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\obj\Debug\net7.0\WebApi.MvcApplicationPartsAssemblyInfo.cs
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\AutoMapper.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Newtonsoft.Json.dll

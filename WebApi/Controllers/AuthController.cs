@@ -52,6 +52,7 @@ namespace WebApi.Controllers
                     new Claim("username",  user.UserName),
                     new Claim("userid",  user.Id),
                     new Claim("email", "vu@gmail.com"),
+
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
