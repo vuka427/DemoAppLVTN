@@ -5,15 +5,15 @@ using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 using WebApi.Model;
 using WebApi.Model.User;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
@@ -29,7 +29,7 @@ namespace WebApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet, Authorize]
+        [HttpGet]
         [Route("getuserprofile")]
         public async Task<IActionResult> GetUserProfile(string userid)
         {
@@ -46,7 +46,10 @@ namespace WebApi.Controllers
             }
 
             var CurrentUser = await _userManager.FindByIdAsync(userid);
-            if(CurrentUser == null) return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can find user profile!" });
+            if (CurrentUser == null) return StatusCode(
+                                        StatusCodes.Status500InternalServerError,
+                                        new ResponseMessage { Status = "Error", Message = "Can find user profile!" }
+                                    );
 
             UserProfileModel userProfileModel = null;
 
@@ -76,11 +79,120 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can find user profile!" });
             }
 
-            userProfileModel.Email = CurrentUser .Email;
+            userProfileModel.Email = CurrentUser.Email;
             userProfileModel.UserName = CurrentUser.UserName;
 
 
             return Ok(userProfileModel);
         }
+
+        [HttpPost]
+        [Route("updateuserprofile")]
+        public async Task<IActionResult> UpdateUserProfile(UserProfileModel model)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string userType = "";
+            string UserName = "";
+            if (Identity.HasClaim(c => c.Type == "userid") && Identity.HasClaim(c => c.Type == "usertype") && Identity.HasClaim(c => c.Type == "username"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                userType = Identity.Claims.FirstOrDefault(c => c.Type == "usertype").Value.ToString();
+                UserName = Identity.Claims.FirstOrDefault(c => c.Type == "username").Value.ToString();
+            }
+
+            if (string.IsNullOrEmpty(UserName) || CurrentUserId != model.UserId)
+            {
+                return StatusCode(
+                            StatusCodes.Status500InternalServerError,
+                            new ResponseMessage { Status = "Error", Message = "Can find user profile!" }
+                       );
+            }
+
+            if (userType == "landlord")
+            {
+                var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
+                if (landlord != null)
+                {
+                    landlord.FullName = model.FullName;
+                    landlord.DateOfBirth = model.DateOfBirth;
+                    landlord.Phone = model.Phone;
+                    landlord.Ccccd = model.Ccccd;
+                    landlord.Address = model.Address;
+                    landlord.UpdatedDate = DateTime.Now;
+                    
+                    _landlordService.UpdateUser(landlord);
+                    _landlordService.SaveChanges();
+
+
+                    return Ok();
+                }
+
+
+            }
+            else if (userType == "tenant")
+            {
+                var tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+                if (tenant != null)
+                {
+
+
+
+                    return Ok();
+                }
+
+            }
+
+            return StatusCode(
+                            StatusCodes.Status500InternalServerError,
+                            new ResponseMessage { Status = "Error", Message = "Can find user profile!" }
+                        );
+
+
+        }
+
+
+
+
+        public class UploadOneFile
+        {
+            [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Phải chọn file Upload")]
+            [DataType(DataType.Upload)]
+            [FileExtensions(Extensions = "png,jpg,jpeg,gif")]
+            [Display(Name = "Chọn file upload ")]
+            public IFormFile FileUpload { get; set; }
+
+
+        }
+
+        [HttpPost]
+        [Route("uploadavatar")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadPhotoApi( [Bind("FileUpload")] UploadOneFile thumbnail)
+        {
+
+
+            if (thumbnail.FileUpload != null)
+            {
+                var fileNameRandom = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(thumbnail.FileUpload.FileName);//tên file random + extension file upload
+
+                var filePath = Path.Combine("Uploads", "avatar", fileNameRandom); //đường đẫn đến file
+
+                using (var filestream = new FileStream(filePath, FileMode.Create))
+                {
+                    await thumbnail.FileUpload.CopyToAsync(filestream); // copy file f vào filestream
+                }
+
+             
+            }
+
+            return Ok();
+        }
+
+
+
+
+
+        //----------
     }
 }

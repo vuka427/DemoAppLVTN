@@ -39,5 +39,10 @@ namespace Application.Implementation.DomainServices
         {
             _unitOfWork.Commit();
         }
+
+        public void UpdateUser(Landlord landlord)
+        {
+           _landlordRepository.Update(landlord);
+        }
     }
 }

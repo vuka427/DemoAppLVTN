@@ -27,4 +27,8 @@
     <ProjectReference Include="..\Pesistence\Pesistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Uploads\" />
+  </ItemGroup>
+
 </Project>

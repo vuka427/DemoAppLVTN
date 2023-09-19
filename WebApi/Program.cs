@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApi.AutoMapper;
 using Newtonsoft.Json.Serialization;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,7 +109,19 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions() //truy cập files tĩnh
+{
+    FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "Uploads")
+        ),
+    RequestPath ="/contens"
+
+});
 app.UseCors(MyAllowSpecificOrigins);
+
+
 
 app.UseAuthentication();
 app.UseAuthorization();
