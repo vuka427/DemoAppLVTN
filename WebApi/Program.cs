@@ -116,7 +116,7 @@ app.UseStaticFiles(new StaticFileOptions() //truy cập files tĩnh
     FileProvider = new PhysicalFileProvider(
             Path.Combine(Directory.GetCurrentDirectory(), "Uploads")
         ),
-    RequestPath ="/contens"
+    RequestPath ="/contents"
 
 });
 app.UseCors(MyAllowSpecificOrigins);

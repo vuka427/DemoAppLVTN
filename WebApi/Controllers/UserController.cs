@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net;
 using WebApi.Model;
 using WebApi.Model.User;
 
@@ -106,7 +108,7 @@ namespace WebApi.Controllers
                 return StatusCode(
                             StatusCodes.Status500InternalServerError,
                             new ResponseMessage { Status = "Error", Message = "Can find user profile!" }
-                       );
+                   );
             }
 
             if (userType == "landlord")
@@ -151,42 +153,87 @@ namespace WebApi.Controllers
 
         }
 
-
-
-
-        public class UploadOneFile
-        {
-            [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Phải chọn file Upload")]
-            [DataType(DataType.Upload)]
-            [FileExtensions(Extensions = "png,jpg,jpeg,gif")]
-            [Display(Name = "Chọn file upload ")]
-            public IFormFile FileUpload { get; set; }
-
-
-        }
-
         [HttpPost]
         [Route("uploadavatar")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UploadPhotoApi( [Bind("FileUpload")] UploadOneFile thumbnail)
+        public async Task<IActionResult> UploadAvatar(string userid)
         {
-
-
-            if (thumbnail.FileUpload != null)
+            var httpRequestttt = HttpContext.Request.Form.Files;
+            try 
             {
-                var fileNameRandom = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(thumbnail.FileUpload.FileName);//tên file random + extension file upload
+                var httpRequest = HttpContext.Request;
+
+                var file = httpRequest.Form.Files[0];
+                if (file == null) { return BadRequest(); }
+                
+                var fileNameRandom = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(file.FileName);//tên file random + extension file upload
 
                 var filePath = Path.Combine("Uploads", "avatar", fileNameRandom); //đường đẫn đến file
 
                 using (var filestream = new FileStream(filePath, FileMode.Create))
                 {
-                    await thumbnail.FileUpload.CopyToAsync(filestream); // copy file f vào filestream
+                    await file.CopyToAsync(filestream); // copy file f vào filestream
                 }
 
-             
-            }
+                var Identity = HttpContext.User;
+                string CurrentUserId = "";
+                string userType = "";
+                if (Identity.HasClaim(c => c.Type == "userid") && Identity.HasClaim(c => c.Type == "usertype") && Identity.HasClaim(c => c.Type == "username"))
+                {
+                    CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                    userType = Identity.Claims.FirstOrDefault(c => c.Type == "usertype").Value.ToString();
+                  
+                }
 
-            return Ok();
+                if (string.IsNullOrEmpty(CurrentUserId) || CurrentUserId != userid)
+                {
+                    return StatusCode(
+                                StatusCodes.Status500InternalServerError,
+                                new ResponseMessage { Status = "Error", Message = "Can find user profile!" }
+                       );
+                }
+
+                if (userType == "landlord")
+                {
+                    var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
+                    if (landlord != null)
+                    {
+                        landlord.AvatarUrl = fileNameRandom; 
+                        _landlordService.UpdateUser(landlord);
+                        _landlordService.SaveChanges();
+
+
+                        return Ok();
+                    }
+
+
+                }
+                else if (userType == "tenant")
+                {
+                    var tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+                    if (tenant != null)
+                    {
+
+
+
+                        return Ok();
+                    }
+
+                }
+
+
+
+
+                return Ok() ;
+                
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                                StatusCodes.Status500InternalServerError,
+                                new ResponseMessage { Status = "Error", Message = "Can upload avatar !" }
+                       );
+
+            }
         }
 
 
