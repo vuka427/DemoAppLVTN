@@ -6,5 +6,6 @@ namespace Application.Interface.IDomainServices
 {
     public interface IRoomService
     {
+
     }
 }

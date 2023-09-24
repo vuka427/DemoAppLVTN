@@ -93,7 +93,7 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod();
             });
 });
-
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddControllers();
                

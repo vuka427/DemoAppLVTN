@@ -12,6 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WebApi.AppData;
+using WebApi.Common;
 using WebApi.Model;
 using WebApi.Model.Account;
 
@@ -62,6 +63,7 @@ namespace WebApi.Controllers
                     if(tenant != null)
                     {
                         authClaims.Add(new Claim("fullname", tenant.FullName));
+                        authClaims.Add(new Claim("avatar", "/contents/avatar/" +tenant.AvatarUrl));
                     }
                     authClaims.Add(new Claim("usertype", "tenant"));
 
@@ -71,7 +73,8 @@ namespace WebApi.Controllers
                     var landlord = _landlordService.GetLandlordByUserId(user.Id);
                     if (landlord != null)
                     {
-                        authClaims.Add(new Claim("fullname", landlord.FullName));
+                        authClaims.Add(new Claim("fullname",  landlord.FullName));
+                        authClaims.Add(new Claim("avatar", "/contents/avatar/" +landlord.AvatarUrl));
                     }
 
                     authClaims.Add(new Claim("usertype", "landlord"));

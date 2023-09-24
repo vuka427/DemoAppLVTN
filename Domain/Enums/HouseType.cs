@@ -6,7 +6,8 @@ namespace Domain.Enum
 {
     public enum HouseType
     {
-
+        Row,
+        Floor
 
     }
 }
