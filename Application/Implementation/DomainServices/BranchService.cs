@@ -18,6 +18,14 @@ namespace Application.Implementation.DomainServices
         private readonly IAreaRepository _areaRepository;
         private readonly ILandlordRepository _landlordRepository;
 
+        public BranchService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository)
+        {
+            _unitOfWork=unitOfWork;
+            _branchRepository=branchRepository;
+            _areaRepository=areaRepository;
+            _landlordRepository=landlordRepository;
+        }
+
         public AppResult CreateArea(int branchId, Area area)
         {
             throw new NotImplementedException();
@@ -31,7 +39,7 @@ namespace Application.Implementation.DomainServices
             try
             {
                 _branchRepository.Add(branch);
-                _unitOfWork.Commit();
+                
             }
             catch
             {
@@ -51,12 +59,17 @@ namespace Application.Implementation.DomainServices
             throw new NotImplementedException();
         }
 
-        public ICollection<Branch> GetBranches(int landlordId)
+        public IQueryable<Branch> GetBranches(int landlordId)
         {
-            var landlord = _landlordRepository.FindById(landlordId);
-            if (landlord == null) { return new List<Branch>(); }
-            return  _branchRepository.FindAll(b=>b.LandlordId == landlordId).ToList();
+            var result  = _branchRepository.FindAll(b=>b.LandlordId == landlordId);
             
+            return result;
+            
+        }
+
+        public void SaveChanges()
+        {
+            _unitOfWork.Commit();
         }
     }
 }

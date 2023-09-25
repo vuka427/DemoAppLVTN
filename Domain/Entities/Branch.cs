@@ -15,6 +15,9 @@ namespace Domain.Entities
         }
         public string BranchName { get; set; }
         public string Description { get; set; }
+        public int Province { get; set; }
+        public int District { get; set; }
+        public int Wards { get; set; }
         public string Address { get; set; }
         public decimal ElectricityCosts { get; set; }
         public decimal WaterCosts { get; set; }

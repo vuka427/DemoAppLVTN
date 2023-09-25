@@ -262,6 +262,9 @@ namespace Pesistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar");
 
+                    b.Property<int>("District")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("ElectricityCosts")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(10)
@@ -290,12 +293,18 @@ namespace Pesistence.Migrations
                     b.Property<int>("LandlordId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Province")
+                        .HasColumnType("int");
+
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Wards")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("WaterCosts")
                         .ValueGeneratedOnAdd()

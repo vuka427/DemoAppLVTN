@@ -16,6 +16,8 @@ namespace Application
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ILandlordService, LandlordService>();
             services.AddTransient<ITenantService, TenantService>();
+            services.AddTransient<IBranchService, BranchService>();
+        
         }
     }
 }

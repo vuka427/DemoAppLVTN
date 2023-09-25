@@ -5,7 +5,7 @@ namespace WebApi.Model.JQDataTable
     public class DatatableParam
     {
         public int draw { get; set; }
-        public int start { get; set; }
+        public int start { get; set; } 
         public int length { get; set; }
         public List<Column> columns { get; set; }
         public Search search { get; set; }
@@ -15,7 +15,7 @@ namespace WebApi.Model.JQDataTable
 
     public class Column
     {
-        public string data { get; set; }
+        public string data { get; set; } 
         public string name { get; set; }
         public bool searchable { get; set; }
         public bool orderable { get; set; }

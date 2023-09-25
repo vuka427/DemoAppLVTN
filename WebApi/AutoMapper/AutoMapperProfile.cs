@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities;
+using WebApi.Model.Branch;
 using WebApi.Model.User;
 
 namespace WebApi.AutoMapper
@@ -10,7 +11,8 @@ namespace WebApi.AutoMapper
             CreateMap<Landlord, UserProfileModel>();
             CreateMap<Tenant, UserProfileModel>();
             CreateMap<Admin, UserProfileModel>();
-
+            CreateMap<Branch, BranchModel>();
+           
         }
     }
 }

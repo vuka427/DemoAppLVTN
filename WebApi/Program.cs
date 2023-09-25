@@ -12,6 +12,8 @@ using System.Text;
 using WebApi.AutoMapper;
 using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.FileProviders;
+using Application.Interface.IDomainServices;
+using Application.Implementation.DomainServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +57,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication(Configuration);// add dependency in persistence
 builder.Services.AddApplicationCore(Configuration);// add dependency in application
+builder.Services.AddSingleton<IBoundaryService, BoundaryService>();
+
 builder.Services.AddAutoMapperConfiguration(Configuration);
 
 // Adding Authentication
@@ -91,6 +95,7 @@ builder.Services.AddCors(options =>
                 policy.AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod();
+              
             });
 });
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -109,6 +114,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseStaticFiles();
 
 app.UseStaticFiles(new StaticFileOptions() //truy cập files tĩnh
@@ -119,7 +126,7 @@ app.UseStaticFiles(new StaticFileOptions() //truy cập files tĩnh
     RequestPath ="/contents"
 
 });
-app.UseCors(MyAllowSpecificOrigins);
+
 
 
 
