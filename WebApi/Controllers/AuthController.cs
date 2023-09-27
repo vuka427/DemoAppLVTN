@@ -64,6 +64,7 @@ namespace WebApi.Controllers
                     {
                         authClaims.Add(new Claim("fullname", tenant.FullName));
                         authClaims.Add(new Claim("avatar", "/contents/avatar/" +tenant.AvatarUrl));
+                        authClaims.Add(new Claim("tenantid", tenant.Id.ToString()));
                     }
                     authClaims.Add(new Claim("usertype", "tenant"));
 
@@ -75,6 +76,7 @@ namespace WebApi.Controllers
                     {
                         authClaims.Add(new Claim("fullname",  landlord.FullName));
                         authClaims.Add(new Claim("avatar", "/contents/avatar/" +landlord.AvatarUrl));
+                        authClaims.Add(new Claim("landlordid",landlord.Id.ToString()));
                     }
 
                     authClaims.Add(new Claim("usertype", "landlord"));

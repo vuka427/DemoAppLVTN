@@ -13,6 +13,6 @@ namespace WebApi.Model.Branch
         public decimal InternetCosts { get; set; }
         public decimal GarbageColletionFee { get; set; }
         public string InternalRegulation { get; set; }
-        public bool HouseType { get; set; } // true => Row , false => Floor
+        public string HouseType { get; set; }
     }
 }

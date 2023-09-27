@@ -17,13 +17,15 @@ namespace Application.Implementation.DomainServices
         private readonly IBranchRepository _branchRepository;
         private readonly IAreaRepository _areaRepository;
         private readonly ILandlordRepository _landlordRepository;
+        private readonly IServiceRepository _serviceRepository;
 
-        public BranchService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository)
+        public BranchService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository)
         {
             _unitOfWork=unitOfWork;
             _branchRepository=branchRepository;
             _areaRepository=areaRepository;
             _landlordRepository=landlordRepository;
+            _serviceRepository=serviceRepository;
         }
 
         public AppResult CreateArea(int branchId, Area area)
@@ -33,13 +35,25 @@ namespace Application.Implementation.DomainServices
 
         public AppResult CreateBranch(int landlordId, Branch branch)
         {
-            var landlord = _landlordRepository.FindById(landlordId);
+            var landlord = _landlordRepository.FindById(landlordId, l=>l.User );
             if(landlord == null) { return new AppResult { Success = false, Message="Không tìm thấy người dùng !"}; }
             branch.LandlordId = landlordId;
+            branch.LandlordId = landlord.Id;
+            branch.CreatedBy = landlord.User.UserName??"";
+            branch.CreatedDate = DateTime.Now;
+            branch.UpdatedBy = landlord.User.UserName??"";
+            branch.UpdatedDate = DateTime.Now;
+
+            foreach(var serviceItem in branch.Services)
+            {
+                serviceItem.CreatedBy = landlord.User.UserName??"";
+                serviceItem.CreatedDate = DateTime.Now;
+                serviceItem.UpdatedBy = landlord.User.UserName??"";
+                serviceItem.UpdatedDate = DateTime.Now;
+            }
             try
             {
                 _branchRepository.Add(branch);
-                
             }
             catch
             {
@@ -51,7 +65,19 @@ namespace Application.Implementation.DomainServices
 
         public AppResult DeleteBranch(int landlordId, int id)
         {
-            throw new NotImplementedException();
+            
+            var deletebranch = _branchRepository.FindAll(b => b.Id==id && b.LandlordId == landlordId, b=>b.Services).FirstOrDefault();
+            if (deletebranch == null) { return new AppResult { Success = false, Message="Không tìm thấy nhà trọ !" }; }
+
+
+            foreach (var serviceItem in deletebranch.Services)
+            {
+                _serviceRepository.Remove(serviceItem);
+            }
+            _branchRepository.Remove(deletebranch);
+
+            return new AppResult { Success = false, Message="Không tìm thấy người dùng !" };
+
         }
 
         public Branch GetBranchById(int landlordId, int id)

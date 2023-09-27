@@ -2,6 +2,7 @@
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.Entity;
@@ -13,7 +14,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class BranchController : Controller
     {
 
@@ -36,7 +37,7 @@ namespace WebApi.Controllers
         [Route("branchesfordatatable")]
         public async Task<IActionResult> GetBrachesForDataTable( [FromBody] DatatableParam param)
         {
-            int filteredResultsCount ;
+            int filteredResultsCount;
             int totalResultsCount;
 
 
@@ -91,14 +92,71 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("add")]
-        public IActionResult CreateBrach(BranchCreateModel branch)
+        public IActionResult CreateBrach(BranchCreateModel model)
         {
-            var a = User;
-            var address = _boundaryService.GetAddress(branch.Province, branch.District, branch.Wards);
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0 ;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+            
+            try
+            {
+                var branch = _mapper.Map<Branch>(model);
 
-            return Ok(); 
+                _branchService.CreateBranch(landlordId , branch);
+                _branchService.SaveChanges();
+
+
+                return Ok(); 
+            }
+            catch
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
+            }
         }
 
+        [HttpDelete]
+        [Route("delete")]
+        public IActionResult DeleteBranch([FromQuery] int branchid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+              
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if ( string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Tìm thấy nhà trọ!" });
+            }
+            try
+            {
+                _branchService.DeleteBranch(landlordId, branchid); 
+                _branchService.SaveChanges();
+                return Ok();
+            }
+            catch
+            {
+               return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không thể xóa nhà trọ!" });
+            }
+
+
+
+        }
 
 
     }
