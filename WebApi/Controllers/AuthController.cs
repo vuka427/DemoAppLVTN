@@ -63,6 +63,7 @@ namespace WebApi.Controllers
                     if(tenant != null)
                     {
                         authClaims.Add(new Claim("fullname", tenant.FullName));
+                        if(!String.IsNullOrEmpty( tenant.AvatarUrl))
                         authClaims.Add(new Claim("avatar", "/contents/avatar/" +tenant.AvatarUrl));
                         authClaims.Add(new Claim("tenantid", tenant.Id.ToString()));
                     }
@@ -75,7 +76,8 @@ namespace WebApi.Controllers
                     if (landlord != null)
                     {
                         authClaims.Add(new Claim("fullname",  landlord.FullName));
-                        authClaims.Add(new Claim("avatar", "/contents/avatar/" +landlord.AvatarUrl));
+                        if (!String.IsNullOrEmpty(landlord.AvatarUrl))
+                            authClaims.Add(new Claim("avatar", "/contents/avatar/" +landlord.AvatarUrl));
                         authClaims.Add(new Claim("landlordid",landlord.Id.ToString()));
                     }
 
@@ -98,7 +100,8 @@ namespace WebApi.Controllers
                     expiration = token.ValidTo
                 });
             }
-            return Unauthorized();
+            return StatusCode(StatusCodes.Status401Unauthorized, new ResponseMessage { Status = "Error", Message = "Đăng nhập thất bại!" });
+
         }
 
         [HttpPost]
@@ -107,7 +110,7 @@ namespace WebApi.Controllers
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Tên tài khoản đã được sử dụng!" });
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Tên tài khoản đã được sử dụng!" });
             AppUser user = new()
             {
                 Email = model.Email,
@@ -151,7 +154,7 @@ namespace WebApi.Controllers
             catch
             {
                 return StatusCode(
-                    StatusCodes.Status500InternalServerError,
+                    StatusCodes.Status400BadRequest,
                     new ResponseMessage
                     {
                         Status = "Error",
@@ -172,7 +175,7 @@ namespace WebApi.Controllers
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Tên tài khoản đã được sử dụng!" });
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Tên tài khoản đã được sử dụng!" });
             AppUser user = new()
             {
                 Email = model.Email,
@@ -188,7 +191,7 @@ namespace WebApi.Controllers
             var result = await _userManager.CreateAsync(user, model.Password); 
             if (!result.Succeeded)
                 return StatusCode(
-                    StatusCodes.Status500InternalServerError, 
+                    StatusCodes.Status400BadRequest, 
                     new ResponseMessage { 
                         Status = "Error", 
                         Message = "Không thể tạo người dùng! vui lòng kiểm tra lại thông tin người dùng!" + result.ToString() 
@@ -216,7 +219,7 @@ namespace WebApi.Controllers
             catch
             {
                 return StatusCode(
-                    StatusCodes.Status500InternalServerError, 
+                    StatusCodes.Status400BadRequest, 
                     new ResponseMessage { 
                         Status = "Error", 
                         Message = "Không thể tạo người dùng! vui lòng kiểm tra lại thông tin người dùng!" + result.ToString() 

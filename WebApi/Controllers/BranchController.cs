@@ -82,15 +82,55 @@ namespace WebApi.Controllers
             }
             catch
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get braches!" });
+                return StatusCode( StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get braches!"});
             }
 
            
         }
 
+        [HttpGet]
+        [Route("allroom")]
+        public async Task<IActionResult> GetAllRoom()
+        {
+            int filteredResultsCount;
+            int totalResultsCount;
 
 
-        [HttpPost]
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
+
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user id" });
+            }
+            var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
+            if (landlord == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user" });
+            }
+            try
+            {
+                var branches = _branchService.GetBranches(landlord.Id);
+
+                var Dataresult = _mapper.Map<List<BranchModel>>(branches);
+
+
+                return Ok(Dataresult);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy nhà trọ!" });
+            }
+
+
+        }
+
+
+            [HttpPost]
         [Route("add")]
         public IActionResult CreateBrach(BranchCreateModel model)
         {

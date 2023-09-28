@@ -11,6 +11,7 @@ namespace Application.Interface.IDomainServices
     {
         AppResult CreateBranch(int landlordId, Branch branch);
         IQueryable<Branch> GetBranches(int landlordId);
+        IQueryable<Branch> GetBranchWithRoom(int landlordId);
         Branch GetBranchById(int landlordId, int id);
 
         AppResult DeleteBranch(int landlordId, int id);

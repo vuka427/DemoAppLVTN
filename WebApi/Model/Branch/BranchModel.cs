@@ -14,5 +14,7 @@ namespace WebApi.Model.Branch
         public decimal GarbageColletionFee { get; set; }
         public string InternalRegulation { get; set; }
         public string HouseType { get; set; }
+
+        public ICollection<AreaModel> Areas { get; set; }
     }
 }

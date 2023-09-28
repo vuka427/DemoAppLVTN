@@ -83,7 +83,7 @@ namespace WebApi.Controllers
 
             userProfileModel.Email = CurrentUser.Email;
             userProfileModel.UserName = CurrentUser.UserName;
-            userProfileModel.AvatarUrl = "/contents/avatar/" + userProfileModel.AvatarUrl;
+            userProfileModel.AvatarUrl = String.IsNullOrEmpty(userProfileModel.AvatarUrl)?"": "/contents/avatar/" + userProfileModel.AvatarUrl;
 
             return Ok(userProfileModel);
         }

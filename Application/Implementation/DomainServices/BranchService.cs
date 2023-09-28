@@ -18,14 +18,16 @@ namespace Application.Implementation.DomainServices
         private readonly IAreaRepository _areaRepository;
         private readonly ILandlordRepository _landlordRepository;
         private readonly IServiceRepository _serviceRepository;
+        private readonly IRoomRepository _roomRepository;
 
-        public BranchService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository)
+        public BranchService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository)
         {
             _unitOfWork=unitOfWork;
             _branchRepository=branchRepository;
             _areaRepository=areaRepository;
             _landlordRepository=landlordRepository;
             _serviceRepository=serviceRepository;
+            _roomRepository=roomRepository;
         }
 
         public AppResult CreateArea(int branchId, Area area)
@@ -91,6 +93,20 @@ namespace Application.Implementation.DomainServices
             
             return result;
             
+        }
+
+        public IQueryable<Branch> GetBranchWithRoom(int landlordId)
+        {
+            var result = _branchRepository.FindAll(b => b.LandlordId == landlordId,b=>b.Areas);
+            foreach (var branch in result)
+            {
+                foreach (var area in branch.Areas)
+                {
+                    area.Rooms = _roomRepository.FindAll(r=>r.AreaId==area.Id).ToList() ;
+                }
+            }
+
+            return result;
         }
 
         public void SaveChanges()
