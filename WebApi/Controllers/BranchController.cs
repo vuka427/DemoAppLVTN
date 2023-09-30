@@ -35,7 +35,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("branchesfordatatable")]
-        public async Task<IActionResult> GetBrachesForDataTable( [FromBody] DatatableParam param)
+        public async Task<IActionResult> GetBrachesForDataTable([FromBody] DatatableParam param)
         {
             int filteredResultsCount;
             int totalResultsCount;
@@ -47,12 +47,12 @@ namespace WebApi.Controllers
             {
                 CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
             }
-            
-            if (string.IsNullOrEmpty(CurrentUserId) )
+
+            if (string.IsNullOrEmpty(CurrentUserId))
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can find user!" });
             }
-           var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
+            var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
             if (landlord == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can find user!" });
@@ -82,10 +82,10 @@ namespace WebApi.Controllers
             }
             catch
             {
-                return StatusCode( StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get braches!"});
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get braches!" });
             }
 
-           
+
         }
 
         [HttpGet]
@@ -118,7 +118,6 @@ namespace WebApi.Controllers
 
                 var Dataresult = _mapper.Map<List<BranchModel>>(branches);
 
-
                 return Ok(Dataresult);
             }
             catch
@@ -130,14 +129,14 @@ namespace WebApi.Controllers
         }
 
 
-            [HttpPost]
+        [HttpPost]
         [Route("add")]
         public IActionResult CreateBrach(BranchCreateModel model)
         {
             var Identity = HttpContext.User;
             string CurrentUserId = "";
             string CurrentLandlordId = "";
-            int landlordId = 0 ;
+            int landlordId = 0;
             if (Identity.HasClaim(c => c.Type == "userid"))
             {
                 CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
@@ -148,16 +147,15 @@ namespace WebApi.Controllers
             {
                 return Unauthorized();
             }
-            
+
             try
             {
                 var branch = _mapper.Map<Branch>(model);
-
-                _branchService.CreateBranch(landlordId , branch);
+                _branchService.CreateBranch(landlordId, branch);
                 _branchService.SaveChanges();
 
 
-                return Ok(); 
+                return Ok();
             }
             catch
             {
@@ -175,29 +173,105 @@ namespace WebApi.Controllers
             int landlordId = 0;
             if (Identity.HasClaim(c => c.Type == "userid"))
             {
-              
+
                 CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
             }
             var result = int.TryParse(CurrentLandlordId, out landlordId);
-            if ( string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            if (string.IsNullOrEmpty(CurrentLandlordId) && !result)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Tìm thấy nhà trọ!" });
             }
             try
             {
-                _branchService.DeleteBranch(landlordId, branchid); 
+                _branchService.DeleteBranch(landlordId, branchid);
                 _branchService.SaveChanges();
                 return Ok();
             }
             catch
             {
-               return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không thể xóa nhà trọ!" });
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không thể xóa nhà trọ!" });
+            }
+
+        }
+
+        [HttpPost]
+        [Route("area/add")]
+        public IActionResult CreateArea(AreaCreateModel model)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+
+            try
+            {
+                var CreateResult = _branchService.CreateArea(landlordId, model.BranchId, new Area() { AreaName = model.AreaName, Description= model.Description });
+                if (!CreateResult.Success) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" }); }
+                _branchService.SaveChanges();
+
+                return Ok();
+            }
+            catch
+            {
+
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("areas")]
+        public async Task<IActionResult> GetAreas(int branchId)
+        {
+            int filteredResultsCount;
+            int totalResultsCount;
+
+
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
+
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user id" });
+            }
+            var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
+            if (landlord == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user" });
+            }
+            try
+            {
+                var branches = _branchService.GetBranchById(landlord.Id, branchId);
+
+                var Dataresult = _mapper.Map<BranchModel>(branches);
+
+                return Ok(Dataresult);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy nhà trọ!" });
             }
 
 
 
+
+
         }
-
-
     }
+
 }

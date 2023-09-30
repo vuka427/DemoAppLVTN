@@ -30,9 +30,33 @@ namespace Application.Implementation.DomainServices
             _roomRepository=roomRepository;
         }
 
-        public AppResult CreateArea(int branchId, Area area)
+        public AppResult CreateArea(int landlordId, int branchId, Area area)
         {
-            throw new NotImplementedException();
+            var branch = _branchRepository.FindAll(b => b.Id==branchId && b.LandlordId == landlordId).FirstOrDefault();
+
+            if(branch ==null) return new AppResult { Success = false, Message="Không tìm thấy nhà trọ!" };
+            var landlord = _landlordRepository.FindById(landlordId, l => l.User);
+            if (landlord == null) { return new AppResult { Success = false, Message="Không tìm thấy người dùng !" }; }
+            
+
+            area.BranchId=branchId;
+            area.CreatedBy=landlord.User.UserName??"";
+            area.CreatedDate=DateTime.Now;
+            area.UpdatedBy=landlord.User.UserName??"";
+            area.UpdatedDate=DateTime.Now;
+            
+
+            try
+            {
+                _areaRepository.Add(area);
+                return new AppResult { Success = true, Message="" };
+            }
+            catch
+            {
+                return new AppResult { Success = false, Message="Không thêm được khu vực!" };
+            }
+
+
         }
 
         public AppResult CreateBranch(int landlordId, Branch branch)
@@ -84,12 +108,12 @@ namespace Application.Implementation.DomainServices
 
         public Branch GetBranchById(int landlordId, int id)
         {
-            throw new NotImplementedException();
+            return _branchRepository.FindAll(b=>b.LandlordId == landlordId && b.Id == id, b=>b.Areas ).FirstOrDefault();
         }
 
         public IQueryable<Branch> GetBranches(int landlordId)
         {
-            var result  = _branchRepository.FindAll(b=>b.LandlordId == landlordId);
+            var result  = _branchRepository.FindAll(b=>b.LandlordId == landlordId, b=>b.Areas);
             
             return result;
             
