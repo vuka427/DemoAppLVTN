@@ -9,6 +9,7 @@ using System.Data.Entity;
 using WebApi.Model;
 using WebApi.Model.Branch;
 using WebApi.Model.JQDataTable;
+using WebApi.Model.Room;
 
 namespace WebApi.Controllers
 {
@@ -176,6 +177,7 @@ namespace WebApi.Controllers
 
                 CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
             }
+
             var result = int.TryParse(CurrentLandlordId, out landlordId);
             if (string.IsNullOrEmpty(CurrentLandlordId) && !result)
             {
@@ -224,7 +226,6 @@ namespace WebApi.Controllers
             }
             catch
             {
-
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
             }
         }
@@ -254,9 +255,13 @@ namespace WebApi.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user" });
             }
+
             try
             {
                 var branches = _branchService.GetBranchById(landlord.Id, branchId);
+
+                
+
 
                 var Dataresult = _mapper.Map<BranchModel>(branches);
 
@@ -267,11 +272,9 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy nhà trọ!" });
             }
 
-
-
-
-
         }
+
+        
     }
 
 }

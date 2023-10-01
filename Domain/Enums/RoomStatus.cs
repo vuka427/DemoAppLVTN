@@ -6,5 +6,9 @@ namespace Domain.Enum
 {
     public enum RoomStatus
     {
+        Empty,
+        Inhabited,
+        Repair,
+        Deposit
     }
 }
