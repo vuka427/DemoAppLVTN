@@ -61,15 +61,20 @@ namespace WebApi.Controllers
             try
             {
                 var branches = _branchService.GetBranches(landlord.Id);
-
+              
                 totalResultsCount = branches.Count();
 
                 var result = branches.Skip(param.start).Take(param.length).ToList();
 
                 filteredResultsCount = result.Count();
 
-                var Dataresult = _mapper.Map<List<BranchModel>>(result);
+                foreach (var branch in result)
+                {
+                    string ad = _boundaryService.GetAddress(branch.Province, branch.District, branch.Wards);
+                    branch.Address =  branch.Address +", "+ ad;
+                }
 
+                var Dataresult = _mapper.Map<List<BranchModel>>(result);
 
                 return Json(new
                 {
@@ -113,11 +118,19 @@ namespace WebApi.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user" });
             }
+               
+
             try
             {
-                var branches = _branchService.GetBranches(landlord.Id);
+                var branches = _branchService.GetBranchWithRoom(landlord.Id);
+                foreach(var branch in branches)
+                {
+                    string ad = _boundaryService.GetAddress(branch.Province,branch.District,branch.Wards);
+                    branch.Address =  branch.Address +", "+ ad;
+                }
 
                 var Dataresult = _mapper.Map<List<BranchModel>>(branches);
+
 
                 return Ok(Dataresult);
             }
@@ -220,6 +233,40 @@ namespace WebApi.Controllers
             {
                 var CreateResult = _branchService.CreateArea(landlordId, model.BranchId, new Area() { AreaName = model.AreaName, Description= model.Description });
                 if (!CreateResult.Success) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" }); }
+                _branchService.SaveChanges();
+
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
+            }
+        }
+
+        [HttpPut]
+        [Route("area/edit")]
+        public IActionResult UpdateArea(AreaEditModel model)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+
+            try
+            {
+                var CreateResult = _branchService.UpdateArea(landlordId, model.BranchId, new Area() { Id=model.AreaId, AreaName = model.AreaName, Description= model.Description });
+                if (!CreateResult.Success) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't update branch!" }); }
                 _branchService.SaveChanges();
 
                 return Ok();

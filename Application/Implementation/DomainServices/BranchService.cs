@@ -108,7 +108,14 @@ namespace Application.Implementation.DomainServices
 
         public Branch GetBranchById(int landlordId, int id)
         {
-            return _branchRepository.FindAll(b=>b.LandlordId == landlordId && b.Id == id, b=>b.Areas ).FirstOrDefault();
+           var branch = _branchRepository.FindAll(b => b.LandlordId == landlordId && b.Id == id, b => b.Areas).FirstOrDefault();
+
+            foreach (var area in branch.Areas)
+            {
+                area.Rooms = _roomRepository.FindAll(r => r.AreaId==area.Id).ToList();
+            }
+
+            return branch??new Branch();
         }
 
         public IQueryable<Branch> GetBranches(int landlordId)
@@ -119,14 +126,14 @@ namespace Application.Implementation.DomainServices
             
         }
 
-        public IQueryable<Branch> GetBranchWithRoom(int landlordId)
+        public ICollection<Branch> GetBranchWithRoom(int landlordId)
         {
-            var result = _branchRepository.FindAll(b => b.LandlordId == landlordId,b=>b.Areas);
+            var result = _branchRepository.FindAll(b => b.LandlordId == landlordId,b=>b.Areas).ToList();
             foreach (var branch in result)
             {
                 foreach (var area in branch.Areas)
                 {
-                    area.Rooms = _roomRepository.FindAll(r=>r.AreaId==area.Id).ToList() ;
+                    area.Rooms = _roomRepository.FindAll(r=>r.AreaId==area.Id).ToList();
                 }
             }
 
@@ -136,6 +143,33 @@ namespace Application.Implementation.DomainServices
         public void SaveChanges()
         {
             _unitOfWork.Commit();
+        }
+
+        public AppResult UpdateArea(int landlordId, int branchId, Area area)
+        {
+            var branch = _branchRepository.FindAll(b => b.Id==branchId && b.LandlordId == landlordId, b=>b.Areas).FirstOrDefault();
+
+            if (branch ==null) return new AppResult { Success = false, Message="Không tìm thấy nhà trọ!" };
+            var landlord = _landlordRepository.FindById(landlordId, l => l.User);
+            if (landlord == null) { return new AppResult { Success = false, Message="Không tìm thấy người dùng !" }; }
+            var updateArea = branch.Areas.Where(a => a.Id == area.Id).FirstOrDefault();
+            if (updateArea == null) { return new AppResult { Success = false, Message="Không tìm thấy dãy tầng !" }; }
+
+            updateArea.AreaName = area.AreaName;
+            updateArea.Description = area.Description;
+            updateArea.UpdatedBy=landlord.User.UserName??"";
+            updateArea.UpdatedDate=DateTime.Now;
+
+
+            try
+            {
+                _areaRepository.Update(updateArea);
+                return new AppResult { Success = true, Message="" };
+            }
+            catch
+            {
+                return new AppResult { Success = false, Message="Không thêm được khu vực!" };
+            }
         }
     }
 }
