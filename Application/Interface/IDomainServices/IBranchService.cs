@@ -19,6 +19,7 @@ namespace Application.Interface.IDomainServices
 
         AppResult CreateArea(int landlordId, int branchId, Area area);
         AppResult UpdateArea(int landlordId, int branchId, Area area);
+        AppResult DeleteArea(int landlordId, int id);
         void SaveChanges();
     }
 }

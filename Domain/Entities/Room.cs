@@ -17,14 +17,12 @@ namespace Domain.Entities
         }
 
         public int RoomNumber { get; set; }
-        public float Width { get; set; }
-        public float Height { get; set; }
-        public float Length { get; set; }
+        public float Acreage { get; set; }
+       
         public bool IsMezzanine { get; set; }
         public decimal Price { get; set; }
         public RoomStatus Status { get; set; }
         public int MaxMember { get; set; }
-
 
         public int AreaId { get; set; }
         public Area Area { get; set; }

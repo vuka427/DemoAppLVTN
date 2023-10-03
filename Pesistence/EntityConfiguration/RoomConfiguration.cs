@@ -17,12 +17,9 @@ namespace Pesistence.EntityConfiguration
             builder.ToTable(nameof(Room));
             builder.Property(r => r.RoomNumber)
                 .IsRequired();
-            builder.Property(r=>r.Width)
+            builder.Property(r=>r.Acreage)
                 .IsRequired();
-            builder.Property(r=>r.Height)
-                .IsRequired();
-            builder.Property(r=>r.Length)
-                .IsRequired();
+           
             builder.Property(r=>r.IsMezzanine)
                 .HasDefaultValue(false)
                 .IsRequired();

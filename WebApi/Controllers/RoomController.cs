@@ -51,6 +51,7 @@ namespace WebApi.Controllers
                 return Unauthorized();
             }
             var room = _mapper.Map<Room>(model);
+            
 
             try
             {

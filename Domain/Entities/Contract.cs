@@ -41,9 +41,7 @@ namespace Domain.Entities
         public string BranchAddress { get; set; }
         public HouseType HouseType { get; set; }
         public string AreaName { get; set; }
-        public float Width { get; set; }
-        public float Height { get; set; }
-        public float Length { get; set; }
+        public float Acreage { get; set; }
         public bool IsMezzanine { get; set; }
         public decimal Deposit { get; set; }
 

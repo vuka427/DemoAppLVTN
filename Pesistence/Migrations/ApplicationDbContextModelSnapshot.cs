@@ -358,6 +358,9 @@ namespace Pesistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar");
 
+                    b.Property<float>("Acreage")
+                        .HasColumnType("real");
+
                     b.Property<string>("AreaName")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -431,9 +434,6 @@ namespace Pesistence.Migrations
                     b.Property<DateTime>("EndingOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("Height")
-                        .HasColumnType("real");
-
                     b.Property<int>("HouseType")
                         .HasColumnType("int");
 
@@ -444,9 +444,6 @@ namespace Pesistence.Migrations
 
                     b.Property<int>("LandlordId")
                         .HasColumnType("int");
-
-                    b.Property<float>("Length")
-                        .HasColumnType("real");
 
                     b.Property<decimal>("RentalPrice")
                         .ValueGeneratedOnAdd()
@@ -472,9 +469,6 @@ namespace Pesistence.Migrations
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<float>("Width")
-                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -503,6 +497,7 @@ namespace Pesistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .HasMaxLength(256)
                         .HasColumnType("nvarchar");
 
                     b.Property<string>("DeviceName")
@@ -946,6 +941,9 @@ namespace Pesistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<float>("Acreage")
+                        .HasColumnType("real");
+
                     b.Property<int>("AreaId")
                         .HasColumnType("int");
 
@@ -956,16 +954,10 @@ namespace Pesistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("Height")
-                        .HasColumnType("real");
-
                     b.Property<bool>("IsMezzanine")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<float>("Length")
-                        .HasColumnType("real");
 
                     b.Property<int>("MaxMember")
                         .ValueGeneratedOnAdd()
@@ -991,9 +983,6 @@ namespace Pesistence.Migrations
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<float>("Width")
-                        .HasColumnType("real");
 
                     b.HasKey("Id");
 

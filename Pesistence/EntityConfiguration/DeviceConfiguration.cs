@@ -21,7 +21,9 @@ namespace Pesistence.EntityConfiguration
                 .HasMaxLength(256);
             builder.Property(d => d.Description)
                .IsRequired(false)
-               .HasColumnType("nvarchar");
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
+            
             builder.Property(d=>d.Quantity)
                 .IsRequired()
                 .HasMaxLength(10)

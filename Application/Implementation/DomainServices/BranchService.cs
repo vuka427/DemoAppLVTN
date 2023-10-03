@@ -89,20 +89,35 @@ namespace Application.Implementation.DomainServices
             return new AppResult { Success = true, Message="oK"};
         }
 
+        public AppResult DeleteArea(int landlordId, int id)
+        {   
+            var deleteArea = _areaRepository.FindById(id);
+            if(deleteArea == null) { return new AppResult { Success = false, Message="Không tìm thấy khu vực !" }; }
+
+            var branch = _branchRepository.FindById(deleteArea.BranchId);
+            if (branch == null || branch.LandlordId != landlordId) { return new AppResult { Success = false, Message="Không tìm thấy nhà trọ !" }; }
+            
+           _areaRepository.Remove(deleteArea);
+
+            return new AppResult { Success = true, Message="ok" };
+        }
+
+
+
         public AppResult DeleteBranch(int landlordId, int id)
         {
             
             var deletebranch = _branchRepository.FindAll(b => b.Id==id && b.LandlordId == landlordId, b=>b.Services).FirstOrDefault();
             if (deletebranch == null) { return new AppResult { Success = false, Message="Không tìm thấy nhà trọ !" }; }
 
+            if (deletebranch.Services != null && deletebranch.Services.Count>0)
+            { 
+                _serviceRepository.RemoveMultiple(deletebranch.Services.ToList());
 
-            foreach (var serviceItem in deletebranch.Services)
-            {
-                _serviceRepository.Remove(serviceItem);
             }
             _branchRepository.Remove(deletebranch);
 
-            return new AppResult { Success = false, Message="Không tìm thấy người dùng !" };
+            return new AppResult { Success = true, Message="Ok" };
 
         }
 

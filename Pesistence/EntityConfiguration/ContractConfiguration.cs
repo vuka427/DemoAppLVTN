@@ -74,11 +74,7 @@ namespace Pesistence.EntityConfiguration
                .IsRequired()
                .HasColumnType("nvarchar")
                .HasMaxLength(256);
-            builder.Property(r => r.Width)
-                .IsRequired();
-            builder.Property(r => r.Height)
-                .IsRequired();
-            builder.Property(r => r.Length)
+            builder.Property(r => r.Acreage)
                 .IsRequired();
             builder.Property(r => r.IsMezzanine)
                 .HasDefaultValue(false)

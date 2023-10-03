@@ -94,6 +94,7 @@ namespace WebApi.Controllers
 
         }
 
+
         [HttpGet]
         [Route("allroom")]
         public async Task<IActionResult> GetAllRoom()
@@ -321,7 +322,39 @@ namespace WebApi.Controllers
 
         }
 
-        
+        [HttpDelete]
+        [Route("area/delete")]
+        public IActionResult DeleteArea([FromQuery] int areaid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Tìm thấy nhà trọ!" });
+            }
+            try
+            {
+                var deleteResult = _branchService.DeleteArea(landlordId,areaid);
+                _branchService.SaveChanges();
+                if(!deleteResult.Success) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = deleteResult.Message }); }
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không thể xóa khu vực!" });
+            }
+
+        }
+
+
     }
 
 }
