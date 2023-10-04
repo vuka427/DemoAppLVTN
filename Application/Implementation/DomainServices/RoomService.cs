@@ -62,10 +62,8 @@ namespace Application.Implementation.DomainServices
                 deviveItem.UpdatedBy=landlord.User.UserName??"";
             }
 
-
             try
             {
-                
                 _roomRepository.Add(room);
                 return new AppResult { Success = true, Message="ok" };
             }
