@@ -121,6 +121,16 @@ namespace Application.Implementation.DomainServices
 
         }
 
+        public Area GetAreaById(int landlordId, int id)
+        {
+            var area = _areaRepository.FindById(id, a => a.Rooms);
+            if (area == null) {  return new Area(); }
+            var branh = _branchRepository.FindById(area.BranchId);
+            if (branh == null || branh.LandlordId != landlordId) { return new Area(); }
+
+            return area;
+        }
+
         public Branch GetBranchById(int landlordId, int id)
         {
            var branch = _branchRepository.FindAll(b => b.LandlordId == landlordId && b.Id == id, b => b.Areas).FirstOrDefault();

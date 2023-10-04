@@ -17,17 +17,23 @@ namespace Application.Implementation.DomainServices
         private readonly IBranchRepository _branchRepository;
         private readonly IAreaRepository _areaRepository;
         private readonly ILandlordRepository _landlordRepository;
-        private readonly IServiceRepository _serviceRepository;
         private readonly IRoomRepository _roomRepository;
+        private readonly IPostNewRepository _postNewRepository;
+        private readonly IDeviceRepository _deviceRepository;
+        private readonly IRoomIndexRepository _roomIndexRepository;
+        private readonly IImageRoomRepository _imageRoomRepository;
 
-        public RoomService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository)
+        public RoomService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IRoomRepository roomRepository, IPostNewRepository postNewRepository, IDeviceRepository deviceRepository, IRoomIndexRepository roomIndexRepository, IImageRoomRepository imageRoomRepository)
         {
             _unitOfWork=unitOfWork;
             _branchRepository=branchRepository;
             _areaRepository=areaRepository;
             _landlordRepository=landlordRepository;
-            _serviceRepository=serviceRepository;
             _roomRepository=roomRepository;
+            _postNewRepository=postNewRepository;
+            _deviceRepository=deviceRepository;
+            _roomIndexRepository=roomIndexRepository;
+            _imageRoomRepository=imageRoomRepository;
         }
 
         public AppResult CreateRoom(int landlordId, int branchId, int areaId, Room room)
@@ -72,7 +78,40 @@ namespace Application.Implementation.DomainServices
 
         public AppResult DeleteRoom(int landlordId, int roomid)
         {
-            throw new NotImplementedException();
+             var deleteroom = _roomRepository.FindById(roomid,r=>r.PostNews,r=>r.Devices,r=>r.RoomIndexs,r=>r.ImageRooms);
+            if (deleteroom == null) { return new AppResult { Success = false, Message="Không tìm phòng !" }; }
+            var area = _areaRepository.FindById(deleteroom.AreaId);
+            if (area == null) { return new AppResult { Success = false, Message="Không tìm thấy nhà trọ !" }; }
+            var branh = _branchRepository.FindById(area.BranchId);
+            if (branh == null || branh.LandlordId != landlordId) { return new AppResult { Success = false, Message="Không tìm thấy nhà trọ !" }; }
+            try
+            {
+                _postNewRepository.RemoveMultiple(deleteroom.PostNews.ToList());
+                _deviceRepository.RemoveMultiple(deleteroom.Devices.ToList());
+                _roomIndexRepository.RemoveMultiple(deleteroom.RoomIndexs.ToList());
+                _imageRoomRepository.RemoveMultiple(deleteroom.ImageRooms.ToList());
+
+                _roomRepository.Remove(deleteroom);
+            }
+            catch
+            {
+                return new AppResult { Success = false, Message="lỗi không thể xóa phòng !" };
+            }
+           
+
+            return new AppResult { Success = true, Message="Ok" };
+        }
+
+        public Room GetRoomById(int landlordId, int roomid)
+        {
+            var room = _roomRepository.FindById(roomid);
+            if (room == null) { return new Room(); }
+            var area = _areaRepository.FindById(room.AreaId);
+            if (area == null) { return new Room(); }
+            var branh = _branchRepository.FindById(area.BranchId);
+            if (branh == null || branh.LandlordId != landlordId) { return new Room(); }
+           
+            return room;
         }
 
         public void SaveChanges()
@@ -83,6 +122,39 @@ namespace Application.Implementation.DomainServices
         public AppResult UpdateRoom(int branchId, Room room)
         {
             throw new NotImplementedException();
+        }
+
+        public AppResult UploadRoomImage(int landlordId, int roomid, string fileName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public AppResult UploadRoomImages(int landlordId, int roomid, string[] fileNames)
+        {
+            var room = _roomRepository.FindById(roomid);
+            if(room == null) { return new AppResult { Success = false, Message="Không tìm phòng !" }; }
+
+            var area = _areaRepository.FindById(room.AreaId);
+            if (area == null) { return new AppResult { Success = false, Message="Không tìm thấy khu vực !" }; }
+            var branh = _branchRepository.FindById(area.BranchId);
+            if (branh == null || branh.LandlordId != landlordId) { return new AppResult { Success = false, Message="Không tìm thấy nhà trọ !" }; }
+
+           
+            foreach(var filename in fileNames)
+            {
+                _imageRoomRepository.Add(new ImageRoom
+                    {
+                     RoomId = room.Id,
+                     Name = filename,
+                     Url = filename,
+                     CreatedBy = room.CreatedBy,
+                     CreatedDate = DateTime.Now,
+                     UpdatedBy = room.UpdatedBy,
+                     UpdatedDate= DateTime.Now
+                    });
+            }
+            
+            return new AppResult { Success = true, Message="Ok" };
         }
     }
 }

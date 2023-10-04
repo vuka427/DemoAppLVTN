@@ -354,6 +354,48 @@ namespace WebApi.Controllers
 
         }
 
+        [HttpGet]
+        [Route("area")]
+        public async Task<IActionResult> GetArea(int areaId)
+        {
+            int filteredResultsCount;
+            int totalResultsCount;
+
+
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
+
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user id" });
+            }
+            var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
+            if (landlord == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user" });
+            }
+
+            try
+            {
+                var area = _branchService.GetAreaById(landlord.Id, areaId);
+
+                var Dataresult = _mapper.Map<AreaModel>(area);
+
+                return Ok(Dataresult);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy khu vực!" });
+            }
+
+        }
+
+
+
 
     }
 

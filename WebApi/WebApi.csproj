@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Uploads\avatar\" />
+    <Folder Include="Uploads\room\image\" />
   </ItemGroup>
 
 </Project>

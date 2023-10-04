@@ -14,6 +14,7 @@ namespace Application.Interface.IDomainServices
         IQueryable<Branch> GetBranches(int landlordId);
         ICollection<Branch> GetBranchWithRoom(int landlordId);
         Branch GetBranchById(int landlordId, int id);
+        Area GetAreaById(int landlordId, int id);
 
         AppResult DeleteBranch(int landlordId, int id);
 
