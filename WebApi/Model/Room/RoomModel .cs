@@ -1,4 +1,5 @@
-﻿using Domain.Enum;
+﻿using Domain.Entities;
+using Domain.Enum;
 
 namespace WebApi.Model.Room
 {
@@ -13,6 +14,10 @@ namespace WebApi.Model.Room
         public string Status { get; set; }
         public decimal Price { get; set; }
         public int MaxMember { get; set; }
+
+        public ICollection<DeviceModel> Devices { get; set; }
+        public ICollection<ImageRoomModel> ImageRooms { get; set; }
+
 
     }
 }

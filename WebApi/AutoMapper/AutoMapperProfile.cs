@@ -26,6 +26,8 @@ namespace WebApi.AutoMapper
             CreateMap<Room, RoomModel>();
             CreateMap<RoomCreateModel, Room>();
             CreateMap<DeviceCreateModel, Device>();
+            CreateMap<Device, DeviceModel>();
+            CreateMap<ImageRoom, ImageRoomModel>();
         }
     }
 }

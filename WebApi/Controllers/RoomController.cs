@@ -33,6 +33,39 @@ namespace WebApi.Controllers
             _roomService=roomService;
         }
 
+        [HttpGet]
+        [Route("detail")]
+        public IActionResult GetRoom(int roomid) { 
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var room = _roomService.GetRoomById(landlordId,roomid);
+                var roomResult = _mapper.Map<RoomModel>(room); 
+               
+                return Ok(roomResult);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create room!" });
+            }
+        }
+
+
+
         [HttpPost]
         [Route("add")]
         public IActionResult CreateRoom(RoomCreateModel model)
@@ -59,6 +92,40 @@ namespace WebApi.Controllers
                 _roomService.CreateRoom(landlordId,model.BranchId,model.AreaId, room);
                 _roomService.SaveChanges();
                 
+                return Ok(room.Id);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create room!" });
+            }
+        }
+
+        [HttpPut]
+        [Route("edit")]
+        public IActionResult UpdateRoom(RoomCreateModel model)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+
+
+            try
+            {
+                var room = _mapper.Map<Room>(model);
+              
+
                 return Ok(room.Id);
             }
             catch

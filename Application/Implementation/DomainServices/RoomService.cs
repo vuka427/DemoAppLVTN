@@ -102,7 +102,7 @@ namespace Application.Implementation.DomainServices
 
         public Room GetRoomById(int landlordId, int roomid)
         {
-            var room = _roomRepository.FindById(roomid);
+            var room = _roomRepository.FindById(roomid,r=>r.Devices,r=>r.ImageRooms);
             if (room == null) { return new Room(); }
             var area = _areaRepository.FindById(room.AreaId);
             if (area == null) { return new Room(); }
