@@ -117,9 +117,73 @@ namespace Application.Implementation.DomainServices
             _unitOfWork.Commit();
         }
 
-        public AppResult UpdateRoom(int branchId, Room room)
+        public AppResult UpdateRoom(int landlordId, Room room)
         {
-            throw new NotImplementedException();
+            var landlord = _landlordRepository.FindById(landlordId, l => l.User);
+            if (landlord == null) { return new AppResult { Success = false, Message="Không tìm thấy người dùng !" }; }
+            var editRoom = _roomRepository.FindById(room.Id, r => r.Devices);
+            if (editRoom == null) { return new AppResult { Success = false, Message="Không tìm phòng !" }; }
+
+
+            editRoom.RoomNumber = room.RoomNumber;
+            editRoom.IsMezzanine = room.IsMezzanine;
+            editRoom.Price = room.Price;
+            editRoom.MaxMember = room.MaxMember;
+            editRoom.Acreage =  room.Acreage;
+            editRoom.UpdatedBy = landlord.User.UserName??"";
+            editRoom.UpdatedDate = DateTime.Now;
+
+            try
+            {
+           
+            var removeDevices = new List<Device>();
+
+            foreach (var deviveItem in editRoom.Devices)
+            {
+                var item = room.Devices.Where(d=>d.Id == deviveItem.Id).FirstOrDefault();
+                if (item != null)
+                {
+                    deviveItem.DeviceName = item.DeviceName;
+                    deviveItem.Quantity = item.Quantity;
+                    deviveItem.Description= item.Description;
+                    deviveItem.UpdatedDate = DateTime.Now;
+
+                }
+                else
+                {
+                       
+                        removeDevices.Add(deviveItem);
+                }
+                
+            }
+                foreach (var deviveItem in room.Devices)
+                {
+                    
+                    if (deviveItem.Id == 0)
+                    {
+                        deviveItem.RoomId= room.Id;
+                        deviveItem.CreatedDate = DateTime.Now;
+                        deviveItem.CreatedBy=landlord.User.UserName??"";
+                        deviveItem.UpdatedDate = DateTime.Now;
+                        deviveItem.UpdatedBy=landlord.User.UserName??"";
+
+                        _deviceRepository.Add(deviveItem);
+                    }
+                   
+
+                }
+
+
+                _deviceRepository.RemoveMultiple(removeDevices);
+                _roomRepository.Update(editRoom);
+                return new AppResult { Success = true, Message="ok" };
+            }
+            catch
+            {
+                return new AppResult { Success = false, Message="Không thêm được khu vực !" };
+            }
+
+ 
         }
 
         public AppResult UploadRoomImage(int landlordId, int roomid, string fileName)

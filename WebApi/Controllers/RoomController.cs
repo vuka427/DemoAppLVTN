@@ -102,7 +102,7 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Route("edit")]
-        public IActionResult UpdateRoom(RoomCreateModel model)
+        public IActionResult UpdateRoom(RoomEditModel model)
         {
             var Identity = HttpContext.User;
             string CurrentUserId = "";
@@ -118,19 +118,19 @@ namespace WebApi.Controllers
             {
                 return Unauthorized();
             }
-
-
+               
 
             try
             {
-                var room = _mapper.Map<Room>(model);
-              
+                 var room = _mapper.Map<Room>(model);
+                _roomService.UpdateRoom(landlordId, room);
+                _roomService.SaveChanges();
 
                 return Ok(room.Id);
             }
             catch
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create room!" });
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi không thể cập nhật thông tin phòng trọ !" });
             }
         }
 
