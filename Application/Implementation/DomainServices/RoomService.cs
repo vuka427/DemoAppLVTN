@@ -74,6 +74,36 @@ namespace Application.Implementation.DomainServices
 
         }
 
+        public AppResult DeleteImageRoom(int landlordId, int imageId)
+        {
+
+            var image = _imageRoomRepository.FindById(imageId);
+            if (image == null) { return new AppResult { Success = false, Message="lỗi không tìm thấy ảnh !" }; }
+
+            var room = _roomRepository.FindById(image.RoomId);
+            if (room == null) { return new AppResult { Success = false, Message="Không tìm phòng !" }; }
+            var area = _areaRepository.FindById(room.AreaId);
+            if (area == null) { return new AppResult { Success = false, Message="Không tìm thấy nhà trọ !" }; }
+            var branh = _branchRepository.FindById(area.BranchId);
+
+            if (branh == null || branh.LandlordId != landlordId) { return new AppResult { Success = false, Message="Không tìm thấy nhà trọ !" }; }
+
+            try
+            {
+                
+                if (image == null) { return new AppResult { Success = false, Message="lỗi không tìm thấy ảnh !" }; }
+                _imageRoomRepository.Remove(image);
+
+            }
+            catch
+            {
+                return new AppResult { Success = false, Message="lỗi không thể xóa phòng !" };
+            }
+
+
+            return new AppResult { Success = true, Message="Ok" };
+        }
+
         public AppResult DeleteRoom(int landlordId, int roomid)
         {
              var deleteroom = _roomRepository.FindById(roomid,r=>r.PostNews,r=>r.Devices,r=>r.RoomIndexs,r=>r.ImageRooms);
@@ -133,29 +163,31 @@ namespace Application.Implementation.DomainServices
             editRoom.UpdatedBy = landlord.User.UserName??"";
             editRoom.UpdatedDate = DateTime.Now;
 
+
             try
             {
            
-            var removeDevices = new List<Device>();
+                var removeDevices = new List<Device>();
 
-            foreach (var deviveItem in editRoom.Devices)
-            {
-                var item = room.Devices.Where(d=>d.Id == deviveItem.Id).FirstOrDefault();
-                if (item != null)
+                foreach (var deviveItem in editRoom.Devices)
                 {
-                    deviveItem.DeviceName = item.DeviceName;
-                    deviveItem.Quantity = item.Quantity;
-                    deviveItem.Description= item.Description;
-                    deviveItem.UpdatedDate = DateTime.Now;
+                    var item = room.Devices.Where(d=>d.Id == deviveItem.Id).FirstOrDefault();
+                    if (item != null)
+                    {
+                        deviveItem.DeviceName = item.DeviceName;
+                        deviveItem.Quantity = item.Quantity;
+                        deviveItem.Description= item.Description;
+                        deviveItem.UpdatedDate = DateTime.Now;
 
-                }
-                else
-                {
+                    }
+                    else
+                    {
                        
-                        removeDevices.Add(deviveItem);
-                }
+                            removeDevices.Add(deviveItem);
+                    }
                 
-            }
+                }
+
                 foreach (var deviveItem in room.Devices)
                 {
                     
@@ -183,19 +215,40 @@ namespace Application.Implementation.DomainServices
                 return new AppResult { Success = false, Message="Không thêm được khu vực !" };
             }
 
- 
         }
 
-        public AppResult UploadRoomImage(int landlordId, int roomid, string fileName)
+        public ImageRoom UploadRoomImage(int landlordId, int roomid, string fileName)
         {
-            throw new NotImplementedException();
+            var room = _roomRepository.FindById(roomid);
+            if (room == null) { return new ImageRoom(); }
+            var area = _areaRepository.FindById(room.AreaId);
+            if (area == null) { return new ImageRoom(); }
+            var branh = _branchRepository.FindById(area.BranchId);
+            if (branh == null || branh.LandlordId != landlordId) { return new ImageRoom(); }
+
+            var image = new ImageRoom
+            {
+                RoomId = room.Id,
+                Name = fileName,
+                Url = fileName,
+                CreatedBy = room.CreatedBy,
+                CreatedDate = DateTime.Now,
+                UpdatedBy = room.UpdatedBy,
+                UpdatedDate= DateTime.Now
+            };
+
+
+
+                _imageRoomRepository.Add(image);
+            
+
+            return image;
         }
 
         public AppResult UploadRoomImages(int landlordId, int roomid, string[] fileNames)
         {
             var room = _roomRepository.FindById(roomid);
             if(room == null) { return new AppResult { Success = false, Message="Không tìm phòng !" }; }
-
             var area = _areaRepository.FindById(room.AreaId);
             if (area == null) { return new AppResult { Success = false, Message="Không tìm thấy khu vực !" }; }
             var branh = _branchRepository.FindById(area.BranchId);

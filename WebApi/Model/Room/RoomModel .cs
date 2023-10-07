@@ -16,6 +16,7 @@ namespace WebApi.Model.Room
         public int MaxMember { get; set; }
 
         public ICollection<DeviceModel> Devices { get; set; }
+        public ICollection<ImageRoomModel> ImageRooms { get; set; }
 
 
     }
