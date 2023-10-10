@@ -165,6 +165,20 @@ namespace Application.Implementation.DomainServices
             return result;
         }
 
+        public ICollection<Branch> GetBranchWithRoomIndex(int landlordId)
+        {
+            var result = _branchRepository.FindAll(b => b.LandlordId == landlordId, b => b.Areas).ToList();
+            foreach (var branch in result)
+            {
+                foreach (var area in branch.Areas)
+                {
+                    area.Rooms = _roomRepository.FindAll(r => r.AreaId==area.Id,r=>r.RoomIndexs,r=>r.Contracts).ToList();
+                }
+            }
+
+            return result;
+        }
+
         public void SaveChanges()
         {
             _unitOfWork.Commit();

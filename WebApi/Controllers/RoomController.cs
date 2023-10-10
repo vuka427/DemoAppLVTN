@@ -61,10 +61,8 @@ namespace WebApi.Controllers
                     {
                         imageItem.Url =  "http://localhost:5135/contents/room/image/"+ imageItem.Url;
                     }
-
                 }
                 
-               
                 return Ok(roomResult);
             }
             catch
@@ -162,6 +160,18 @@ namespace WebApi.Controllers
             }
             try
             {
+
+                var room = _roomService.GetRoomById(landlordId, roomid);
+                if(room != null)
+                {
+                    foreach(var image in room.ImageRooms)
+                    {
+                        var filePath = "Uploads/room/image/"+image.Url;
+                        System.IO.File.Delete(filePath);
+                    }
+
+                }
+
                 var deleteResult = _roomService.DeleteRoom(landlordId, roomid);
                 _roomService.SaveChanges();
                 if (!deleteResult.Success) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = deleteResult.Message }); }
@@ -193,8 +203,17 @@ namespace WebApi.Controllers
             }
             try
             {
-                _roomService.DeleteImageRoom(landlordId,imageid);
+                var deleteResult = _roomService.DeleteImageRoom(landlordId,imageid);
                 _roomService.SaveChanges();
+
+                if (deleteResult.Success)
+                {
+                    var filePath = "Uploads/room/image/"+deleteResult.Message;
+                    System.IO.File.Delete(filePath);
+
+                }
+                
+
                 return Ok();
             }
             catch
@@ -323,31 +342,27 @@ namespace WebApi.Controllers
                         var imageRoom =  _roomService.UploadRoomImage(landlordId, room.Id,fileNameRandom);
 
                         _roomService.SaveChanges();
+                        var imageResult = _mapper.Map<ImageRoomModel>(imageRoom);
 
-                        return Ok(imageRoom);
+                        imageResult.Url =  "http://localhost:5135/contents/room/image/"+ imageResult.Url;
+
+                        return Ok(imageResult);
                     }
 
-
-                    
-
-                  
-
                 }
-
-
 
                 return Ok();
 
             }
             catch (Exception ex)
             {
-                return StatusCode(
-                                StatusCodes.Status400BadRequest,
-                                new ResponseMessage { Status = "Error", Message = "Can upload room image !" }
-                       );
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can upload room image !" });
 
             }
         }
+
+
+        
 
 
     }

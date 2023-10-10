@@ -38,7 +38,6 @@ namespace Application.Implementation.DomainServices
 
         public AppResult CreateRoom(int landlordId, int branchId, int areaId, Room room)
         {
-
             var landlord = _landlordRepository.FindById(landlordId, l=>l.User);
             if (landlord == null) { return new AppResult { Success = false, Message="Không tìm thấy người dùng !" }; }
 
@@ -101,7 +100,7 @@ namespace Application.Implementation.DomainServices
             }
 
 
-            return new AppResult { Success = true, Message="Ok" };
+            return new AppResult { Success = true, Message=image.Url };
         }
 
         public AppResult DeleteRoom(int landlordId, int roomid)
@@ -166,7 +165,6 @@ namespace Application.Implementation.DomainServices
 
             try
             {
-           
                 var removeDevices = new List<Device>();
 
                 foreach (var deviveItem in editRoom.Devices)
@@ -205,7 +203,6 @@ namespace Application.Implementation.DomainServices
 
                 }
 
-
                 _deviceRepository.RemoveMultiple(removeDevices);
                 _roomRepository.Update(editRoom);
                 return new AppResult { Success = true, Message="ok" };
@@ -236,8 +233,6 @@ namespace Application.Implementation.DomainServices
                 UpdatedBy = room.UpdatedBy,
                 UpdatedDate= DateTime.Now
             };
-
-
 
                 _imageRoomRepository.Add(image);
             

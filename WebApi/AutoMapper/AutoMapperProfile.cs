@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Enum;
 using WebApi.Model.Branch;
 using WebApi.Model.Room;
+using WebApi.Model.RoomIndex;
 using WebApi.Model.User;
 
 namespace WebApi.AutoMapper
@@ -30,6 +31,18 @@ namespace WebApi.AutoMapper
             CreateMap<ImageRoom, ImageRoomModel>();
             CreateMap<RoomEditModel, Room>();
             CreateMap<DeviceEditModel, Device>();
+
+            //room index
+            CreateMap<Branch,BranchForIndexModel>().ForMember(
+                                                    p => p.HouseType,
+                                                    options => options.MapFrom(s => s.HouseType==HouseType.Row ? "row" : "floor")
+                                                    ); 
+            CreateMap<Area,AreaForIndexModel>();
+
+            CreateMap<Room, RoomForIndexModel>();
+                
+           
+
         }
     }
 }

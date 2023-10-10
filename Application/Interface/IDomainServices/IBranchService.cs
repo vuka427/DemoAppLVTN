@@ -13,6 +13,7 @@ namespace Application.Interface.IDomainServices
 
         IQueryable<Branch> GetBranches(int landlordId);
         ICollection<Branch> GetBranchWithRoom(int landlordId);
+        ICollection<Branch> GetBranchWithRoomIndex(int landlordId);
         Branch GetBranchById(int landlordId, int id);
         Area GetAreaById(int landlordId, int id);
 
