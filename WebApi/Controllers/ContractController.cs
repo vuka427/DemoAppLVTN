@@ -21,6 +21,7 @@ namespace WebApi.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ILandlordService _landlordService;
         private readonly IMapper _mapper;
+        private readonly IContractService _contractService;
 
         public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper)
         {
@@ -107,15 +108,18 @@ namespace WebApi.Controllers
 
             try
             {
-               
 
+                var contract = _mapper.Map<Contract>(model);
 
+                _contractService.CreateContract(landlordId,contract);
+                
+
+                
                 return Ok();
             }
             catch
             {
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
             }
         }
 

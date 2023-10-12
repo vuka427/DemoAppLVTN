@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Enum;
 using WebApi.Model.Branch;
+using WebApi.Model.Contract;
 using WebApi.Model.Room;
 using WebApi.Model.RoomIndex;
 using WebApi.Model.User;
@@ -40,6 +41,9 @@ namespace WebApi.AutoMapper
             CreateMap<Area,AreaForIndexModel>();
 
             CreateMap<Room, RoomForIndexModel>();
+
+            //contract
+            CreateMap<ContractCreateModel, Contract>();
                 
            
 

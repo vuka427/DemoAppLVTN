@@ -93,14 +93,8 @@ namespace Pesistence.EntityConfiguration
                 .HasForeignKey(m=>m.ContractId)
                 .OnDelete(DeleteBehavior.Cascade); 
 
-            builder.HasOne<Room>(c => c.Room)
-                .WithMany(r => r.Contracts)
-                .HasForeignKey(r => r.RoomId)
-                .OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne<Tenant>(c=>c.Tenant)
-                .WithMany(t=>t.Contracts)
-                .HasForeignKey(t=>t.TenantId)
-                .OnDelete(DeleteBehavior.Restrict);
+            
+                
             builder.HasOne<Landlord>(c => c.Landlord)
                 .WithMany(l => l.Contracts)
                 .HasForeignKey(l => l.LandlordId)

@@ -1176,6 +1176,9 @@ namespace Pesistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Phone")
+                        .IsUnique();
+
                     b.HasIndex("UserId")
                         .IsUnique();
 

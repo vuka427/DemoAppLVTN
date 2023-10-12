@@ -36,6 +36,8 @@ namespace Pesistence.EntityConfiguration
                 .HasColumnType("nvarchar")
                 .HasMaxLength(256);
 
+            builder.HasIndex(t => t.Phone)
+                .IsUnique();
 
             builder.HasOne<AppUser>(t => t.User)
                .WithOne()
@@ -52,8 +54,13 @@ namespace Pesistence.EntityConfiguration
                 .WithOne(t => t.Tenant)
                 .HasForeignKey(m => m.TenantId)
                 .OnDelete(DeleteBehavior.Restrict);
-                
-                
+
+            builder.HasMany<Contract>(r => r.Contracts)
+                .WithOne(p => p.Tenant)
+                .HasForeignKey(p => p.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
 
         }
     }

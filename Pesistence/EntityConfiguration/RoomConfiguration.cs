@@ -34,18 +34,30 @@ namespace Pesistence.EntityConfiguration
 
             builder.HasMany<PostNew>(r => r.PostNews)
                 .WithOne(p => p.Room)
-                .HasForeignKey(p => p.RoomId);
+                .HasForeignKey(p => p.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany<Device>(r => r.Devices)
                 .WithOne(p => p.Room)
-                .HasForeignKey(p => p.RoomId);
+                .HasForeignKey(p => p.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
             builder.HasMany<RoomIndex>(r => r.RoomIndexs)
                  .WithOne(p => p.Room)
-                 .HasForeignKey(p => p.RoomId);
+                 .HasForeignKey(p => p.RoomId)
+                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany<ImageRoom>(r => r.ImageRooms)
                 .WithOne(p => p.Room)
-                .HasForeignKey(p => p.RoomId);
+                .HasForeignKey(p => p.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany<Contract>(r => r.Contracts)
+                .WithOne(p => p.Room)
+                .HasForeignKey(p => p.RoomId)
+                .OnDelete(DeleteBehavior.Restrict);
+                
+
+          
 
 
 
