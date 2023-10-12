@@ -23,12 +23,13 @@ namespace WebApi.Controllers
         private readonly IMapper _mapper;
         private readonly IContractService _contractService;
 
-        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper)
+        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService)
         {
             _branchService=branchService;
             _userManager=userManager;
             _landlordService=landlordService;
             _mapper=mapper;
+            _contractService=contractService;
         }
 
         [HttpPost]
@@ -48,26 +49,30 @@ namespace WebApi.Controllers
 
             if (string.IsNullOrEmpty(CurrentUserId))
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
             }
             var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
             if (landlord == null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
             }
+
+            var contracts = _contractService.GetContract(landlord.Id);
+
+            totalResultsCount = contracts.Count();
+
+            var result = contracts.Skip(param.start).Take(param.length).ToList();
+
+            filteredResultsCount = result.Count();
+
+
+
+            var Dataresult = _mapper.Map<List<ContractModel>>(result);
+
+
             try
             {
-                var branches = _branchService.GetBranches(landlord.Id);
-
-                totalResultsCount = branches.Count();
-
-                var result = branches.Skip(param.start).Take(param.length).ToList();
-
-                filteredResultsCount = result.Count();
-
-               
-
-                var Dataresult = _mapper.Map<List<BranchModel>>(result);
+                
 
                 return Json(new
                 {
@@ -81,7 +86,7 @@ namespace WebApi.Controllers
             }
             catch
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get braches!" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get contracts!" });
             }
 
 
@@ -106,12 +111,13 @@ namespace WebApi.Controllers
                 return Unauthorized();
             }
 
+                var contract = _mapper.Map<Contract>(model);
+                _contractService.CreateContract(landlordId,contract);
+                _contractService.SaveChanges();
+
             try
             {
 
-                var contract = _mapper.Map<Contract>(model);
-
-                _contractService.CreateContract(landlordId,contract);
                 
 
                 

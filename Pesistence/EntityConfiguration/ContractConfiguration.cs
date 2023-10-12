@@ -17,7 +17,7 @@ namespace Pesistence.EntityConfiguration
             builder.ToTable(nameof(Contract));
             builder.Property(i => i.ContractCode)
                .HasColumnType("varchar")
-               .HasMaxLength(10);
+               .HasMaxLength(40);
             builder.Property(t => t.A_Lessor)
                .IsRequired()
                .HasColumnType("nvarchar")

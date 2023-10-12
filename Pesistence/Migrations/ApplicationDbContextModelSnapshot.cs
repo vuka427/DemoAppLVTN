@@ -412,7 +412,7 @@ namespace Pesistence.Migrations
 
                     b.Property<string>("ContractCode")
                         .IsRequired()
-                        .HasMaxLength(10)
+                        .HasMaxLength(40)
                         .HasColumnType("varchar");
 
                     b.Property<string>("CreatedBy")

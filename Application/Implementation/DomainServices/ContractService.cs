@@ -1,11 +1,13 @@
 ﻿using Application.Interface.IDomainServices;
 using Domain.Common;
 using Domain.Entities;
+using Domain.Enum;
 using Domain.Interface;
 using Domain.IRepositorys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Application.Implementation.DomainServices
@@ -38,7 +40,7 @@ namespace Application.Implementation.DomainServices
             if (contract.RoomId!=null)
             { 
                 
-                var room = _roomRepository.FindById(contract.RoomId.Value);
+                var room = _roomRepository.FindById(contract.RoomId.Value,r=>r.Contracts);
                 if (room==null) { return new AppResult { Success = false, Message="Không tìm thấy phòng!" }; }
                 var area = _areaRepository.FindById(room.AreaId);
                 if (area==null) { return new AppResult { Success = false, Message="Không tìm thấy khu vực!" }; }
@@ -48,6 +50,9 @@ namespace Application.Implementation.DomainServices
                 
                 if (landlord==null) { return new AppResult { Success = false, Message="Không tìm thấy chủ trọ!" }; }
 
+                room.Status = Domain.Enum.RoomStatus.Inhabited;
+
+                contract.ContractCode = Guid.NewGuid().ToString();
                 contract.LandlordId = landlordId;
                 contract.RoomId = room.Id;
                 contract.BranchAddress = branch.Address;
@@ -61,29 +66,46 @@ namespace Application.Implementation.DomainServices
                 contract.CreatedDate = DateTime.Now;
                 contract.CreatedBy = landlord.User.UserName??"";
                 contract.UpdatedDate = DateTime.Now;
-                contract.UpdatedBy = landlord.User.UserName??"";
+                contract.UpdatedBy = landlord.User.UserName??""; 
+                
+                try
+                {
+                    foreach(var oldContractItem in room.Contracts)
+                    {
+                        if (oldContractItem!=null&& oldContractItem.Status == ContractStatus.Active)
+                        {
+                            oldContractItem.Status = ContractStatus.Cancel;
+                            oldContractItem.UpdatedBy=landlord.User.UserName??"";
+                            oldContractItem.UpdatedDate= DateTime.Now;
+                            _contractRepository.Update(oldContractItem);
+                        }
+                    }
+
+
+                    _roomRepository.Update(room);
+                    _contractRepository.Add(contract);
+
+                    return new AppResult { Success = true, Message="ok" };
+                }
+                catch
+                {
+                    return new AppResult { Success = false, Message="Lỗi không thêm đc hợp đồng!" };
+                }
+
+
             }
-            try
-            {
 
-                _contractRepository.Add(contract);
-
-                return new AppResult { Success = true, Message="ok" };
-            }
-            catch
-            {
-                return new AppResult { Success = false, Message="Lỗi không thêm đc hợp đồng!" };
-            }
+            return new AppResult { Success = false, Message="Lỗi không thêm đc hợp đồng!" };
 
 
-
-
-           
         }
 
         public IQueryable<Contract> GetContract(int landlordId)
         {
-            throw new NotImplementedException();
+            
+           return _contractRepository.FindAll(c=>c.LandlordId == landlordId);
+
+
         }
 
         public void SaveChanges()
