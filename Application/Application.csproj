@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModel\Landlord\" />
+    <Folder Include="DTOs\Landlord\" />
   </ItemGroup>
 
 </Project>

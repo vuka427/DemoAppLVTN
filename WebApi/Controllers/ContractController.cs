@@ -8,6 +8,7 @@ using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using WebApi.Model.Contract;
+using System.Linq.Dynamic.Core;
 
 namespace WebApi.Controllers
 {
@@ -39,7 +40,6 @@ namespace WebApi.Controllers
             int filteredResultsCount;
             int totalResultsCount;
 
-
             var Identity = HttpContext.User;
             string CurrentUserId = "";
             if (Identity.HasClaim(c => c.Type == "userid"))
@@ -59,7 +59,24 @@ namespace WebApi.Controllers
 
             var contracts = _contractService.GetContract(landlord.Id);
 
+            var sortColumn = param.order.FirstOrDefault().column.ToString();
+            var sortColumnDirection = param.order.FirstOrDefault().dir;
+
+            if (!(string.IsNullOrEmpty( sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+            {
+                contracts = contracts.OrderBy(sortColumn + " " + sortColumnDirection);
+            }
+            if (!string.IsNullOrEmpty(param.search.value))
+            {
+                contracts = contracts.Where(m => m.B_Lessee.Contains(param.search.value)
+                                            || m.RoomNumber.ToString().Contains(param.search.value));
+            }
+
+
+
             totalResultsCount = contracts.Count();
+
+            
 
             var result = contracts.Skip(param.start).Take(param.length).ToList();
 
@@ -70,14 +87,13 @@ namespace WebApi.Controllers
             var Dataresult = _mapper.Map<List<ContractModel>>(result);
 
 
+
+
             try
             {
-                
-
                 return Json(new
                 {
                     // this is what datatables wants sending back
-
                     draw = param.draw,
                     recordsTotal = totalResultsCount,
                     recordsFiltered = filteredResultsCount,

@@ -1,4 +1,5 @@
-﻿using Application.Interface.IDomainServices;
+﻿using Application.DTOs.Contract;
+using Application.Interface.IDomainServices;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Enum;
@@ -50,7 +51,7 @@ namespace Application.Implementation.DomainServices
                 
                 if (landlord==null) { return new AppResult { Success = false, Message="Không tìm thấy chủ trọ!" }; }
 
-                room.Status = Domain.Enum.RoomStatus.Inhabited;
+                room.Status = RoomStatus.Inhabited;
 
                 contract.ContractCode = Guid.NewGuid().ToString();
                 contract.LandlordId = landlordId;
@@ -62,7 +63,7 @@ namespace Application.Implementation.DomainServices
                 contract.RoomNumber = room.RoomNumber;
                 contract.IsMezzanine = room.IsMezzanine;
                 contract.Acreage = room.Acreage;
-                contract.Status = Domain.Enum.ContractStatus.Active;
+                contract.Status = ContractStatus.Active;
                 contract.CreatedDate = DateTime.Now;
                 contract.CreatedBy = landlord.User.UserName??"";
                 contract.UpdatedDate = DateTime.Now;
@@ -74,7 +75,7 @@ namespace Application.Implementation.DomainServices
                     {
                         if (oldContractItem!=null&& oldContractItem.Status == ContractStatus.Active)
                         {
-                            oldContractItem.Status = ContractStatus.Cancel;
+                            oldContractItem.Status = ContractStatus.Expirat;
                             oldContractItem.UpdatedBy=landlord.User.UserName??"";
                             oldContractItem.UpdatedDate= DateTime.Now;
                             _contractRepository.Update(oldContractItem);
@@ -107,6 +108,7 @@ namespace Application.Implementation.DomainServices
 
 
         }
+      
 
         public void SaveChanges()
         {

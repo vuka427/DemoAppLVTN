@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "P+GQdSq9Q3Ax1o7bSa7oq1poh4LUMHBUg643LOn9iCg4mU+jcLAGBLn4Ar0QhWGqbG3JDQ+X7sKydlklvrPlkQ==",
+  "dgSpecHash": "RgbpE2dESOLUN2EsJsbAFZfeNGjxR53BUkxi+/PNfnHibNov0Vgy87pay37lAZPe/jEqge+r4ahIsP+fkWaE1w==",
   "success": true,
   "projectFilePath": "D:\\Mon_hoc_CTU\\Luan_Van_TN\\onion architecture\\app-demo\\DemoAppLVTN\\WebApi\\WebApi.csproj",
   "expectedPackageFiles": [
@@ -97,6 +97,7 @@
     "C:\\Users\\nguye\\.nuget\\packages\\system.globalization\\4.3.0\\system.globalization.4.3.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.21.0\\system.identitymodel.tokens.jwt.6.21.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\system.io\\4.3.0\\system.io.4.3.0.nupkg.sha512",
+    "C:\\Users\\nguye\\.nuget\\packages\\system.linq.dynamic.core\\1.3.5\\system.linq.dynamic.core.1.3.5.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\system.memory.data\\1.0.2\\system.memory.data.1.0.2.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",

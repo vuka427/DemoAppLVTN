@@ -99,3 +99,4 @@ D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\De
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Newtonsoft.Json.dll
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\Uploads\DiaGioiHanhChinhVN.json
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\System.Linq.Dynamic.Core.dll

@@ -7,7 +7,6 @@ namespace Domain.Enum
     public enum ContractStatus
     {
         Active,
-        Expirat,
-        Cancel
+        Expirat
     }
 }
