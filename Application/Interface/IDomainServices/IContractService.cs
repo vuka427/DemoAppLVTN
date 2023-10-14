@@ -13,5 +13,6 @@ namespace Application.Interface.IDomainServices
         IQueryable<Contract> GetContract(int landlordId);
 
         void SaveChanges();
+        void Dispose();
     }
 }

@@ -9,6 +9,7 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using WebApi.Model.Contract;
 using System.Linq.Dynamic.Core;
+using Application.Implementation.DomainServices;
 
 namespace WebApi.Controllers
 {
@@ -23,14 +24,16 @@ namespace WebApi.Controllers
         private readonly ILandlordService _landlordService;
         private readonly IMapper _mapper;
         private readonly IContractService _contractService;
+        private readonly IBoundaryService _boundaryService;
 
-        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService)
+        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService)
         {
             _branchService=branchService;
             _userManager=userManager;
             _landlordService=landlordService;
             _mapper=mapper;
             _contractService=contractService;
+            _boundaryService=boundaryService;
         }
 
         [HttpPost]
@@ -62,32 +65,38 @@ namespace WebApi.Controllers
             var sortColumn = param.order.FirstOrDefault().column.ToString();
             var sortColumnDirection = param.order.FirstOrDefault().dir;
 
-            if (!(string.IsNullOrEmpty( sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+            if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection) ))
             {
                 contracts = contracts.OrderBy(sortColumn + " " + sortColumnDirection);
             }
+            else
+            {
+                contracts = contracts.OrderBy("CreatedDate asc");
+            }
+
             if (!string.IsNullOrEmpty(param.search.value))
             {
                 contracts = contracts.Where(m => m.B_Lessee.Contains(param.search.value)
                                             || m.RoomNumber.ToString().Contains(param.search.value));
             }
 
-
-
             totalResultsCount = contracts.Count();
-
-            
 
             var result = contracts.Skip(param.start).Take(param.length).ToList();
 
             filteredResultsCount = result.Count();
 
 
-
             var Dataresult = _mapper.Map<List<ContractModel>>(result);
 
+            _contractService.Dispose();
 
-
+            int i = param.start+1;
+            foreach(var dataItem in Dataresult)
+            {
+                dataItem.Index = i;
+                i++;
+            }
 
             try
             {
@@ -127,8 +136,17 @@ namespace WebApi.Controllers
                 return Unauthorized();
             }
 
+                
                 var contract = _mapper.Map<Contract>(model);
-                _contractService.CreateContract(landlordId,contract);
+
+                var branch = _branchService.GetBranchById(landlordId, model.BranchId);
+                if (branch != null)
+                {
+                    string ad = _boundaryService.GetAddress(branch.Province, branch.District, branch.Wards);
+                    contract.BranchAddress =  branch.Address +", "+ ad;
+                }
+
+            _contractService.CreateContract(landlordId,contract);
                 _contractService.SaveChanges();
 
             try

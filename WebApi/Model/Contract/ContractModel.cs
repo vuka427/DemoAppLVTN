@@ -8,6 +8,7 @@ namespace WebApi.Model.Contract
 {
     public class ContractModel
     {
+        public int Index { get; set; }
         public string A_Lessor { get; set; }
         public string A_DateOfBirth { get; set; }
         public string A_Cccd { get; set; }
@@ -27,6 +28,14 @@ namespace WebApi.Model.Contract
         public string CommencingOn { get; set; }
         public string EndingOn { get; set; }
         public string Status { get; set; }
+        public int RoomNumber { get; set; }
+        public string BranchName { get; set; }
+        public string BranchAddress { get; set; }
+        public string HouseType { get; set; }
+        public string AreaName { get; set; }
+        public float Acreage { get; set; }
+        public bool IsMezzanine { get; set; }
+
         public int BranchId { get; set; }
         public int AreaId { get; set; }
         public int RoomId { get; set; }

@@ -7,5 +7,6 @@ namespace Domain.Interface
     public interface IUnitOfWork
     {
         void Commit();
+        void Dispose();
     }
 }

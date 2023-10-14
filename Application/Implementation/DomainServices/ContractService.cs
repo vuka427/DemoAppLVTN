@@ -37,7 +37,6 @@ namespace Application.Implementation.DomainServices
         public AppResult CreateContract(int landlordId, Contract contract)
         {
 
-
             if (contract.RoomId!=null)
             { 
                 
@@ -56,7 +55,6 @@ namespace Application.Implementation.DomainServices
                 contract.ContractCode = Guid.NewGuid().ToString();
                 contract.LandlordId = landlordId;
                 contract.RoomId = room.Id;
-                contract.BranchAddress = branch.Address;
                 contract.BranchName = branch.BranchName;
                 contract.HouseType = branch.HouseType;
                 contract.AreaName = area.AreaName;
@@ -82,7 +80,6 @@ namespace Application.Implementation.DomainServices
                         }
                     }
 
-
                     _roomRepository.Update(room);
                     _contractRepository.Add(contract);
 
@@ -93,26 +90,47 @@ namespace Application.Implementation.DomainServices
                     return new AppResult { Success = false, Message="Lỗi không thêm đc hợp đồng!" };
                 }
 
-
             }
 
             return new AppResult { Success = false, Message="Lỗi không thêm đc hợp đồng!" };
 
-
         }
+
+       
 
         public IQueryable<Contract> GetContract(int landlordId)
         {
             
-           return _contractRepository.FindAll(c=>c.LandlordId == landlordId);
+            
 
+                return _contractRepository.FindAll(c => c.LandlordId == landlordId);
+
+            
+           
 
         }
       
+       
 
         public void SaveChanges()
         {
             _unitOfWork.Commit();
+        }
+
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_unitOfWork!= null)  _unitOfWork.Dispose();
+             
+            }
         }
     }
 }
