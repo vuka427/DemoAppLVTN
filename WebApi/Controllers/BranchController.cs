@@ -1,4 +1,5 @@
-﻿using Application.Interface.IDomainServices;
+﻿using Application.Interface.ApplicationServices;
+using Application.Interface.IDomainServices;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -228,8 +229,6 @@ namespace WebApi.Controllers
             {
                 return Unauthorized();
             }
-
-
             try
             {
                 var CreateResult = _branchService.CreateArea(landlordId, model.BranchId, new Area() { AreaName = model.AreaName, Description= model.Description });

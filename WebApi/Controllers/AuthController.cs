@@ -1,4 +1,4 @@
-﻿using Application.Interface.IDomainServices;
+﻿using Application.Interface.ApplicationServices;
 using Azure;
 using Domain.Entities;
 using Domain.Enums;

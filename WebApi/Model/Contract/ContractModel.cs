@@ -35,6 +35,7 @@ namespace WebApi.Model.Contract
         public string AreaName { get; set; }
         public float Acreage { get; set; }
         public bool IsMezzanine { get; set; }
+        public string TermsOfContract { get; set; }
 
         public int BranchId { get; set; }
         public int AreaId { get; set; }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using WebApi.Model.Contract;
 using System.Linq.Dynamic.Core;
 using Application.Implementation.DomainServices;
+using Application.Interface.ApplicationServices;
 
 namespace WebApi.Controllers
 {
@@ -146,8 +147,8 @@ namespace WebApi.Controllers
                     contract.BranchAddress =  branch.Address +", "+ ad;
                 }
 
-            _contractService.CreateContract(landlordId,contract);
-                _contractService.SaveChanges();
+                 _contractService.CreateContract(landlordId,contract);
+                 _contractService.SaveChanges();
 
             try
             {

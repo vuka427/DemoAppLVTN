@@ -1,6 +1,5 @@
-﻿using Application.Implementation.DomainServices;
-using Application.Interface.IDomainServices;
-
+﻿using Application.Implementation.ApplicationServices;
+using Application.Interface.ApplicationServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;

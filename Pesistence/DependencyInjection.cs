@@ -1,10 +1,9 @@
 ﻿
-using Application.Implementation.DomainServices;
-using Application.Interface.IDomainServices;
 using Domain.Interface;
 using Domain.IRepositorys;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pesistence.Common;
 using Pesistence.Repositorys;
 using System;
 using System.Collections.Generic;

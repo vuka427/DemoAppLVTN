@@ -45,6 +45,8 @@ namespace Domain.Entities
         public bool IsMezzanine { get; set; }
         public decimal Deposit { get; set; }
 
+        public string TermsOfContract { get; set; }
+
         public int? RoomId { get; set; }
         public Room? Room { get; set; }
 

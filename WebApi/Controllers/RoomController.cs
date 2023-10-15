@@ -7,6 +7,7 @@ using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Application.Implementation.DomainServices;
+using Application.Interface.ApplicationServices;
 
 namespace WebApi.Controllers
 {

@@ -83,6 +83,9 @@ namespace Pesistence.EntityConfiguration
                 .HasPrecision(10, 0)
                 .HasDefaultValue(0)
                 .IsRequired();
+            builder.Property(b => b.TermsOfContract)
+             .IsRequired(false)
+             .HasColumnType("ntext");
 
             builder.HasMany<Invoice>(c => c.Invoices)
                 .WithOne(i => i.Contract)

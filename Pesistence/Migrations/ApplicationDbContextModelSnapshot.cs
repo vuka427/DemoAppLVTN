@@ -463,6 +463,9 @@ namespace Pesistence.Migrations
                     b.Property<int?>("TenantId")
                         .HasColumnType("int");
 
+                    b.Property<string>("TermsOfContract")
+                        .HasColumnType("ntext");
+
                     b.Property<string>("UpdatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
