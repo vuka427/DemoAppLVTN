@@ -100,3 +100,8 @@ D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\obj\De
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\obj\Debug\net7.0\WebApi.pdb
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\obj\Debug\net7.0\WebApi.genruntimeconfig.cache
 D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\obj\Debug\net7.0\ref\WebApi.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\BouncyCastle.Cryptography.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\MailKit.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\MimeKit.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\System.Security.Cryptography.Pkcs.dll
+D:\Mon_hoc_CTU\Luan_Van_TN\onion architecture\app-demo\DemoAppLVTN\WebApi\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Security.Cryptography.Pkcs.dll

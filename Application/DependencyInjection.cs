@@ -1,10 +1,13 @@
 ﻿using Application.Implementation.ApplicationServices;
+using Application.Interface;
 using Application.Interface.ApplicationServices;
+using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 
 namespace Application
 {
@@ -18,6 +21,7 @@ namespace Application
             services.AddTransient<IBranchService, BranchService>();
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<IContractService, ContractService>();
+            
 
         }
     }

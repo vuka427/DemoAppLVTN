@@ -12,6 +12,8 @@ using System.Linq.Dynamic.Core;
 using Application.Implementation.DomainServices;
 using Application.Interface.ApplicationServices;
 
+using Application.Interface;
+
 namespace WebApi.Controllers
 {
 
@@ -26,8 +28,9 @@ namespace WebApi.Controllers
         private readonly IMapper _mapper;
         private readonly IContractService _contractService;
         private readonly IBoundaryService _boundaryService;
+        private readonly IEmailService _mailService;
 
-        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService)
+        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService, IEmailService mailService)
         {
             _branchService=branchService;
             _userManager=userManager;
@@ -35,6 +38,7 @@ namespace WebApi.Controllers
             _mapper=mapper;
             _contractService=contractService;
             _boundaryService=boundaryService;
+            _mailService=mailService;
         }
 
         [HttpPost]
@@ -163,6 +167,23 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
             }
         }
+        [HttpPost]
+        [Route("sendemail")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SendMail()
+        {
+            var result = await _mailService.SendEmailAsync("atrox427@gmail.com","thử nghiệm gửi mail","đây là email gửi từ ứng dụng quản lý phòng trọ 2");
+            if (result.Success)
+            {
+                return Ok("send mail success !");
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = result.Message });
+            }
+            
+        }
+
 
 
 

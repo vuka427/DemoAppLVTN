@@ -1,9 +1,11 @@
 ﻿
+using Application.Interface;
 using Domain.Interface;
 using Domain.IRepositorys;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pesistence.Common;
+using Pesistence.EmailService;
 using Pesistence.Repositorys;
 using System;
 using System.Collections.Generic;
@@ -36,6 +38,9 @@ namespace Pesistence
             services.AddTransient<IServiceRepository, ServiceRepository>();
             services.AddTransient<IServiceItemRepository, ServiceItemRepository>();
             services.AddTransient<ITenantRepository, TenantRepository>();
+
+            //add email service
+            services.AddTransient<IEmailService, EmailSender>();
         }
     } 
 }
