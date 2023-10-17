@@ -13,6 +13,9 @@ using Application.Implementation.DomainServices;
 using Application.Interface.ApplicationServices;
 
 using Application.Interface;
+using SelectPdf;
+using Microsoft.AspNetCore.Html;
+using System.IO;
 
 namespace WebApi.Controllers
 {
@@ -29,6 +32,7 @@ namespace WebApi.Controllers
         private readonly IContractService _contractService;
         private readonly IBoundaryService _boundaryService;
         private readonly IEmailService _mailService;
+       
 
         public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService, IEmailService mailService)
         {
@@ -182,6 +186,67 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = result.Message });
             }
             
+
+        }
+
+
+        [HttpPost]
+        [Route("pdf")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ContractToPDF()
+        {
+
+            DateTime dayNow = DateTime.Now;
+            string day = dayNow.Day.ToString();
+            string year = dayNow.Year.ToString();
+            string month = dayNow.Month.ToString();
+
+            string a = @"<p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:center;line-height:18.75pt;background:white;vertical-align:baseline;'><strong><span style='font-size:26px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>CỘNG XÃ HỘI CHỦ NGHĨA VIỆT NAM</span></strong><span style='font-size:19px;font-family:""Times New Roman"",serif;color:black;'><br>&nbsp;</span><strong><u><span style='font-size:22px;font-family:""Times New Roman"",serif;color:black;'>Độc lập - Tự do - Hạnh phúc</span></u></strong></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:center;line-height:18.75pt;background:white;vertical-align:baseline;'><strong><span style='font-size:29px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>&nbsp;</span></strong></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:center;line-height:18.75pt;background:white;vertical-align:baseline;'><strong><span style='font-size:29px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>HỢP ĐỒNG THUÊ NHÀ TRỌ</span></strong><span style='font-size:19px;font-family:""Times New Roman"",serif;color:black;'><br>&nbsp;</span><em><span style='font-size:22px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>(Số: ..../HĐTNO)</span></em></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><em><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Hôm nay, ngày …. tháng …. năm ….., Tại ………………………..Chúng tôi gồm có:</span></em></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><strong><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>BÊN CHO THUÊ (BÊN A):</span></strong></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Ông/bà: ………………………………………. Năm sinh: …………………..</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>CMND/CCCD số: ………… Ngày cấp ………….. Nơi cấp ………………</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Hộ khẩu: …………………………………………..……………………………</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Địa chỉ:…………………………………………..………………………………</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Điện thoại: …………………………………………..…………………………</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Là chủ sở hữu nhà ở: …………………………………………..……………</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'> </span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'> </span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><strong><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>BÊN THUÊ (BÊN B):</span></strong></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Ông/bà: ………………………………………. Năm sinh: …………………..</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>CMND/CCCD số: ………… Ngày cấp ………….. Nơi cấp ………………</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Hộ khẩu: …………………………………………..……………………………</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Địa chỉ:…………………………………………..………………………………</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Điện thoại: …………………………………………..…………………………</span></p>
+                            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;margin-left:0cm;font-size:11.0pt;font-family:""Calibri"",sans-serif;text-align:justify;line-height:18.75pt;background:white;vertical-align:baseline;'><strong><em><span style='font-size:27px;font-family:""Times New Roman"",serif;color:black;border:none windowtext 1.0pt;padding:0cm;'>Hai bên cùng thỏa thuận ký hợp đồng với những nội dung sau:</span></em></strong></p>";
+
+            // instantiate a html to pdf converter object
+            HtmlToPdf converter = new HtmlToPdf();
+
+            converter.Options.PdfPageSize = PdfPageSize.A4;
+            converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
+            converter.Options.MarginLeft = 70;
+            converter.Options.MarginRight = 0;
+            converter.Options.MarginTop = 40;
+            converter.Options.MarginBottom = 30;
+
+            // create a new pdf document converting the html code
+            PdfDocument doc = converter.ConvertHtmlString(a);
+
+            byte[] fileB = doc.Save();
+            MemoryStream m = new MemoryStream(fileB);
+
+            // save pdf document
+            
+
+            // close pdf document
+           doc.Close();
+
+           
+            return File(m, "application/pdf","123.pdf");
+
         }
 
 

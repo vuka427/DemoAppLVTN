@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "4+wDLxW/5V2r1KN5tppMUoboQGvKjilnFXFM5l5ZUOA4Maqn0kldHpr1rXcd0EsJyOnTQJK8tMv5Fxkep5r5Bw==",
+  "dgSpecHash": "qqbnSeIsvWzTsq0PDZ1z1DN04Ajnv8IqG7GHP0yj1xe/klw9sORwKEoc3Qaf+23JGkGHdCdpQsRsA0+0YAoC0A==",
   "success": true,
   "projectFilePath": "D:\\Mon_hoc_CTU\\Luan_Van_TN\\onion architecture\\app-demo\\DemoAppLVTN\\WebApi\\WebApi.csproj",
   "expectedPackageFiles": [
@@ -85,6 +85,7 @@
     "C:\\Users\\nguye\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\runtime.win-x86.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\nguye\\.nuget\\packages\\select.htmltopdf.netcore\\23.1.0\\select.htmltopdf.netcore.23.1.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.4.0\\swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
