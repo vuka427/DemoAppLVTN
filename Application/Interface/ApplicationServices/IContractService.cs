@@ -11,8 +11,9 @@ namespace Application.Interface.ApplicationServices
     {
         AppResult CreateContract(int landlordId, Contract contract);
         IQueryable<Contract> GetContract(int landlordId);
+		Contract GetContractById(int landlordId, int contractId);
 
-        void SaveChanges();
+		void SaveChanges();
         void Dispose();
     }
 }

@@ -8,6 +8,7 @@ using Domain.IRepositorys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -100,19 +101,22 @@ namespace Application.Implementation.ApplicationServices
 
         public IQueryable<Contract> GetContract(int landlordId)
         {
-
-
-
             return _contractRepository.FindAll(c => c.LandlordId == landlordId);
-
-
-
-
         }
 
+		public Contract GetContractById(int landlordId, int contractId)
+		{
 
+            var contract =  _contractRepository.FindById(contractId);
+            if (contract != null && contract.LandlordId == landlordId)
+            {
+                return contract;
+            }
 
-        public void SaveChanges()
+            return new Contract();
+		}
+
+		public void SaveChanges()
         {
             _unitOfWork.Commit();
         }
@@ -132,5 +136,7 @@ namespace Application.Implementation.ApplicationServices
 
             }
         }
-    }
+
+		
+	}
 }
