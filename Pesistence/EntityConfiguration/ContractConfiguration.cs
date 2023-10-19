@@ -84,10 +84,20 @@ namespace Pesistence.EntityConfiguration
                 .HasDefaultValue(0)
                 .IsRequired();
             builder.Property(b => b.TermsOfContract)
-             .IsRequired(false)
-             .HasColumnType("ntext");
+                .IsRequired(false)
+                .HasColumnType("ntext");
 
-            builder.HasMany<Invoice>(c => c.Invoices)
+			builder.Property(b => b.ElectricityCosts)
+	            .HasPrecision(10, 0)
+	            .HasDefaultValue(0)
+	            .IsRequired();
+			builder.Property(b => b.WaterCosts)
+	            .HasPrecision(10, 0)
+	            .HasDefaultValue(0)
+	            .IsRequired();
+
+
+			builder.HasMany<Invoice>(c => c.Invoices)
                 .WithOne(i => i.Contract)
                 .HasForeignKey(i => i.ContractId)
                 .OnDelete(DeleteBehavior.Cascade); 

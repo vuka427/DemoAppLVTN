@@ -92,6 +92,8 @@ namespace WebApi.Controllers
                                             || m.RoomNumber.ToString().Contains(param.search.value));
             }
 
+            contracts = contracts.OrderByDescending(m => m.CreatedDate);
+
             totalResultsCount = contracts.Count();
 
             var result = contracts.Skip(param.start).Take(param.length).ToList();
@@ -163,10 +165,6 @@ namespace WebApi.Controllers
 
             try
             {
-
-                
-
-                
                 return Ok();
             }
             catch
@@ -174,6 +172,7 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
             }
         }
+
         [HttpPost]
         [Route("sendemail")]
         [AllowAnonymous]
@@ -189,20 +188,40 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = result.Message });
             }
             
-
         }
 
 
         [HttpPost]
         [Route("pdf")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ContractToPDF()
+        public async Task<IActionResult> ContractToPDF([FromQuery] int contractid)
         {
 
-            var contract = _contractService.GetContractById(8,8);
+			var Identity = HttpContext.User;
+			string CurrentUserId = "";
+			string CurrentLandlordId = "";
+			int landlordId = 0;
+			if (Identity.HasClaim(c => c.Type == "userid"))
+			{
+				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+				CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+			}
+			var result = int.TryParse(CurrentLandlordId, out landlordId);
+			if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+			{
+				return Unauthorized();
+			}
+
+			var contract = _contractService.GetContractById(landlordId, contractid);
+            if (contract == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "không tìm thấy hợp đồng " });
+            }
 
 
-            string contractHtml = ContractToPdf.ConverterToHtml(contract);
+            var d = DateTime.Now;
+
+			string contractHtml = ContractToPdf.ConverterToHtml(contract);
+            string filename = "HDTT_"+contract.Id+"_p"+contract.RoomNumber+"_"+d.Day+"_"+d.Month+"_"+d.Year+".pdf";
 
 			// instantiate a html to pdf converter object
 			HtmlToPdf converter = new HtmlToPdf();
@@ -214,22 +233,30 @@ namespace WebApi.Controllers
             converter.Options.MarginRight = 50;
             converter.Options.MarginTop = 50;
             converter.Options.MarginBottom = 50;
-           
 
-			// create a new pdf document converting the html code
-			PdfDocument doc = converter.ConvertHtmlString(contractHtml);
+            try
+            {
+                // create a new pdf document converting the html code
+			    PdfDocument doc = converter.ConvertHtmlString(contractHtml);
 
 
-			byte[] fileB = doc.Save();
-            MemoryStream m = new MemoryStream(fileB);
+			    byte[] fileB = doc.Save();
+                MemoryStream m = new MemoryStream(fileB);
 
            
             
-            // close pdf document
-           doc.Close();
+                // close pdf document
+                doc.Close();
+				return File(m, "application/pdf", filename);
+			}
+            catch(Exception e)
+            {
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi!. không render được file Pdf " });
+			}
 
+			
            
-            return File(m, "application/pdf","123.pdf");
+            
 
         }
 

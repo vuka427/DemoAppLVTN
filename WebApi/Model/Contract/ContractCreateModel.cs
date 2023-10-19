@@ -69,8 +69,13 @@ namespace WebApi.Model.Contract
         public int RoomId { get; set; }
         [Required(ErrorMessage = "Tiền cọc được bỏ trống")]
         public decimal Deposit { get; set; }
+		[Required(ErrorMessage = "Giá điện được bỏ trống")]
+		public decimal ElectricityCosts { get; set; }
+		[Required(ErrorMessage = "Giá nước được bỏ trống")]
+		public decimal WaterCosts { get; set; }
 
-       
-        public string TermsOfContract { get; set; }
+
+		public string TermsOfContract { get; set; }
+
     }
 }

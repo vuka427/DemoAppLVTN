@@ -47,7 +47,10 @@ namespace Domain.Entities
 
         public string TermsOfContract { get; set; }
 
-        public int? RoomId { get; set; }
+		public decimal ElectricityCosts { get; set; }
+		public decimal WaterCosts { get; set; }
+	
+		public int? RoomId { get; set; }
         public Room? Room { get; set; }
 
         public int LandlordId { get; set; }

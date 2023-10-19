@@ -113,7 +113,7 @@ namespace Application.Implementation.ApplicationServices
                 return contract;
             }
 
-            return new Contract();
+            return null;
 		}
 
 		public void SaveChanges()

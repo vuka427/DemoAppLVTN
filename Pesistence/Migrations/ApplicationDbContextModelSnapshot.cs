@@ -431,6 +431,12 @@ namespace Pesistence.Migrations
                     b.Property<int>("DurationOfHouseLease")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("ElectricityCosts")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(10)
+                        .HasColumnType("decimal(10,0)")
+                        .HasDefaultValue(0m);
+
                     b.Property<DateTime>("EndingOn")
                         .HasColumnType("datetime2");
 
@@ -472,6 +478,12 @@ namespace Pesistence.Migrations
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("WaterCosts")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(10)
+                        .HasColumnType("decimal(10,0)")
+                        .HasDefaultValue(0m);
 
                     b.HasKey("Id");
 
