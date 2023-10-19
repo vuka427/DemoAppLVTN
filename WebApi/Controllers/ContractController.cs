@@ -191,11 +191,10 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpPost]
+        [HttpGet]
         [Route("pdf")]
-        public async Task<IActionResult> ContractToPDF([FromQuery] int contractid)
+        public async Task<IActionResult> ContractToPDF( int contractid)
         {
-
 			var Identity = HttpContext.User;
 			string CurrentUserId = "";
 			string CurrentLandlordId = "";
@@ -217,7 +216,6 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "không tìm thấy hợp đồng " });
             }
 
-
             var d = DateTime.Now;
 
 			string contractHtml = ContractToPdf.ConverterToHtml(contract);
@@ -225,7 +223,6 @@ namespace WebApi.Controllers
 
 			// instantiate a html to pdf converter object
 			HtmlToPdf converter = new HtmlToPdf();
-
 
 			converter.Options.PdfPageSize = PdfPageSize.A4;
             converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
@@ -239,12 +236,9 @@ namespace WebApi.Controllers
                 // create a new pdf document converting the html code
 			    PdfDocument doc = converter.ConvertHtmlString(contractHtml);
 
-
 			    byte[] fileB = doc.Save();
                 MemoryStream m = new MemoryStream(fileB);
 
-           
-            
                 // close pdf document
                 doc.Close();
 				return File(m, "application/pdf", filename);
@@ -254,14 +248,50 @@ namespace WebApi.Controllers
 				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi!. không render được file Pdf " });
 			}
 
-			
-           
-            
-
         }
 
+		[HttpGet]
+		[Route("detail")]
+		public async Task<IActionResult> GetContract(int contractid)
+		{
+			var Identity = HttpContext.User;
+			string CurrentUserId = "";
+			string CurrentLandlordId = "";
+			int landlordId = 0;
+			if (Identity.HasClaim(c => c.Type == "userid"))
+			{
+				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+				CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+			}
+			var result = int.TryParse(CurrentLandlordId, out landlordId);
+			if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+			{
+				return Unauthorized();
+			}
+
+			var contract = _contractService.GetContractById(landlordId, contractid);
+			if (contract == null)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "không tìm thấy hợp đồng " });
+			}
+
+			try
+			{
+
+                var contractResult  = _mapper.Map<ContractDetailModel>(contract);
+				return Ok(contractResult);
+			}
+			catch (Exception e)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi!. không render được file Pdf " });
+			}
+
+		}
 
 
 
-    }
+
+
+
+	}
 }

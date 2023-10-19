@@ -54,9 +54,18 @@ namespace WebApi.AutoMapper
                 .ForMember(p => p.EndingOn, options => options.MapFrom(c => c.EndingOn.ToShortDateString()))
                 .ForMember( p => p.HouseType, options => options.MapFrom(s => s.HouseType==HouseType.Row ? "row" : "floor"))
 
-                 ; 
+                 ;
+			CreateMap<Contract, ContractDetailModel>()
+				.ForMember(p => p.B_DateOfBirth, options => options.MapFrom(c => c.B_DateOfBirth.ToShortDateString()))
+				.ForMember(p => p.B_DateOfIssuance, options => options.MapFrom(c => c.B_DateOfIssuance.ToShortDateString()))
+				.ForMember(p => p.Status, options => options.MapFrom(c => c.Status.ToString()))
+				.ForMember(p => p.CommencingOn, options => options.MapFrom(c => c.CommencingOn.ToShortDateString()))
+				.ForMember(p => p.EndingOn, options => options.MapFrom(c => c.EndingOn.ToShortDateString()))
+				.ForMember(p => p.HouseType, options => options.MapFrom(s => s.HouseType==HouseType.Row ? "row" : "floor"))
+
+				 ;
 
 
-        }
+		}
     }
 }
