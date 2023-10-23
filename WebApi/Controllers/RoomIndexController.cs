@@ -33,14 +33,12 @@ namespace WebApi.Controllers
             _roomService=roomService;
         }
 
-
         [HttpGet]
         [Route("allroomindex")]
-        public async Task<IActionResult> GetAllRoomIndex()
+        public async Task<IActionResult> GetAllRoomIndex(int? month, int? year)
         {
             int filteredResultsCount;
             int totalResultsCount;
-
 
             var Identity = HttpContext.User;
             string CurrentUserId = "";
@@ -59,7 +57,6 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user" });
             }
 
-
             try
             {
                 var branches = _branchService.GetBranchWithRoomIndex(landlord.Id);
@@ -73,10 +70,18 @@ namespace WebApi.Controllers
                 var Dataresult = _mapper.Map<List<BranchForIndexModel>>(branches);
 
 
+				foreach (var branchItem in Dataresult)
+				{
+                    foreach (var areaItem in branchItem.Areas)
+                    {
+                        foreach (var room in areaItem.Rooms)
+                        {
+                           
+                        }
+                    }
+				}
 
-
-
-                return Ok(Dataresult);
+				return Ok(Dataresult);
             }
             catch
             {
@@ -84,8 +89,10 @@ namespace WebApi.Controllers
             }
 
 
+
+
+
+
         }
-
-
     }
 }

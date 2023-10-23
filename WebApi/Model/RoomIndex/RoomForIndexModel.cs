@@ -8,7 +8,7 @@ namespace WebApi.Model.RoomIndex
         public int BranchId { get; set; }
         public int AreaId { get; set; }
         public int RoomNumber { get; set; }
-        public string Status { get; set; }
+        public bool Status { get; set; }
         public int ElectricNumber { get; set; }
         public int WaterNumber { get; set; }
         public int OldElectricNumber { get; set; }

@@ -684,21 +684,22 @@ namespace Pesistence.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("varchar");
 
-                    b.Property<string>("NewElectricNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsApproved")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
-                    b.Property<string>("NewWaterNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NewElectricNumber")
+                        .HasColumnType("int");
 
-                    b.Property<string>("OldElectricNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NewWaterNumber")
+                        .HasColumnType("int");
 
-                    b.Property<string>("OldWaterNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OldElectricNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OldWaterNumber")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
                         .ValueGeneratedOnAdd()

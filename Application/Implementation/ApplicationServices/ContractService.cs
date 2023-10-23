@@ -137,6 +137,14 @@ namespace Application.Implementation.ApplicationServices
             }
         }
 
-		
+		public Contract GetContractByRoomId(int landlordId, int RoomId)
+		{
+			var room = _roomRepository.FindById(RoomId, r => r.Contracts);
+			if (room == null) { return null; }
+			var contract = room.Contracts.FirstOrDefault(r => r.Status == Domain.Enum.ContractStatus.Active && r.LandlordId == landlordId);
+			if (contract == null) { return null; }
+            return contract;
+
+		}
 	}
 }

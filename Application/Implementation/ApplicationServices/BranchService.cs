@@ -46,6 +46,7 @@ namespace Application.Implementation.ApplicationServices
             area.UpdatedDate = DateTime.Now;
 
 
+
             try
             {
                 _areaRepository.Add(area);
@@ -143,7 +144,17 @@ namespace Application.Implementation.ApplicationServices
             return branch ?? new Branch();
         }
 
-        public IQueryable<Branch> GetBranches(int landlordId)
+		public Branch GetBranchByRoomId(int landlordId, int roomid)
+		{
+            var room = _roomRepository.FindById(roomid, r=>r.Area);
+            if (room == null) { return null; }
+            var branch = _branchRepository.FindById(room.Area.BranchId, b => b.Services);
+            if (branch != null && branch.LandlordId == landlordId) {  return branch;}
+            return null;
+           
+		}
+
+		public IQueryable<Branch> GetBranches(int landlordId)
         {
             var result = _branchRepository.FindAll(b => b.LandlordId == landlordId, b => b.Areas);
 

@@ -12,11 +12,13 @@ namespace Domain.Entities
         public Invoice() {
             ServiceItems = new HashSet<ServiceItem>();
         }
+
         public string InvoiceCode { get; set; }
-        public string OldElectricNumber { get; set; }
-        public string OldWaterNumber { get; set; }
-        public string NewElectricNumber { get; set; }
-        public string NewWaterNumber { get; set; }
+		public bool IsApproved { get; set; }
+		public int OldElectricNumber { get; set; }
+        public int OldWaterNumber { get; set; }
+        public int NewElectricNumber { get; set; }
+        public int NewWaterNumber { get; set; }
         public decimal ElectricityCosts { get; set; }
         public decimal WaterCosts { get; set; }
         public decimal InternetCosts { get; set; }

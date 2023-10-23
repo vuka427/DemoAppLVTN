@@ -21,8 +21,9 @@ namespace Application
             services.AddTransient<IBranchService, BranchService>();
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<IContractService, ContractService>();
-            
+			services.AddTransient<IInvoiceService, InvoiceService>();
 
-        }
+
+		}
     }
 }

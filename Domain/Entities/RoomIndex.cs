@@ -10,7 +10,8 @@ namespace Domain.Entities
         public int ElectricNumber { get; set; }
         public int WaterNumber { get; set; }
 
-        public int RoomId { get; set; }
+
+		public int RoomId { get; set; }
         public Room Room { get; set; }
     }
 }

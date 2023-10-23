@@ -15,7 +15,8 @@ namespace Application.Interface.ApplicationServices
         ICollection<Branch> GetBranchWithRoom(int landlordId);
         ICollection<Branch> GetBranchWithRoomIndex(int landlordId);
         Branch GetBranchById(int landlordId, int id);
-        Area GetAreaById(int landlordId, int id);
+		Branch GetBranchByRoomId(int landlordId, int roomid);
+		Area GetAreaById(int landlordId, int id);
 
         AppResult DeleteBranch(int landlordId, int id);
 

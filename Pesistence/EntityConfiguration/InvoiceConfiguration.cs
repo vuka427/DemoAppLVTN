@@ -18,7 +18,10 @@ namespace Pesistence.EntityConfiguration
             builder.Property(i=>i.InvoiceCode)
                 .HasColumnType("varchar")
                 .HasMaxLength(10);
-            builder.Property(i => i.OldElectricNumber)
+			builder.Property(b => b.IsApproved)
+			   .HasDefaultValue(false)
+			   .IsRequired();
+			builder.Property(i => i.OldElectricNumber)
                 .IsRequired();
             builder.Property(i => i.OldWaterNumber)
                 .IsRequired();

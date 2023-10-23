@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Enum;
 using WebApi.Model.Branch;
 using WebApi.Model.Contract;
+using WebApi.Model.Invoice;
 using WebApi.Model.Room;
 using WebApi.Model.RoomIndex;
 using WebApi.Model.User;
@@ -40,10 +41,13 @@ namespace WebApi.AutoMapper
                                                     ); 
             CreateMap<Area,AreaForIndexModel>();
 
-            CreateMap<Room, RoomForIndexModel>();
+            CreateMap<Room, RoomForIndexModel>()
+				 .ForMember(p => p.TenantName, options => options.MapFrom(c => (c.Contracts.FirstOrDefault(a=>a.Status==ContractStatus.Active).B_Lessee)??""))
+				 .ForMember(p => p.Status, options => options.MapFrom(c => (c.Contracts.FirstOrDefault(a => a.Status==ContractStatus.Active).Status ==ContractStatus.Active)?true:false));
 
-            //contract
-            CreateMap<ContractCreateModel, Contract>();
+
+			//contract
+			CreateMap<ContractCreateModel, Contract>();
             CreateMap<Contract, ContractModel>()
                 .ForMember(p => p.A_DateOfBirth,options => options.MapFrom(c=>c.A_DateOfBirth.ToShortDateString()))
                 .ForMember(p => p.A_DateOfIssuance, options => options.MapFrom(c => c.A_DateOfIssuance.ToShortDateString()))
@@ -64,6 +68,9 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.HouseType, options => options.MapFrom(s => s.HouseType==HouseType.Row ? "row" : "floor"))
 
 				 ;
+
+            // invoice 
+            CreateMap<Invoice, InvoiceModel>();
 
 
 		}
