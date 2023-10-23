@@ -35,14 +35,7 @@ namespace Pesistence.EntityConfiguration
                 .HasPrecision(10, 0)
                 .HasDefaultValue(0)
                 .IsRequired();
-            builder.Property(b => b.GarbageColletionFee)
-                .HasPrecision(10, 0)
-                .HasDefaultValue(0)
-                .IsRequired();
-            builder.Property(b => b.InternetCosts)
-                .HasPrecision(10, 0)
-                .HasDefaultValue(0)
-                .IsRequired();
+           
             builder.Property(b=>b.InternalRegulation)
                 .IsRequired()
                 .HasColumnType("text");

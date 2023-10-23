@@ -78,8 +78,8 @@ namespace WebApi.Controllers
 					OldWaterNumber = previousInvoice!= null ? previousInvoice.OldWaterNumber : 0,
 					ElectricityCosts = contract.ElectricityCosts,
 					WaterCosts=contract.WaterCosts,
-					InternetCosts = branch != null? branch.InternetCosts:0,
-					GarbageColletionFee = branch != null? branch.GarbageColletionFee:0,
+					RentalPrice = contract.RentalPrice,
+				
 				};
 
 

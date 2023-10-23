@@ -38,14 +38,6 @@ namespace Pesistence.EntityConfiguration
                 .HasPrecision(10, 0)
                 .HasDefaultValue(0)
                 .IsRequired();
-            builder.Property(b => b.GarbageColletionFee)
-                .HasPrecision(10, 0)
-                .HasDefaultValue(0)
-                .IsRequired();
-            builder.Property(b => b.InternetCosts)
-                .HasPrecision(10, 0)
-                .HasDefaultValue(0)
-                .IsRequired();
             builder.Property(b => b.TotalPrice)
                 .HasPrecision(10, 0)
                 .HasDefaultValue(0)

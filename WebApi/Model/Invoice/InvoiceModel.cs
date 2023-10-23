@@ -11,10 +11,9 @@ namespace WebApi.Model.Invoice
 		public int OldWaterNumber { get; set; }
 		public int NewElectricNumber { get; set; }
 		public int NewWaterNumber { get; set; }
+		public decimal RentalPrice { get; set; }
 		public decimal ElectricityCosts { get; set; }
 		public decimal WaterCosts { get; set; }
-		public decimal InternetCosts { get; set; }
-		public decimal GarbageColletionFee { get; set; }
 		public decimal TotalPrice { get; set; }
 		public int ContractId { get; set; }
 		public ICollection<ServiceItem> ServiceItems { get; set; }
