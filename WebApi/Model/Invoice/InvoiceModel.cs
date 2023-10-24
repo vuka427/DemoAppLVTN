@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.VisualBasic;
 
 namespace WebApi.Model.Invoice
 {
@@ -16,6 +17,8 @@ namespace WebApi.Model.Invoice
 		public decimal WaterCosts { get; set; }
 		public decimal TotalPrice { get; set; }
 		public int ContractId { get; set; }
-		public ICollection<ServiceItem> ServiceItems { get; set; }
+		public string Year { get; set; }
+		public string Month { get; set; }
+		public ICollection<ServiceItemModel> ServiceItems { get; set; }
 	}
 }

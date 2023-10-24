@@ -70,7 +70,8 @@ namespace WebApi.Controllers
 				var branch = _branchService.GetBranchByRoomId(landlordId,roomid);
 
 			try
-			{	
+			{
+				
 
 				var newInvoice = new InvoiceModel() {
 					Id=0,
@@ -79,8 +80,17 @@ namespace WebApi.Controllers
 					ElectricityCosts = contract.ElectricityCosts,
 					WaterCosts=contract.WaterCosts,
 					RentalPrice = contract.RentalPrice,
-				
+					Month = DateTime.Now.Month.ToString(),
+					Year = DateTime.Now.Year.ToString(),
+
 				};
+
+				if (branch.Services.Count>0)
+				{
+
+					 newInvoice.ServiceItems = _mapper.Map<List<ServiceItemModel>>(branch.Services);
+				}
+
 
 
 				return Ok(newInvoice);

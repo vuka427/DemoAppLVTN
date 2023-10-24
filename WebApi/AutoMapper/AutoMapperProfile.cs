@@ -71,6 +71,7 @@ namespace WebApi.AutoMapper
 
             // invoice 
             CreateMap<Invoice, InvoiceModel>();
+            CreateMap<Service, ServiceItemModel>();
 
 
 		}
