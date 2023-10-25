@@ -101,5 +101,40 @@ namespace WebApi.Controllers
 			}
 		}
 
+		[HttpPost]
+		[Route("create")]
+		public async Task<IActionResult> CreateRoomInvoice(InvoiceCreateModel model)
+		{
+			var Identity = HttpContext.User;
+			string CurrentUserId = "";
+			string CurrentLandlordId = "";
+			int landlordId = 0;
+			if (Identity.HasClaim(c => c.Type == "userid"))
+			{
+				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+				CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+			}
+			var result = int.TryParse(CurrentLandlordId, out landlordId);
+			if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+			{
+				return Unauthorized();
+			}
+
+
+
+
+
+			try
+			{
+				return Ok();
+			}
+			catch
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy nhà trọ!" });
+			}
+		}
+
+
+
 	}
 }

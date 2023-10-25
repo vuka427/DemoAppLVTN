@@ -176,11 +176,9 @@ namespace Application.Implementation.ApplicationServices
                         deviveItem.Quantity = item.Quantity;
                         deviveItem.Description = item.Description;
                         deviveItem.UpdatedDate = DateTime.Now;
-
                     }
                     else
                     {
-
                         removeDevices.Add(deviveItem);
                     }
 

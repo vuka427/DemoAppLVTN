@@ -1,4 +1,5 @@
 ﻿using Application.Interface.ApplicationServices;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Interface;
 using Domain.IRepositorys;
@@ -31,6 +32,39 @@ namespace Application.Implementation.ApplicationServices
 			_invoiceRepository=invoiceRepository;
 			_contractRepository=contractRepository;
 		}
+
+		public AppResult CreateInvoice(int landlordId, int roomid, DateTime date, Invoice invoice)
+		{
+			var room = _roomRepository.FindById(roomid, r => r.Contracts);
+			if (room == null) { return new AppResult { Success = false, Message = "Lỗi không lập được hóa đơn !" }; }
+			var contract = room.Contracts.FirstOrDefault(r => r.Status == Domain.Enum.ContractStatus.Active && r.LandlordId == landlordId);
+			if (contract == null) { return new AppResult { Success = false, Message = "Lỗi không lập được hóa đơn !" }; }
+			var landlord = _landlordRepository.FindById(landlordId, l => l.User);
+			if (landlord == null) { return new AppResult { Success = false, Message = "Không tìm thấy người dùng !" }; }
+			var currentInvoice = _invoiceRepository.FindAll(i => i.ContractId == contract.Id && i.CreatedDate.Year == date.Year && i.CreatedDate.Month == date.Month, i => i.ServiceItems).FirstOrDefault();
+
+			if (currentInvoice == null) {
+
+				invoice.CreatedDate = DateTime.Now;
+				invoice.UpdatedDate = DateTime.Now;
+				invoice.CreatedBy = landlord.User.UserName??"";
+				invoice.UpdatedBy = landlord.User.UserName??"";
+				invoice.IsApproved = false;
+
+
+
+
+				_invoiceRepository.Add(invoice);
+
+
+			}
+
+			
+
+
+			return new AppResult { Success = false, Message = "Lỗi không lập được hóa đơn !" };
+		}
+
 
 		public Invoice GetInvoice(int landlordId, int roomid, DateTime date )
 		{
