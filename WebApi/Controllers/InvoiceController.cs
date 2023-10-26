@@ -9,6 +9,8 @@ using WebApi.Model.RoomIndex;
 using WebApi.Model;
 using WebApi.Model.Invoice;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using WebApi.Model.Branch;
+using WebApi.Model.JQDataTable;
 
 namespace WebApi.Controllers
 {
@@ -119,6 +121,7 @@ namespace WebApi.Controllers
 		public async Task<IActionResult> CreateRoomInvoice(InvoiceCreateModel model)
 		{
 			var Identity = HttpContext.User;
+
 			string CurrentUserId = "";
 			string CurrentLandlordId = "";
 			int landlordId = 0;
@@ -166,6 +169,64 @@ namespace WebApi.Controllers
 		}
 
 
+		[HttpPost]
+		[Route("invoicefordatatable")]
+		public async Task<IActionResult> GetBrachesForDataTable([FromBody] DatatableParam param ,[FromQuery] string status, [FromQuery] int  month,[FromQuery] int year, [FromQuery] int branchid)
+		{
+			int filteredResultsCount;
+			int totalResultsCount;
+
+			var Identity = HttpContext.User;
+			string CurrentUserId = "";
+			if (Identity.HasClaim(c => c.Type == "userid"))
+			{
+				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+			}
+
+			if (string.IsNullOrEmpty(CurrentUserId))
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+			}
+			var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
+			if (landlord == null)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+			}
+			try
+			{
+				var branches = _branchService.GetBranches(landlord.Id);
+
+				totalResultsCount = branches.Count();
+
+				var result = branches.Skip(param.start).Take(param.length).ToList();
+
+				filteredResultsCount = result.Count();
+
+				foreach (var branch in result)
+				{
+					string ad = _boundaryService.GetAddress(branch.Province, branch.District, branch.Wards);
+					branch.Address =  branch.Address +", "+ ad;
+				}
+
+				var Dataresult = _mapper.Map<List<BranchModel>>(result);
+
+				return Json(new
+				{
+					// this is what datatables wants sending back
+
+					draw = param.draw,
+					recordsTotal = totalResultsCount,
+					recordsFiltered = filteredResultsCount,
+					data = new object { }
+				});
+			}
+			catch
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get braches!" });
+			}
+
+
+		}
 
 	}
 }

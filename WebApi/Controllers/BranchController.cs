@@ -100,10 +100,6 @@ namespace WebApi.Controllers
         [Route("allroom")]
         public async Task<IActionResult> GetAllRoom()
         {
-            int filteredResultsCount;
-            int totalResultsCount;
-
-
             var Identity = HttpContext.User;
             string CurrentUserId = "";
             if (Identity.HasClaim(c => c.Type == "userid"))
@@ -140,12 +136,54 @@ namespace WebApi.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy nhà trọ!" });
             }
-
-
         }
 
+		[HttpGet]
+		[Route("all")]
+		public async Task<IActionResult> GetAll()
+		{
+			var Identity = HttpContext.User;
+			string CurrentUserId = "";
+			if (Identity.HasClaim(c => c.Type == "userid"))
+			{
+				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+			}
 
-        [HttpPost]
+			if (string.IsNullOrEmpty(CurrentUserId))
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user id" });
+			}
+			var landlord = _landlordService.GetLandlordByUserId(CurrentUserId);
+			if (landlord == null)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user" });
+			}
+
+
+			try
+			{
+				var branches = _branchService.GetBranches(landlord.Id);
+				foreach (var branch in branches)
+				{
+					string ad = _boundaryService.GetAddress(branch.Province, branch.District, branch.Wards);
+					branch.Address =  branch.Address +", "+ ad;
+				}
+
+				var Dataresult = _mapper.Map<List<BranchModel>>(branches);
+
+
+				return Ok(Dataresult);
+			}
+			catch
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy nhà trọ!" });
+			}
+
+
+		}
+
+
+		[HttpPost]
         [Route("add")]
         public IActionResult CreateBrach(BranchCreateModel model)
         {

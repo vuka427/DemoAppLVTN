@@ -5,6 +5,7 @@ using Domain.Interface;
 using Domain.IRepositorys;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -71,11 +72,27 @@ namespace Application.Implementation.ApplicationServices
 			{
 				currentInvoice.UpdatedDate = DateTime.Now;
 				currentInvoice.UpdatedBy = landlord.User.UserName??"";
+				currentInvoice.NewElectricNumber = invoice.NewElectricNumber;
+				currentInvoice.NewWaterNumber = invoice.NewWaterNumber;
+				currentInvoice.ServiceItems = invoice.ServiceItems;
 
+				decimal servicePrice = 0;
+				foreach (var item in currentInvoice.ServiceItems)
+				{
+					servicePrice += item.Price;
+					item.CreatedDate = DateTime.Now;
+					item.UpdatedDate = DateTime.Now;
+					item.CreatedBy= landlord.User.UserName??""; 
+					item.UpdatedBy= landlord.User.UserName??"";
+				}
+
+				currentInvoice.TotalPrice = servicePrice + contract.RentalPrice + (currentInvoice.NewElectricNumber-currentInvoice.OldElectricNumber)*contract.ElectricityCosts + (currentInvoice.NewWaterNumber - currentInvoice.OldWaterNumber)*contract.WaterCosts;
+
+				_invoiceRepository.Update(currentInvoice); 
 
 			}
 
-			
+
 
 
 			return new AppResult { Success = false, Message = "Lỗi không lập được hóa đơn !" };
@@ -95,7 +112,53 @@ namespace Application.Implementation.ApplicationServices
 
 			return invoice;
 
+		}
 
+		public ICollection<Invoice> GetInvoiceOfDataTable(int landlordId, string status, int month, int year, int branchid)
+		{
+			bool isAppro = false;
+			isAppro = (status =="unpaid")?  false : true;
+
+			IQueryable<Invoice> allInvoice;
+			IQueryable<Invoice> invoice;
+
+			if (branchid==0)
+			{
+				allInvoice = _contractRepository.FindAll(c => c.LandlordId==landlordId, c => c.Invoices).SelectMany(c => c.Invoices);
+			}
+			else
+			{
+				allInvoice = _contractRepository.FindAll(c => c.LandlordId==landlordId , c => c.Invoices).SelectMany(c => c.Invoices);
+			}
+
+
+			if (status== "unpaid" && status== "paid" && month == 0 && year == 0 ) //status
+			{
+				invoice = allInvoice.Where(i => i.IsApproved == isAppro );
+			}
+			else if (status== "unpaid" && status== "paid" && month == 0 && year != 0) //status + year 
+			{
+				invoice = allInvoice.Where(i => i.IsApproved == isAppro  && i.CreatedDate.Year == year );
+			}
+			else if (status== "unpaid" && status== "paid" && month != 0 && year != 0) //status + year + month
+			{
+				invoice = allInvoice.Where(i => i.IsApproved == isAppro  && i.CreatedDate.Year == year && i.CreatedDate.Month == month);
+			}
+			else if (status== "none"  && month == 0 && year != 0) // year
+			{
+				invoice = allInvoice.Where(i =>  i.CreatedDate.Year == year );
+			}
+			else if (status== "none" && month != 0 && year != 0) //year + month
+			{
+				invoice = allInvoice.Where(i => i.CreatedDate.Year == year && i.CreatedDate.Month == month);
+			}
+			else
+			{
+				invoice = allInvoice; // all
+			}
+
+
+			return invoice.ToList();
 		}
 
 		public void SaveChanges()
