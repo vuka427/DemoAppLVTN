@@ -99,7 +99,6 @@ namespace Application.Implementation.ApplicationServices
                 return new AppResult { Success = false, Message = "lỗi không thể xóa phòng !" };
             }
 
-
             return new AppResult { Success = true, Message = image.Url };
         }
 
@@ -124,7 +123,6 @@ namespace Application.Implementation.ApplicationServices
             {
                 return new AppResult { Success = false, Message = "lỗi không thể xóa phòng !" };
             }
-
 
             return new AppResult { Success = true, Message = "Ok" };
         }
@@ -153,7 +151,6 @@ namespace Application.Implementation.ApplicationServices
             var editRoom = _roomRepository.FindById(room.Id, r => r.Devices);
             if (editRoom == null) { return new AppResult { Success = false, Message = "Không tìm phòng !" }; }
 
-
             editRoom.RoomNumber = room.RoomNumber;
             editRoom.IsMezzanine = room.IsMezzanine;
             editRoom.Price = room.Price;
@@ -161,7 +158,6 @@ namespace Application.Implementation.ApplicationServices
             editRoom.Acreage = room.Acreage;
             editRoom.UpdatedBy = landlord.User.UserName ?? "";
             editRoom.UpdatedDate = DateTime.Now;
-
 
             try
             {
@@ -181,7 +177,6 @@ namespace Application.Implementation.ApplicationServices
                     {
                         removeDevices.Add(deviveItem);
                     }
-
                 }
 
                 foreach (var deviveItem in room.Devices)
@@ -197,8 +192,6 @@ namespace Application.Implementation.ApplicationServices
 
                         _deviceRepository.Add(deviveItem);
                     }
-
-
                 }
 
                 _deviceRepository.RemoveMultiple(removeDevices);
@@ -233,7 +226,6 @@ namespace Application.Implementation.ApplicationServices
             };
 
             _imageRoomRepository.Add(image);
-
 
             return image;
         }

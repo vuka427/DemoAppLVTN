@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.RoomIndex;
 using WebApi.Model;
 using WebApi.Model.Invoice;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebApi.Controllers
 {
@@ -57,17 +58,28 @@ namespace WebApi.Controllers
 			}
 
 			
-				var invoice = _invoiceService.GetInvoice(landlordId,roomid,DateTime.Now);
+			var invoice = _invoiceService.GetInvoice(landlordId,roomid,DateTime.Now);
 
+			var contract = _contractService.GetContractByRoomId(landlordId,roomid);
+
+			if(contract == null) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hợp đồng!" }); }
+
+			if (invoice != null) 
+			{	
 				var invoiceResult = _mapper.Map<InvoiceModel>(invoice);
 
-				if (invoice != null) { return Ok(invoiceResult); }
 
-				var contract = _contractService.GetContractByRoomId(landlordId,roomid);
-				if(contract == null) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hợp đồng!" }); }
-				var previousDate = DateTime.Now.AddMonths(-1);
-				var previousInvoice = _invoiceService.GetInvoice(landlordId, roomid, previousDate);
-				var branch = _branchService.GetBranchByRoomId(landlordId,roomid);
+				invoiceResult.Month = DateTime.Now.Month.ToString();
+				invoiceResult.Year = DateTime.Now.Year.ToString();
+				invoiceResult.RentalPrice = contract.RentalPrice;
+				invoiceResult.ElectricityCosts = contract.ElectricityCosts;
+				invoiceResult.WaterCosts=contract.WaterCosts;
+				return Ok(invoiceResult); 
+			}
+
+			var previousDate = DateTime.Now.AddMonths(-1);
+			var previousInvoice = _invoiceService.GetInvoice(landlordId, roomid, previousDate);
+			var branch = _branchService.GetBranchByRoomId(landlordId,roomid);
 
 			try
 			{
@@ -82,6 +94,7 @@ namespace WebApi.Controllers
 					RentalPrice = contract.RentalPrice,
 					Month = DateTime.Now.Month.ToString(),
 					Year = DateTime.Now.Year.ToString(),
+					ContractId = contract.Id,
 
 				};
 
@@ -120,17 +133,35 @@ namespace WebApi.Controllers
 				return Unauthorized();
 			}
 
+			var previousDate = DateTime.Now.AddMonths(-1);
+			var previousInvoice = _invoiceService.GetInvoice(landlordId, model.RoomId, previousDate);
 
+			var invoice = new Invoice {
+				IsApproved = false,
+				NewElectricNumber = model.NewElectricNumber,
+				NewWaterNumber = model.NewWaterNumber,
+				OldElectricNumber = previousInvoice!=null ? previousInvoice.OldElectricNumber : 0,
+				OldWaterNumber = previousInvoice!= null ? previousInvoice.OldWaterNumber : 0,
+				ContractId = model.ContractId,
+				
+			};
 
+			if (model.Services!=null)
+			{
+				invoice.ServiceItems = _mapper.Map<List<ServiceItem>>(model.Services);
+			}
 
+			_invoiceService.CreateInvoice(landlordId, model.RoomId, DateTime.Now, invoice);
+			_invoiceService.SaveChanges();
 
 			try
 			{
+				
 				return Ok();
 			}
 			catch
 			{
-				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy nhà trọ!" });
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không lập được hóa đơn !" });
 			}
 		}
 

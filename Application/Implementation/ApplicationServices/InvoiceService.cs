@@ -50,11 +50,27 @@ namespace Application.Implementation.ApplicationServices
 				invoice.CreatedBy = landlord.User.UserName??"";
 				invoice.UpdatedBy = landlord.User.UserName??"";
 				invoice.IsApproved = false;
-
-
-
+				invoice.InvoiceCode = "";
+             
+				decimal servicePrice = 0;
+				foreach (var item in invoice.ServiceItems) 
+				{ 
+					servicePrice += item.Price; 
+					item.CreatedDate = DateTime.Now;
+					item.UpdatedDate = DateTime.Now;
+					item.CreatedBy= landlord.User.UserName??"";
+					item.UpdatedBy= landlord.User.UserName??"";
+				}
+			 
+				invoice.TotalPrice = servicePrice + contract.RentalPrice + (invoice.NewElectricNumber-invoice.OldElectricNumber)*contract.ElectricityCosts + (invoice.NewWaterNumber - invoice.OldWaterNumber)*contract.WaterCosts;
 
 				_invoiceRepository.Add(invoice);
+
+			}
+			else
+			{
+				currentInvoice.UpdatedDate = DateTime.Now;
+				currentInvoice.UpdatedBy = landlord.User.UserName??"";
 
 
 			}
@@ -80,6 +96,11 @@ namespace Application.Implementation.ApplicationServices
 			return invoice;
 
 
+		}
+
+		public void SaveChanges()
+		{
+			_unitOfWork.Commit();
 		}
 	}
 }
