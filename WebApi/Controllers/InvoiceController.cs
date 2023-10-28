@@ -171,7 +171,7 @@ namespace WebApi.Controllers
 
 		[HttpPost]
 		[Route("invoicefordatatable")]
-		public async Task<IActionResult> GetBrachesForDataTable([FromBody] DatatableParam param ,[FromQuery] string status, [FromQuery] int  month,[FromQuery] int year, [FromQuery] int branchid)
+		public async Task<IActionResult> GetInvoiceForDataTable([FromBody] DatatableParam param ,[FromQuery] string status, [FromQuery] int  month,[FromQuery] int year, [FromQuery] int branchid)
 		{
 			int filteredResultsCount;
 			int totalResultsCount;
@@ -192,23 +192,20 @@ namespace WebApi.Controllers
 			{
 				return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can find user!" });
 			}
+
 			try
 			{
-				var branches = _branchService.GetBranches(landlord.Id);
+				var invoices = _invoiceService.GetInvoiceOfDataTable(landlord.Id, status,month ,year ,branchid);
 
-				totalResultsCount = branches.Count();
+				totalResultsCount = invoices.Count();
 
-				var result = branches.Skip(param.start).Take(param.length).ToList();
+				var result = invoices.Skip(param.start).Take(param.length).ToList();
 
 				filteredResultsCount = result.Count();
 
-				foreach (var branch in result)
-				{
-					string ad = _boundaryService.GetAddress(branch.Province, branch.District, branch.Wards);
-					branch.Address =  branch.Address +", "+ ad;
-				}
+			
 
-				var Dataresult = _mapper.Map<List<BranchModel>>(result);
+				var Dataresult = _mapper.Map<List<InvoiceDataTableModel>>(result);
 
 				return Json(new
 				{
@@ -217,12 +214,12 @@ namespace WebApi.Controllers
 					draw = param.draw,
 					recordsTotal = totalResultsCount,
 					recordsFiltered = filteredResultsCount,
-					data = new object { }
+					data = Dataresult
 				});
 			}
 			catch
 			{
-				return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get braches!" });
+				return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get invoice!" });
 			}
 
 

@@ -119,28 +119,36 @@ namespace Application.Implementation.ApplicationServices
 			bool isAppro = false;
 			isAppro = (status =="unpaid")?  false : true;
 
-			IQueryable<Invoice> allInvoice;
-			IQueryable<Invoice> invoice;
+			var contract1 = _contractRepository.FindAll(c => c.LandlordId==landlordId, c => c.Invoices);
 
-			if (branchid==0)
+			var  contract = _contractRepository.FindAll(c => c.LandlordId==landlordId, c => c.Invoices).ToList();
+
+			if(contract == null)
 			{
-				allInvoice = _contractRepository.FindAll(c => c.LandlordId==landlordId, c => c.Invoices).SelectMany(c => c.Invoices);
+				return new List<Invoice>();
+			}
+
+			IEnumerable<Invoice> allInvoice = new List<Invoice>();
+			IEnumerable<Invoice> invoice = new List<Invoice>();
+
+			if (branchid==0) // branch
+			{
+				allInvoice = contract.SelectMany(c => c.Invoices );
 			}
 			else
 			{
-				allInvoice = _contractRepository.FindAll(c => c.LandlordId==landlordId , c => c.Invoices).SelectMany(c => c.Invoices);
+				allInvoice = contract.SelectMany(c => c.Invoices );
 			}
 
-
-			if (status== "unpaid" && status== "paid" && month == 0 && year == 0 ) //status
+			if (status != "none" && month == 0 && year == 0 ) //status
 			{
 				invoice = allInvoice.Where(i => i.IsApproved == isAppro );
 			}
-			else if (status== "unpaid" && status== "paid" && month == 0 && year != 0) //status + year 
+			else if (status!= "none" && month == 0 && year != 0) //status + year 
 			{
 				invoice = allInvoice.Where(i => i.IsApproved == isAppro  && i.CreatedDate.Year == year );
 			}
-			else if (status== "unpaid" && status== "paid" && month != 0 && year != 0) //status + year + month
+			else if (status!= "none" && month != 0 && year != 0) //status + year + month
 			{
 				invoice = allInvoice.Where(i => i.IsApproved == isAppro  && i.CreatedDate.Year == year && i.CreatedDate.Month == month);
 			}
@@ -156,6 +164,13 @@ namespace Application.Implementation.ApplicationServices
 			{
 				invoice = allInvoice; // all
 			}
+
+			foreach ( var item in invoice)
+			{
+				item.Contract = contract.FirstOrDefault(c=>c.Id==item.ContractId);
+			}
+
+
 
 
 			return invoice.ToList();
