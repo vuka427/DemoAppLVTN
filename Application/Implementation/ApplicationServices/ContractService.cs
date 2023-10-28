@@ -57,6 +57,7 @@ namespace Application.Implementation.ApplicationServices
                 contract.LandlordId = landlordId;
                 contract.RoomId = room.Id;
                 contract.BranchName = branch.BranchName;
+                contract.BranchId = branch.Id;
                 contract.HouseType = branch.HouseType;
                 contract.AreaName = area.AreaName;
                 contract.RoomNumber = room.RoomNumber;

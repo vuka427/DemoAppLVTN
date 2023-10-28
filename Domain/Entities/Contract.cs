@@ -37,6 +37,7 @@ namespace Domain.Entities
         public DateTime EndingOn { get; set; }
         public ContractStatus Status { get; set; }
         public int RoomNumber { get; set; }
+
         public string BranchName { get; set; }
         public string BranchAddress { get; set; }
         public HouseType HouseType { get; set; }
@@ -49,9 +50,12 @@ namespace Domain.Entities
 
 		public decimal ElectricityCosts { get; set; }
 		public decimal WaterCosts { get; set; }
-	
+
+		public int BranchId { get; set; }
+
 		public int? RoomId { get; set; }
         public Room? Room { get; set; }
+
 
         public int LandlordId { get; set; }
         public Landlord Landlord { get; set; }

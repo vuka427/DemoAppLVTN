@@ -271,24 +271,12 @@ namespace Pesistence.Migrations
                         .HasColumnType("decimal(10,0)")
                         .HasDefaultValue(0m);
 
-                    b.Property<decimal>("GarbageColletionFee")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10)
-                        .HasColumnType("decimal(10,0)")
-                        .HasDefaultValue(0m);
-
                     b.Property<int>("HouseType")
                         .HasColumnType("int");
 
                     b.Property<string>("InternalRegulation")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<decimal>("InternetCosts")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10)
-                        .HasColumnType("decimal(10,0)")
-                        .HasDefaultValue(0m);
 
                     b.Property<int>("LandlordId")
                         .HasColumnType("int");
@@ -401,6 +389,9 @@ namespace Pesistence.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar");
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
 
                     b.Property<string>("BranchName")
                         .IsRequired()
@@ -662,18 +653,6 @@ namespace Pesistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("ElectricityCosts")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10)
-                        .HasColumnType("decimal(10,0)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<decimal>("GarbageColletionFee")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10)
-                        .HasColumnType("decimal(10,0)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<decimal>("InternetCosts")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(10)
                         .HasColumnType("decimal(10,0)")

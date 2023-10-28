@@ -74,9 +74,15 @@ namespace WebApi.AutoMapper
             CreateMap<Service, ServiceItemModel>();
             CreateMap<ServiceItemModel, ServiceItem>();
 			CreateMap<ServiceItem, ServiceItemModel>();
+
 			CreateMap<Invoice, InvoiceDataTableModel>()
 				.ForMember(p => p.Lessee, options => options.MapFrom(s => s.Contract.B_Lessee)) 
                 .ForMember(p => p.RoomNumber , options => options.MapFrom(s =>"P."+ s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row)? ", dãy " : ", tầng ") + s.Contract.AreaName   ))
+				.ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
+				;
+			CreateMap<Invoice, InvoiceDetailModel>()
+				.ForMember(p => p.Lessee, options => options.MapFrom(s => s.Contract.B_Lessee))
+				.ForMember(p => p.RoomNumber, options => options.MapFrom(s =>  s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + s.Contract.AreaName))
 				.ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
 				;
 

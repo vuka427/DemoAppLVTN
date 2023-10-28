@@ -1,6 +1,8 @@
-﻿using Application.Interface.ApplicationServices;
+﻿using Application.DTOs.Invoice;
+using Application.Interface.ApplicationServices;
 using Domain.Common;
 using Domain.Entities;
+using Domain.Enum;
 using Domain.Interface;
 using Domain.IRepositorys;
 using System;
@@ -92,9 +94,6 @@ namespace Application.Implementation.ApplicationServices
 
 			}
 
-
-
-
 			return new AppResult { Success = false, Message = "Lỗi không lập được hóa đơn !" };
 		}
 
@@ -114,12 +113,34 @@ namespace Application.Implementation.ApplicationServices
 
 		}
 
+		public Invoice GetInvoiceById(int landlordId, int invoiceId)
+		{
+
+			
+
+
+			var invoice = _invoiceRepository.FindAll(i => i.Id == invoiceId, i => i.ServiceItems).FirstOrDefault();
+			if (invoice == null) { return null; }
+
+			var contracts = _contractRepository.FindAll(r => r.LandlordId == landlordId, c => c.Invoices);
+			if (contracts == null) { return null; }
+
+			var contract = contracts.Where(c => c.Id == invoice.ContractId).FirstOrDefault();
+			if (contract == null) { return null; }
+
+			invoice.Contract = contract;
+			invoice.ContractId =contract.Id;
+
+	
+			return invoice;
+		}
+
 		public ICollection<Invoice> GetInvoiceOfDataTable(int landlordId, string status, int month, int year, int branchid)
 		{
 			bool isAppro = false;
 			isAppro = (status =="unpaid")?  false : true;
 
-			var contract1 = _contractRepository.FindAll(c => c.LandlordId==landlordId, c => c.Invoices);
+		
 
 			var  contract = _contractRepository.FindAll(c => c.LandlordId==landlordId, c => c.Invoices).ToList();
 
@@ -131,13 +152,13 @@ namespace Application.Implementation.ApplicationServices
 			IEnumerable<Invoice> allInvoice = new List<Invoice>();
 			IEnumerable<Invoice> invoice = new List<Invoice>();
 
-			if (branchid==0) // branch
+			if (branchid==0) //branch
 			{
-				allInvoice = contract.SelectMany(c => c.Invoices );
+				allInvoice = contract.SelectMany(c => c.Invoices);
 			}
 			else
 			{
-				allInvoice = contract.SelectMany(c => c.Invoices );
+				allInvoice = contract.Where(c=>c.BranchId==branchid).SelectMany(c => c.Invoices );
 			}
 
 			if (status != "none" && month == 0 && year == 0 ) //status
@@ -152,7 +173,7 @@ namespace Application.Implementation.ApplicationServices
 			{
 				invoice = allInvoice.Where(i => i.IsApproved == isAppro  && i.CreatedDate.Year == year && i.CreatedDate.Month == month);
 			}
-			else if (status== "none"  && month == 0 && year != 0) // year
+			else if (status== "none"  && month == 0 && year != 0) //year 
 			{
 				invoice = allInvoice.Where(i =>  i.CreatedDate.Year == year );
 			}
@@ -162,7 +183,7 @@ namespace Application.Implementation.ApplicationServices
 			}
 			else
 			{
-				invoice = allInvoice; // all
+				invoice = allInvoice; //all
 			}
 
 			foreach ( var item in invoice)

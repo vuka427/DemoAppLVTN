@@ -225,5 +225,43 @@ namespace WebApi.Controllers
 
 		}
 
+		[HttpGet]
+		[Route("detail")]
+		public async Task<IActionResult> GetInvoice(int invoiceid)
+		{
+			var Identity = HttpContext.User;
+			string CurrentUserId = "";
+			string CurrentLandlordId = "";
+			int landlordId = 0;
+			if (Identity.HasClaim(c => c.Type == "userid"))
+			{
+				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+				CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+			}
+			var result = int.TryParse(CurrentLandlordId, out landlordId);
+			if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+			{
+				return Unauthorized();
+			}
+
+
+			try
+			{
+				var invoice = _invoiceService.GetInvoiceById(landlordId, invoiceid);
+				if (invoice == null)
+				{
+					return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hóa đơn!" });
+				}
+
+				var resultData = _mapper.Map<InvoiceDetailModel>(invoice);
+
+				return Ok(resultData);
+			}
+			catch
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hóa đơn!" });
+			}
+		}
+
 	}
 }
