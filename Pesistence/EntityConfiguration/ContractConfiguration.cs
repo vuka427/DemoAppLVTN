@@ -55,8 +55,15 @@ namespace Pesistence.EntityConfiguration
             builder.Property(t => t.B_Phone)
                .IsRequired()
                .HasMaxLength(10);
+			builder.Property(r => r.B_IsPermanent)
+			 .HasDefaultValue(false)
+			 .IsRequired();
+			builder.Property(t => t.B_Job)
+			 .IsRequired()
+			 .HasColumnType("nvarchar")
+			 .HasMaxLength(256);
 
-            builder.Property(b => b.RentalPrice)
+			builder.Property(b => b.RentalPrice)
                 .HasPrecision(10, 0)
                 .HasDefaultValue(0)
                 .IsRequired();

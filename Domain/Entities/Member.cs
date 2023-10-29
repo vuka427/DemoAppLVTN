@@ -13,7 +13,9 @@ namespace Domain.Entities
         public DateTime DateOfIssuance { get; set; }
         public string PlaceOfIssuance { get; set; }
         public string PermanentAddress { get; set; }
-        public string Phone { get; set; }
+		public bool IsPermanent { get; set; }
+		public string Job { get; set; }
+		public string Phone { get; set; }
 
         public int ContractId { get; set; }
         public Contract Contract { get; set; }

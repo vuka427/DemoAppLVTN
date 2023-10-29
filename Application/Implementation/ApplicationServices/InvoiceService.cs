@@ -116,9 +116,6 @@ namespace Application.Implementation.ApplicationServices
 		public Invoice GetInvoiceById(int landlordId, int invoiceId)
 		{
 
-			
-
-
 			var invoice = _invoiceRepository.FindAll(i => i.Id == invoiceId, i => i.ServiceItems).FirstOrDefault();
 			if (invoice == null) { return null; }
 

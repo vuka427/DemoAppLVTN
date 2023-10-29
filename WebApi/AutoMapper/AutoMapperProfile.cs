@@ -84,6 +84,7 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.Lessee, options => options.MapFrom(s => s.Contract.B_Lessee))
 				.ForMember(p => p.RoomNumber, options => options.MapFrom(s =>  s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + s.Contract.AreaName))
 				.ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
+				.ForMember(p => p.RentalPrice, options => options.MapFrom(s => s.Contract.RentalPrice))
 				;
 
 

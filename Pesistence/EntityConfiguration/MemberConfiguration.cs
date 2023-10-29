@@ -33,6 +33,13 @@ namespace Pesistence.EntityConfiguration
             builder.Property(m => m.Phone)
                .IsRequired()
                .HasMaxLength(10);
-        }
+			builder.Property(m => m.IsPermanent)
+			 .HasDefaultValue(false)
+			 .IsRequired();
+			builder.Property(m => m.Job)
+			   .IsRequired()
+			   .HasColumnType("nvarchar")
+			   .HasMaxLength(256);
+		}
     }
 }

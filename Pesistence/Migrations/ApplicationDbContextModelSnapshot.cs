@@ -365,6 +365,16 @@ namespace Pesistence.Migrations
                     b.Property<DateTime>("B_DateOfIssuance")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("B_IsPermanent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("B_Job")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar");
+
                     b.Property<string>("B_Lessee")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -801,6 +811,16 @@ namespace Pesistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar");
 
+                    b.Property<bool>("IsPermanent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Job")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar");
+
                     b.Property<string>("PermanentAddress")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -1098,6 +1118,11 @@ namespace Pesistence.Migrations
                     b.Property<decimal>("Price")
                         .HasPrecision(10)
                         .HasColumnType("decimal(10,0)");
+
+                    b.Property<int>("Quantity")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("ServiceName")
                         .IsRequired()

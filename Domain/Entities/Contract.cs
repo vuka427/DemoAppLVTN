@@ -30,8 +30,11 @@ namespace Domain.Entities
         public string B_PlaceOfIssuance { get; set; }
         public string B_PermanentAddress { get; set; }
         public string B_Phone { get; set; }
+		public bool B_IsPermanent { get; set; }
+		public string B_Job { get; set; }
 
-        public decimal RentalPrice { get; set; }
+
+		public decimal RentalPrice { get; set; }
         public int DurationOfHouseLease { get; set; }
         public DateTime CommencingOn { get; set; }
         public DateTime EndingOn { get; set; }
@@ -44,6 +47,7 @@ namespace Domain.Entities
         public string AreaName { get; set; }
         public float Acreage { get; set; }
         public bool IsMezzanine { get; set; }
+
         public decimal Deposit { get; set; }
 
         public string TermsOfContract { get; set; }

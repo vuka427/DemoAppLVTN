@@ -14,6 +14,7 @@
 		public int NewWaterNumber { get; set; }
 		public decimal ElectricityCosts { get; set; }
 		public decimal WaterCosts { get; set; }
+		public decimal RentalPrice { get; set; }
 		public decimal TotalPrice { get; set; }
 		public int ContractId { get; set; }
 
