@@ -26,7 +26,9 @@ namespace WebApi.AutoMapper
                                                     options => options.MapFrom(s=> s.HouseType=="floor" ? HouseType.Floor : HouseType.Row )
                                                     );
             CreateMap<Area, AreaModel>();
-            CreateMap<Room, RoomModel>();
+            CreateMap<Room, RoomModel>()
+				 .ForMember(p => p.Lessee, options => options.MapFrom(c => (c.Contracts.FirstOrDefault(a => a.Status==ContractStatus.Active).B_Lessee)??""));
+
             CreateMap<RoomCreateModel, Room>();
             CreateMap<DeviceCreateModel, Device>();
             CreateMap<Device, DeviceModel>();
@@ -73,7 +75,8 @@ namespace WebApi.AutoMapper
             CreateMap<Invoice, InvoiceModel>();
             CreateMap<Service, ServiceItemModel>();
             CreateMap<ServiceItemModel, ServiceItem>();
-			CreateMap<ServiceItem, ServiceItemModel>();
+			CreateMap<ServiceItem, ServiceItemModel>()
+				.ForMember(p => p.Description, options => options.MapFrom(s => s.Description));
 
 			CreateMap<Invoice, InvoiceDataTableModel>()
 				.ForMember(p => p.Lessee, options => options.MapFrom(s => s.Contract.B_Lessee)) 
@@ -85,6 +88,8 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.RoomNumber, options => options.MapFrom(s =>  s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + s.Contract.AreaName))
 				.ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
 				.ForMember(p => p.RentalPrice, options => options.MapFrom(s => s.Contract.RentalPrice))
+				.ForMember(p => p.Year, options => options.MapFrom(s => s.CreatedDate.Year))
+				.ForMember(p => p.Month, options => options.MapFrom(s => s.CreatedDate.Month))
 				;
 
 

@@ -2,6 +2,7 @@
 {
 	public class InvoiceDataTableModel
 	{
+		
 		public int Id { get; set; }
 		public string Lessee { get; set; }
 		public string RoomNumber { get; set; }

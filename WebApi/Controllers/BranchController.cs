@@ -98,7 +98,7 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Route("allroom")]
-        public async Task<IActionResult> GetAllRoom()
+        public async Task<IActionResult> GetAllRoom(string roomStatus)
         {
             var Identity = HttpContext.User;
             string CurrentUserId = "";
@@ -120,7 +120,7 @@ namespace WebApi.Controllers
 
             try
             {
-                var branches = _branchService.GetBranchWithRoom(landlord.Id);
+                var branches = _branchService.GetBranchWithRoom(landlord.Id, roomStatus);
                 foreach(var branch in branches)
                 {
                     string ad = _boundaryService.GetAddress(branch.Province,branch.District,branch.Wards);

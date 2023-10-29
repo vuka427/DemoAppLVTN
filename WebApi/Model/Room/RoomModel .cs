@@ -14,8 +14,10 @@ namespace WebApi.Model.Room
         public string Status { get; set; }
         public decimal Price { get; set; }
         public int MaxMember { get; set; }
+		public int CurrentMember { get; set; }
+		public string Lessee { get; set; }
 
-        public ICollection<DeviceModel> Devices { get; set; }
+		public ICollection<DeviceModel> Devices { get; set; }
         public ICollection<ImageRoomModel> ImageRooms { get; set; }
 
 

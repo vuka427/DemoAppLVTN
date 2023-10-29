@@ -81,7 +81,7 @@ namespace Application.Implementation.ApplicationServices
 				decimal servicePrice = 0;
 				foreach (var item in currentInvoice.ServiceItems)
 				{
-					servicePrice += item.Price;
+					servicePrice += item.Price * item.Quantity;
 					item.CreatedDate = DateTime.Now;
 					item.UpdatedDate = DateTime.Now;
 					item.CreatedBy= landlord.User.UserName??""; 
@@ -191,12 +191,29 @@ namespace Application.Implementation.ApplicationServices
 
 
 
-			return invoice.ToList();
+			return invoice.OrderByDescending(i=>i.CreatedDate).ToList();
 		}
 
 		public void SaveChanges()
 		{
 			_unitOfWork.Commit();
+		}
+
+		public bool SetInvoiceIsApproved(int landlordId, int invoiceId)
+		{
+			var invoice = _invoiceRepository.FindAll(i => i.Id == invoiceId, i => i.ServiceItems).FirstOrDefault();
+			if (invoice == null) { return false; }
+
+			var contracts = _contractRepository.FindAll(r => r.LandlordId == landlordId, c => c.Invoices);
+			if (contracts == null) { return false; }
+
+			var contract = contracts.Where(c => c.Id == invoice.ContractId).FirstOrDefault();
+			if (contract == null) { return false; }
+
+			invoice.IsApproved= true;
+			_invoiceRepository.Update(invoice);
+
+			return true;
 		}
 	}
 }

@@ -12,7 +12,7 @@ namespace Application.Interface.ApplicationServices
         AppResult CreateBranch(int landlordId, Branch branch);
 
         IQueryable<Branch> GetBranches(int landlordId);
-        ICollection<Branch> GetBranchWithRoom(int landlordId);
+        ICollection<Branch> GetBranchWithRoom(int landlordId , string roomStatus);
         ICollection<Branch> GetBranchWithRoomIndex(int landlordId);
         Branch GetBranchById(int landlordId, int id);
 		Branch GetBranchByRoomId(int landlordId, int roomid);

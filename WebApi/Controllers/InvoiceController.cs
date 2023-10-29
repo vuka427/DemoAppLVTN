@@ -11,6 +11,7 @@ using WebApi.Model.Invoice;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using WebApi.Model.Branch;
 using WebApi.Model.JQDataTable;
+using System.Diagnostics.Contracts;
 
 namespace WebApi.Controllers
 {
@@ -197,13 +198,17 @@ namespace WebApi.Controllers
 			{
 				var invoices = _invoiceService.GetInvoiceOfDataTable(landlord.Id, status,month ,year ,branchid);
 
+				if (!string.IsNullOrEmpty(param.search.value))
+				{
+					invoices = invoices.Where(m => m.Contract.B_Lessee.Contains(param.search.value)
+												|| m.Contract.RoomNumber.ToString().Contains(param.search.value)).ToList();
+				}
+
 				totalResultsCount = invoices.Count();
 
 				var result = invoices.Skip(param.start).Take(param.length).ToList();
 
 				filteredResultsCount = result.Count();
-
-			
 
 				var Dataresult = _mapper.Map<List<InvoiceDataTableModel>>(result);
 
@@ -262,6 +267,45 @@ namespace WebApi.Controllers
 				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hóa đơn!" });
 			}
 		}
+
+		[HttpPost]
+		[Route("pay")]
+		public async Task<IActionResult> AgreeToPayInvoice(int invoiceid)
+		{
+			var Identity = HttpContext.User;
+
+			string CurrentUserId = "";
+			string CurrentLandlordId = "";
+			int landlordId = 0;
+			if (Identity.HasClaim(c => c.Type == "userid"))
+			{
+				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+				CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+			}
+			var result = int.TryParse(CurrentLandlordId, out landlordId);
+			if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+			{
+				return Unauthorized();
+			}
+
+			try
+			{
+				bool updateResult = _invoiceService.SetInvoiceIsApproved(landlordId, invoiceid);
+				if (!updateResult)
+				{
+					return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không thanh toán được hóa đơn !" });
+				}
+				_invoiceService.SaveChanges();
+
+				return Ok();
+			}
+			catch
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không thanh toán được hóa đơn !" });
+			}
+		}
+
+
 
 	}
 }

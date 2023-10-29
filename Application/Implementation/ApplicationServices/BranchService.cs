@@ -1,6 +1,7 @@
 ﻿using Application.Interface.ApplicationServices;
 using Domain.Common;
 using Domain.Entities;
+using Domain.Enum;
 using Domain.Interface;
 using Domain.IRepositorys;
 using System;
@@ -162,16 +163,33 @@ namespace Application.Implementation.ApplicationServices
 
         }
 
-        public ICollection<Branch> GetBranchWithRoom(int landlordId)
+        public ICollection<Branch> GetBranchWithRoom(int landlordId, string roomStatus)
         {
+            var status = (roomStatus=="empty")? RoomStatus.Empty: ((roomStatus=="inhabited" )? RoomStatus.Inhabited : RoomStatus.Repair);
+
             var result = _branchRepository.FindAll(b => b.LandlordId == landlordId, b => b.Areas).ToList();
-            foreach (var branch in result)
+
+            if(roomStatus == "none")
             {
-                foreach (var area in branch.Areas)
+                foreach (var branch in result)
                 {
-                    area.Rooms = _roomRepository.FindAll(r => r.AreaId == area.Id).ToList();
+                    foreach (var area in branch.Areas)
+                    {
+                        area.Rooms = _roomRepository.FindAll(r => r.AreaId == area.Id , r=>r.Contracts).ToList();
+                    }
                 }
             }
+            else
+            {
+				foreach (var branch in result)
+				{
+					foreach (var area in branch.Areas)
+					{
+						area.Rooms = _roomRepository.FindAll(r => r.AreaId == area.Id && r.Status==status, r => r.Contracts).ToList();
+					}
+				}
+			}
+            
 
             return result;
         }
