@@ -12,6 +12,8 @@ namespace Application.Interface.ApplicationServices
         AppResult UpdateRoom(int landlordId, Room room);
         AppResult DeleteRoom(int landlordId, int roomid);
         Room GetRoomById(int landlordId, int roomid);
+        Room GetRoomForDetailById(int landlordId, int roomid);
+
         ImageRoom UploadRoomImage(int landlordId, int roomid, string fileName);
         AppResult UploadRoomImages(int landlordId, int roomid, string[] fileNames);
         AppResult DeleteImageRoom(int landlordId, int imageId);

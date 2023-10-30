@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Enum;
+using WebApi.Model.Contract;
 
 namespace WebApi.Model.Room
 {
@@ -17,6 +18,7 @@ namespace WebApi.Model.Room
 		public int CurrentMember { get; set; }
 		public string Lessee { get; set; }
 
+		public ContractForRoomDetailModel Contracts { get; set; }
 		public ICollection<DeviceModel> Devices { get; set; }
         public ICollection<ImageRoomModel> ImageRooms { get; set; }
 

@@ -72,9 +72,48 @@ namespace WebApi.Controllers
             }
         }
 
+		[HttpGet]
+		[Route("detail/full")]
+		public IActionResult GetRoomForDetail(int roomid)
+		{
+			var Identity = HttpContext.User;
+			string CurrentUserId = "";
+			string CurrentLandlordId = "";
+			int landlordId = 0;
+			if (Identity.HasClaim(c => c.Type == "userid"))
+			{
+				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+				CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+			}
+			var result = int.TryParse(CurrentLandlordId, out landlordId);
+			if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+			{
+				return Unauthorized();
+			}
+
+			try
+			{
+				var room = _roomService.GetRoomForDetailById(landlordId, roomid);
+				var roomResult = _mapper.Map<RoomModel>(room);
+				if (roomResult != null)
+				{
+					foreach (var imageItem in roomResult.ImageRooms)
+					{
+						imageItem.Url =  "http://localhost:5135/contents/room/image/"+ imageItem.Url;
+					}
+				}
+
+				return Ok(roomResult);
+			}
+			catch
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create room!" });
+			}
+		}
 
 
-        [HttpPost]
+
+		[HttpPost]
         [Route("add")]
         public IActionResult CreateRoom(RoomCreateModel model)
         {

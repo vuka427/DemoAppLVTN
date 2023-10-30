@@ -22,21 +22,23 @@ namespace Application.Implementation.ApplicationServices
         private readonly IDeviceRepository _deviceRepository;
         private readonly IRoomIndexRepository _roomIndexRepository;
         private readonly IImageRoomRepository _imageRoomRepository;
+        private readonly IContractRepository _contractRepository;
 
-        public RoomService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IRoomRepository roomRepository, IPostNewRepository postNewRepository, IDeviceRepository deviceRepository, IRoomIndexRepository roomIndexRepository, IImageRoomRepository imageRoomRepository)
-        {
-            _unitOfWork = unitOfWork;
-            _branchRepository = branchRepository;
-            _areaRepository = areaRepository;
-            _landlordRepository = landlordRepository;
-            _roomRepository = roomRepository;
-            _postNewRepository = postNewRepository;
-            _deviceRepository = deviceRepository;
-            _roomIndexRepository = roomIndexRepository;
-            _imageRoomRepository = imageRoomRepository;
-        }
+		public RoomService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IRoomRepository roomRepository, IPostNewRepository postNewRepository, IDeviceRepository deviceRepository, IRoomIndexRepository roomIndexRepository, IImageRoomRepository imageRoomRepository, IContractRepository contractRepository)
+		{
+			_unitOfWork=unitOfWork;
+			_branchRepository=branchRepository;
+			_areaRepository=areaRepository;
+			_landlordRepository=landlordRepository;
+			_roomRepository=roomRepository;
+			_postNewRepository=postNewRepository;
+			_deviceRepository=deviceRepository;
+			_roomIndexRepository=roomIndexRepository;
+			_imageRoomRepository=imageRoomRepository;
+			_contractRepository=contractRepository;
+		}
 
-        public AppResult CreateRoom(int landlordId, int branchId, int areaId, Room room)
+		public AppResult CreateRoom(int landlordId, int branchId, int areaId, Room room)
         {
             var landlord = _landlordRepository.FindById(landlordId, l => l.User);
             if (landlord == null) { return new AppResult { Success = false, Message = "Không tìm thấy người dùng !" }; }
@@ -139,7 +141,27 @@ namespace Application.Implementation.ApplicationServices
             return room;
         }
 
-        public void SaveChanges()
+		public Room GetRoomForDetailById(int landlordId, int roomid)
+		{
+			var room = _roomRepository.FindById(roomid, r => r.Devices, r => r.ImageRooms, r=>r.Contracts);
+			if (room == null) { return new Room(); }
+            var contract = room.Contracts.FirstOrDefault(r => r.Status == Domain.Enum.ContractStatus.Active && r.LandlordId == landlordId);
+           
+            room.Contracts.Clear(); 
+            if (contract != null) { 
+                  var ContractActice = _contractRepository.FindById(contract.Id,c=>c.Members, contract=>contract.Invoices, c=>c.Tenant);
+                  if (ContractActice != null) { room.Contracts.Add(ContractActice);}
+            }
+          
+			var area = _areaRepository.FindById(room.AreaId);
+			if (area == null) { return new Room(); }
+			var branh = _branchRepository.FindById(area.BranchId);
+			if (branh == null || branh.LandlordId != landlordId) { return new Room();}
+
+			return room;
+		}
+
+		public void SaveChanges()
         {
             _unitOfWork.Commit();
         }
