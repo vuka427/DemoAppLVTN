@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Html;
 using System.IO;
 using WebApi.Services.ContractToPdf;
 using System.Drawing;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace WebApi.Controllers
 {
@@ -288,6 +289,43 @@ namespace WebApi.Controllers
 
 		}
 
+
+		[HttpPost]
+		[Route("end")]
+		public async Task<IActionResult> ContractToEnd(int contractid)
+		{
+			var Identity = HttpContext.User;
+			string CurrentUserId = "";
+			string CurrentLandlordId = "";
+			int landlordId = 0;
+			if (Identity.HasClaim(c => c.Type == "userid"))
+			{
+				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+				CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+			}
+			var result = int.TryParse(CurrentLandlordId, out landlordId);
+			if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+			{
+				return Unauthorized();
+			}
+
+			var contract = _contractService.ContractToEnd(landlordId, contractid);
+			if (!contract)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "không tìm thấy hợp đồng " });
+			}
+
+			try
+			{
+                _branchService.SaveChanges();
+                return Ok();
+			}
+			catch (Exception e)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi!. không render được file Pdf " });
+			}
+
+		}
 
 
 

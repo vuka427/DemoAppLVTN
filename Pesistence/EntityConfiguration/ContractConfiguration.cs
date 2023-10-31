@@ -55,6 +55,9 @@ namespace Pesistence.EntityConfiguration
             builder.Property(t => t.B_Phone)
                .IsRequired()
                .HasMaxLength(10);
+			builder.Property(r => r.A_Gender)
+			 .HasDefaultValue(false)
+			 .IsRequired();
 			builder.Property(r => r.B_IsPermanent)
 			 .HasDefaultValue(false)
 			 .IsRequired();

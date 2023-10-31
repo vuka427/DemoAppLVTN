@@ -326,6 +326,11 @@ namespace Pesistence.Migrations
                     b.Property<DateTime>("A_DateOfIssuance")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("A_Gender")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("A_Lessor")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -364,6 +369,9 @@ namespace Pesistence.Migrations
 
                     b.Property<DateTime>("B_DateOfIssuance")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("B_Gender")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("B_IsPermanent")
                         .ValueGeneratedOnAdd()
@@ -810,6 +818,11 @@ namespace Pesistence.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar");
+
+                    b.Property<bool>("Gender")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsPermanent")
                         .ValueGeneratedOnAdd()

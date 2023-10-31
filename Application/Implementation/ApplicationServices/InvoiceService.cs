@@ -54,6 +54,8 @@ namespace Application.Implementation.ApplicationServices
 				invoice.UpdatedBy = landlord.User.UserName??"";
 				invoice.IsApproved = false;
 				invoice.InvoiceCode = "";
+				invoice.ElectricityCosts = contract.ElectricityCosts;
+				invoice.WaterCosts = contract.WaterCosts;
              
 				decimal servicePrice = 0;
 				foreach (var item in invoice.ServiceItems) 

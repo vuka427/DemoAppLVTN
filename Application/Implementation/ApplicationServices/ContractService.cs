@@ -142,10 +142,24 @@ namespace Application.Implementation.ApplicationServices
 		{
 			var room = _roomRepository.FindById(RoomId, r => r.Contracts);
 			if (room == null) { return null; }
-			var contract = room.Contracts.FirstOrDefault(r => r.Status == Domain.Enum.ContractStatus.Active && r.LandlordId == landlordId);
+			var contract = room.Contracts.FirstOrDefault(r => r.Status == ContractStatus.Active && r.LandlordId == landlordId);
 			if (contract == null) { return null; }
             return contract;
 
+		}
+
+		public bool ContractToEnd(int landlordId, int contractId)
+		{
+			var contract = _contractRepository.FindById(contractId);
+			if (contract != null && contract.LandlordId == landlordId)
+			{
+                contract.Status = ContractStatus.Expirat;
+                _contractRepository.Update(contract);
+                return true;
+			}
+
+            return false;
+			
 		}
 	}
 }

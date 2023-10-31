@@ -98,7 +98,7 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Route("allroom")]
-        public async Task<IActionResult> GetAllRoom(string roomStatus)
+        public async Task<IActionResult> GetAllRoom(string? roomStatus= "none")
         {
             var Identity = HttpContext.User;
             string CurrentUserId = "";
@@ -117,7 +117,6 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy user" });
             }
                
-
             try
             {
                 var branches = _branchService.GetBranchWithRoom(landlord.Id, roomStatus);
@@ -128,7 +127,6 @@ namespace WebApi.Controllers
                 }
 
                 var Dataresult = _mapper.Map<List<BranchModel>>(branches);
-
 
                 return Ok(Dataresult);
             }

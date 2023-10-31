@@ -22,6 +22,7 @@ namespace WebApi.Model.Contract
         public string B_PermanentAddress { get; set; }
         public string B_Phone { get; set; }
 		public string B_Job { get; set; }
+		public bool B_Gender { get; set; }
 		public decimal RentalPrice { get; set; }
 		public decimal ElectricityCosts { get; set; }
 		public decimal WaterCosts { get; set; }
@@ -37,7 +38,6 @@ namespace WebApi.Model.Contract
         public float Acreage { get; set; }
         public bool IsMezzanine { get; set; }
         public string TermsOfContract { get; set; }
-
         public int BranchId { get; set; }
         public int AreaId { get; set; }
         public int RoomId { get; set; }

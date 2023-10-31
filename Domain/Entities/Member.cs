@@ -16,8 +16,9 @@ namespace Domain.Entities
 		public bool IsPermanent { get; set; }
 		public string Job { get; set; }
 		public string Phone { get; set; }
+		public bool Gender { get; set; }
 
-        public int ContractId { get; set; }
+		public int ContractId { get; set; }
         public Contract Contract { get; set; }
     }
 }

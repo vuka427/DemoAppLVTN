@@ -22,8 +22,10 @@ namespace Domain.Entities
         public string A_PlaceOfIssuance { get; set; }
         public string A_PermanentAddress { get; set; }
         public string A_Phone { get; set; }
+		public bool A_Gender { get; set; }
 
-        public string B_Lessee { get; set; }
+
+		public string B_Lessee { get; set; }
         public DateTime B_DateOfBirth { get; set; }
         public string B_Cccd { get; set; }
         public DateTime B_DateOfIssuance { get; set; }
@@ -32,6 +34,7 @@ namespace Domain.Entities
         public string B_Phone { get; set; }
 		public bool B_IsPermanent { get; set; }
 		public string B_Job { get; set; }
+		public bool B_Gender { get; set; }
 
 
 		public decimal RentalPrice { get; set; }

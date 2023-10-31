@@ -12,6 +12,7 @@ namespace Application.Interface.ApplicationServices
         AppResult CreateContract(int landlordId, Contract contract);
         IQueryable<Contract> GetContract(int landlordId);
 		Contract GetContractById(int landlordId, int contractId);
+		bool ContractToEnd(int landlordId, int contractId);
 		Contract GetContractByRoomId(int landlordId, int RoomId);
 		void SaveChanges();
         void Dispose();

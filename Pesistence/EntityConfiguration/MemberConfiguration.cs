@@ -36,8 +36,11 @@ namespace Pesistence.EntityConfiguration
 			builder.Property(m => m.IsPermanent)
 			 .HasDefaultValue(false)
 			 .IsRequired();
-			builder.Property(m => m.Job)
-			   .IsRequired()
+			builder.Property(m => m.Gender)
+			 .HasDefaultValue(false)
+			 .IsRequired();
+            builder.Property(m => m.Job)
+               .IsRequired()
 			   .HasColumnType("nvarchar")
 			   .HasMaxLength(256);
 		}
