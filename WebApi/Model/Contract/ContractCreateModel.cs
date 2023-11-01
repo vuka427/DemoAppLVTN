@@ -29,7 +29,10 @@ namespace WebApi.Model.Contract
         [Required(ErrorMessage = "Số điện thoại không được bỏ trống")]
         public string A_Phone { get; set; }
 
-        [Required(ErrorMessage = "Tên người thuê không được bỏ trống")]
+		[Required(ErrorMessage = "Giới tính không được bỏ trống")]
+		public string A_Gender { get; set; }
+
+		[Required(ErrorMessage = "Tên người thuê không được bỏ trống")]
         public string B_Lessee { get; set; }
 
         [Required(ErrorMessage = "Ngày sinh không được bỏ trống")]
@@ -49,8 +52,13 @@ namespace WebApi.Model.Contract
 
         [Required(ErrorMessage = "Số điện thoại không được bỏ trống")]
         public string B_Phone { get; set; }
+		[Required(ErrorMessage = "Giới tính không được bỏ trống")]
+		public string B_Gender { get; set; }
 
-        [Required(ErrorMessage = "Giá thuê không được bỏ trống")]
+		[Required(ErrorMessage = "Nghề nghiệp không được bỏ trống")]
+		public string B_Job { get; set; }
+
+		[Required(ErrorMessage = "Giá thuê không được bỏ trống")]
         public decimal RentalPrice { get; set; }
         [Required(ErrorMessage = "Thời gian thuê không được bỏ trống")]
         public int DurationOfHouseLease { get; set; }

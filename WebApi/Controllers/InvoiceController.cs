@@ -67,7 +67,7 @@ namespace WebApi.Controllers
 
 			if(contract == null) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hợp đồng!" }); }
 
-			if (invoice != null) 
+			if (invoice != null) //đã lập 
 			{	
 				var invoiceResult = _mapper.Map<InvoiceModel>(invoice);
 
@@ -77,6 +77,7 @@ namespace WebApi.Controllers
 				invoiceResult.RentalPrice = contract.RentalPrice;
 				invoiceResult.ElectricityCosts = contract.ElectricityCosts;
 				invoiceResult.WaterCosts=contract.WaterCosts;
+
 				return Ok(invoiceResult); 
 			}
 
@@ -90,8 +91,8 @@ namespace WebApi.Controllers
 
 				var newInvoice = new InvoiceModel() {
 					Id=0,
-					OldElectricNumber = previousInvoice!=null ? previousInvoice.OldElectricNumber : 0,
-					OldWaterNumber = previousInvoice!= null ? previousInvoice.OldWaterNumber : 0,
+					OldElectricNumber = previousInvoice!=null ? previousInvoice.NewElectricNumber : 0,
+					OldWaterNumber = previousInvoice!= null ? previousInvoice.NewWaterNumber : 0,
 					ElectricityCosts = contract.ElectricityCosts,
 					WaterCosts=contract.WaterCosts,
 					RentalPrice = contract.RentalPrice,
@@ -144,8 +145,8 @@ namespace WebApi.Controllers
 				IsApproved = false,
 				NewElectricNumber = model.NewElectricNumber,
 				NewWaterNumber = model.NewWaterNumber,
-				OldElectricNumber = previousInvoice!=null ? previousInvoice.OldElectricNumber : 0,
-				OldWaterNumber = previousInvoice!= null ? previousInvoice.OldWaterNumber : 0,
+				OldElectricNumber = previousInvoice!=null ? previousInvoice.NewElectricNumber : 0,
+				OldWaterNumber = previousInvoice!= null ? previousInvoice.NewWaterNumber : 0,
 				ContractId = model.ContractId,
 				
 			};

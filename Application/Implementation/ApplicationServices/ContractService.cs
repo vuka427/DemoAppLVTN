@@ -150,10 +150,22 @@ namespace Application.Implementation.ApplicationServices
 
 		public bool ContractToEnd(int landlordId, int contractId)
 		{
-			var contract = _contractRepository.FindById(contractId);
+			var contract = _contractRepository.FindById(contractId,c=>c.Room);
 			if (contract != null && contract.LandlordId == landlordId)
 			{
                 contract.Status = ContractStatus.Expirat;
+                if (contract.RoomId!=null)
+                {  
+                    var room = _roomRepository.FindById(contract.RoomId.Value);
+                    if (room != null) { 
+                        room.Status = RoomStatus.Empty;
+                        _roomRepository.Update(room);
+                    }
+
+                }
+              
+                
+
                 _contractRepository.Update(contract);
                 return true;
 			}

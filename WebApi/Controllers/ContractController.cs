@@ -317,7 +317,7 @@ namespace WebApi.Controllers
 
 			try
 			{
-                _branchService.SaveChanges();
+                _contractService.SaveChanges();
                 return Ok();
 			}
 			catch (Exception e)

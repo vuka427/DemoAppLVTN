@@ -50,8 +50,11 @@ namespace WebApi.AutoMapper
 
 
 			//contract
-			CreateMap<ContractCreateModel, Contract>();
-            CreateMap<Contract, ContractModel>()
+			CreateMap<ContractCreateModel, Contract>()
+				.ForMember(p => p.A_Gender, options => options.MapFrom(c => c.A_Gender=="female"?true : false))
+                .ForMember(p => p.B_Gender, options => options.MapFrom(c => c.A_Gender=="female"?true : false));
+
+			CreateMap<Contract, ContractModel>()
                 .ForMember(p => p.A_DateOfBirth,options => options.MapFrom(c=>c.A_DateOfBirth.ToShortDateString()))
                 .ForMember(p => p.A_DateOfIssuance, options => options.MapFrom(c => c.A_DateOfIssuance.ToShortDateString()))
                 .ForMember(p => p.B_DateOfBirth, options => options.MapFrom(c => c.B_DateOfBirth.ToShortDateString()))
