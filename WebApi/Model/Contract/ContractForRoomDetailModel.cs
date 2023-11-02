@@ -5,6 +5,7 @@ using Domain.Entities;
 using Domain.Enum;
 using System.ComponentModel.DataAnnotations;
 using WebApi.Model.Invoice;
+using WebApi.Model.MemberModel;
 
 namespace WebApi.Model.Contract
 {
@@ -48,7 +49,7 @@ namespace WebApi.Model.Contract
 		public Tenant? Tenant { get; set; }
 
 		public ICollection<InvoiceModel> Invoices { get; set; }
-		public ICollection<Member> Members { get; set; }
+		public ICollection<MenberForDataTableModel> Members { get; set; }
 
 
 	}

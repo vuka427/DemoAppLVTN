@@ -2,6 +2,8 @@
 {
     public class MenberForDataTableModel
     {
+        public int Id { get; set; }
+        public int Index { get; set; }
         public string FullName { get; set; }
         public string DateOfBirth { get; set; }
         public string Cccd { get; set; }

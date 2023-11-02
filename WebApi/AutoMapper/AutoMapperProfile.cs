@@ -110,6 +110,12 @@ namespace WebApi.AutoMapper
             CreateMap<Member, MenberForDataTableModel>()
                 .ForMember(p=>p.RoomName,options=>options.MapFrom(s => "P."+ s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + s.Contract.AreaName))
                 .ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
+                .ForMember(p => p.DateOfBirth, options => options.MapFrom(c => c.DateOfBirth.ToShortDateString()))
+                .ForMember(p => p.DateOfIssuance, options => options.MapFrom(c => c.DateOfIssuance.ToShortDateString()))
+                .ForMember(p => p.DateOfBirth, options => options.MapFrom(c => c.DateOfBirth.ToShortDateString()))
+                .ForMember(p => p.DateOfIssuance, options => options.MapFrom(c => c.DateOfIssuance.ToShortDateString()))
+                .ForMember(p => p.CommencingOn, options => options.MapFrom(c => c.CommencingOn.ToShortDateString()))
+                .ForMember(p => p.EndingOn, options => options.MapFrom(c => c.EndingOn.ToShortDateString()))
                 ;
 
 		}

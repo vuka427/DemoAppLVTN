@@ -65,13 +65,18 @@ namespace WebApi.Controllers
 
             try
             {
-                var members = _contractService.GetMemberOfDataTable(landlord.Id, status,branchid);
+               
+
+                 var members =  _mapper.Map<List<MenberForDataTableModel>>(_contractService.GetMemberOfDataTable(landlord.Id, status,branchid));
+
+                int i = 1;
+                members.ForEach(m => { m.Index = 1; i++; }) ; 
 
                 if (!string.IsNullOrEmpty(param.search.value))
                 {
                     members = members.Where(m => m.FullName.Contains(param.search.value) ||
                                                  m.Cccd.Contains(param.search.value) ||
-                                                 m.Contract.RoomNumber.ToString().Contains(param.search.value)).ToList();
+                                                 m.RoomName.Contains(param.search.value)).ToList();
                 }
 
                 totalResultsCount = members.Count();
@@ -80,7 +85,7 @@ namespace WebApi.Controllers
 
                 filteredResultsCount = result.Count();
 
-                var Dataresult = _mapper.Map<List<MenberForDataTableModel>>(result);
+                
 
                 return Json(new
                 {
@@ -89,7 +94,7 @@ namespace WebApi.Controllers
                     draw = param.draw,
                     recordsTotal = totalResultsCount,
                     recordsFiltered = filteredResultsCount,
-                    data = Dataresult
+                    data = result
                 });
             }
             catch

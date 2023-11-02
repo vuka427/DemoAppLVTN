@@ -96,7 +96,6 @@ namespace Application.Implementation.ApplicationServices
 
                 try
                 {
-                    
                     foreach (var oldContractItem in room.Contracts)
                     {
                         if (oldContractItem != null && oldContractItem.Status == ContractStatus.Active)
@@ -111,7 +110,6 @@ namespace Application.Implementation.ApplicationServices
                     _roomRepository.Update(room);
                     _contractRepository.Add(contract);
                     
-
                     return new AppResult { Success = true, Message = "ok" };
                 }
                 catch
@@ -201,7 +199,7 @@ namespace Application.Implementation.ApplicationServices
         public ICollection<Member> GetMemberOfDataTable(int landlordId, string status, int branchid)
         {
             bool isActive = false;
-            isActive = (status =="Active") ? false : true;
+            isActive = (status =="deactive") ? false : true;
 
             var contract = _contractRepository.FindAll(c => c.LandlordId==landlordId, c => c.Members).ToList();
 
