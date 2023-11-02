@@ -147,8 +147,7 @@ namespace WebApi.Controllers
 				NewWaterNumber = model.NewWaterNumber,
 				OldElectricNumber = previousInvoice!=null ? previousInvoice.NewElectricNumber : 0,
 				OldWaterNumber = previousInvoice!= null ? previousInvoice.NewWaterNumber : 0,
-				ContractId = model.ContractId,
-				
+				ContractId = model.ContractId
 			};
 
 			if (model.Services!=null)

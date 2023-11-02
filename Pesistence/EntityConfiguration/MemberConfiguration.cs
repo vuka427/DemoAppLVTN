@@ -43,6 +43,13 @@ namespace Pesistence.EntityConfiguration
                .IsRequired()
 			   .HasColumnType("nvarchar")
 			   .HasMaxLength(256);
-		}
+            builder.Property(r => r.IsActive)
+             .HasDefaultValue(true)
+             .IsRequired();
+            builder.Property(r => r.IsRepresent)
+             .HasDefaultValue(false)
+             .IsRequired();
+
+        }
     }
 }

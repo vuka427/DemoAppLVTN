@@ -4,6 +4,7 @@ using Domain.Enum;
 using WebApi.Model.Branch;
 using WebApi.Model.Contract;
 using WebApi.Model.Invoice;
+using WebApi.Model.MemberModel;
 using WebApi.Model.Room;
 using WebApi.Model.RoomIndex;
 using WebApi.Model.User;
@@ -105,7 +106,11 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.Year, options => options.MapFrom(s => s.CreatedDate.Year))
 				.ForMember(p => p.Month, options => options.MapFrom(s => s.CreatedDate.Month))
 				;
-
+            //Member
+            CreateMap<Member, MenberForDataTableModel>()
+                .ForMember(p=>p.RoomName,options=>options.MapFrom(s => "P."+ s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + s.Contract.AreaName))
+                .ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
+                ;
 
 		}
     }

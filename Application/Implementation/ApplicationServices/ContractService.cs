@@ -23,16 +23,18 @@ namespace Application.Implementation.ApplicationServices
         private readonly IServiceRepository _serviceRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly IContractRepository _contractRepository;
+        private readonly IMemberRepository _memberRepository;
 
-        public ContractService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IContractRepository contractRepository)
+        public ContractService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IContractRepository contractRepository, IMemberRepository memberRepository)
         {
-            _unitOfWork = unitOfWork;
-            _branchRepository = branchRepository;
-            _areaRepository = areaRepository;
-            _landlordRepository = landlordRepository;
-            _serviceRepository = serviceRepository;
-            _roomRepository = roomRepository;
-            _contractRepository = contractRepository;
+            _unitOfWork=unitOfWork;
+            _branchRepository=branchRepository;
+            _areaRepository=areaRepository;
+            _landlordRepository=landlordRepository;
+            _serviceRepository=serviceRepository;
+            _roomRepository=roomRepository;
+            _contractRepository=contractRepository;
+            _memberRepository=memberRepository;
         }
 
         public AppResult CreateContract(int landlordId, Contract contract)
@@ -40,7 +42,6 @@ namespace Application.Implementation.ApplicationServices
 
             if (contract.RoomId != null)
             {
-
                 var room = _roomRepository.FindById(contract.RoomId.Value, r => r.Contracts);
                 if (room == null) { return new AppResult { Success = false, Message = "Không tìm thấy phòng!" }; }
                 var area = _areaRepository.FindById(room.AreaId);
@@ -69,8 +70,33 @@ namespace Application.Implementation.ApplicationServices
                 contract.UpdatedDate = DateTime.Now;
                 contract.UpdatedBy = landlord.User.UserName ?? "";
 
+                var member = new Member()
+                {
+                    FullName  = contract.B_Lessee,
+                    Gender = contract.B_Gender,
+                    DateOfBirth = contract.B_DateOfBirth,
+                    Cccd = contract.B_Cccd,
+                    DateOfIssuance = contract.B_DateOfIssuance,
+                    PlaceOfIssuance = contract.B_PlaceOfIssuance,
+                    IsRepresent = true,
+                    PermanentAddress = contract.B_PermanentAddress,
+                    Job = contract.B_Job,
+                    Phone = contract.B_Phone,
+                    IsActive = true,
+                    CommencingOn = contract.CommencingOn,
+                    EndingOn = contract.EndingOn,
+
+                    CreatedBy = contract.CreatedBy,
+                    CreatedDate = contract.CreatedDate,
+                    UpdatedBy = contract.UpdatedBy,
+                    UpdatedDate = contract.UpdatedDate,
+                };
+
+                contract.Members.Add(member);
+
                 try
                 {
+                    
                     foreach (var oldContractItem in room.Contracts)
                     {
                         if (oldContractItem != null && oldContractItem.Status == ContractStatus.Active)
@@ -84,6 +110,7 @@ namespace Application.Implementation.ApplicationServices
 
                     _roomRepository.Update(room);
                     _contractRepository.Add(contract);
+                    
 
                     return new AppResult { Success = true, Message = "ok" };
                 }
@@ -161,11 +188,8 @@ namespace Application.Implementation.ApplicationServices
                         room.Status = RoomStatus.Empty;
                         _roomRepository.Update(room);
                     }
-
                 }
               
-                
-
                 _contractRepository.Update(contract);
                 return true;
 			}
@@ -173,5 +197,48 @@ namespace Application.Implementation.ApplicationServices
             return false;
 			
 		}
-	}
+
+        public ICollection<Member> GetMemberOfDataTable(int landlordId, string status, int branchid)
+        {
+            bool isActive = false;
+            isActive = (status =="Active") ? false : true;
+
+            var contract = _contractRepository.FindAll(c => c.LandlordId==landlordId, c => c.Members).ToList();
+
+            if (contract == null)
+            {
+                return new List<Member>();
+            }
+
+            IEnumerable<Member> allIMember = new List<Member>();
+            IEnumerable<Member> Member = new List<Member>(); ;
+
+            if (branchid==0) //branch
+            {
+                allIMember = contract.SelectMany(c => c.Members);
+            }
+            else
+            {
+                allIMember = contract.Where(c => c.BranchId==branchid).SelectMany(c => c.Members);
+            }
+
+            if (status != "none" ) //status
+            {
+                Member = allIMember.Where(i => i.IsActive == isActive);
+            }
+            else
+            {
+                Member = allIMember; //all
+            }
+
+            foreach (var item in Member)
+            {
+                item.Contract = contract.FirstOrDefault(c => c.Id==item.ContractId);
+            }
+
+            return Member.OrderByDescending(i => i.CreatedDate).ToList();
+
+            
+        }
+    }
 }

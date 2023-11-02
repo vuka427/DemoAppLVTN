@@ -798,6 +798,9 @@ namespace Pesistence.Migrations
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
+                    b.Property<DateTime>("CommencingOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("ContractId")
                         .HasColumnType("int");
 
@@ -814,6 +817,9 @@ namespace Pesistence.Migrations
                     b.Property<DateTime>("DateOfIssuance")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("EndingOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -824,7 +830,17 @@ namespace Pesistence.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
                     b.Property<bool>("IsPermanent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsRepresent")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);

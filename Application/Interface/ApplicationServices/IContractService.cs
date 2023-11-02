@@ -14,7 +14,8 @@ namespace Application.Interface.ApplicationServices
 		Contract GetContractById(int landlordId, int contractId);
 		bool ContractToEnd(int landlordId, int contractId);
 		Contract GetContractByRoomId(int landlordId, int RoomId);
-		void SaveChanges();
+        ICollection<Member> GetMemberOfDataTable(int landlordId, string status, int branchid);
+        void SaveChanges();
         void Dispose();
     }
 }

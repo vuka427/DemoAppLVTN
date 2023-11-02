@@ -17,8 +17,12 @@ namespace Domain.Entities
 		public string Job { get; set; }
 		public string Phone { get; set; }
 		public bool Gender { get; set; }
+        public bool IsRepresent { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime CommencingOn { get; set; }
+        public DateTime EndingOn { get; set; }
 
-		public int ContractId { get; set; }
+        public int ContractId { get; set; }
         public Contract Contract { get; set; }
     }
 }
