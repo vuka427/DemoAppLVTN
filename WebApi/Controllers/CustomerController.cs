@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Application.Implementation.ApplicationServices;
 using WebApi.Model.Invoice;
 using WebApi.Model.MemberModel;
+using WebApi.Model.Member;
 
 namespace WebApi.Controllers
 {
@@ -67,7 +68,7 @@ namespace WebApi.Controllers
             {
                
 
-                 var members =  _mapper.Map<List<MenberForDataTableModel>>(_contractService.GetMemberOfDataTable(landlord.Id, status,branchid));
+                 var members =  _mapper.Map<List<MemberForDataTableModel>>(_contractService.GetMemberOfDataTable(landlord.Id, status,branchid));
 
                 int i = 1;
                 members.ForEach(m => { m.Index = 1; i++; }) ; 
@@ -101,9 +102,39 @@ namespace WebApi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get invoice!" });
             }
-
-
         }
+
+
+        [HttpPost]
+        [Route("create")]
+        public IActionResult CreateMember(MemberCreateModel model, int roomid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+
+            try
+            {
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
+            }
+        }
+
 
     }
 }

@@ -107,7 +107,7 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.Month, options => options.MapFrom(s => s.CreatedDate.Month))
 				;
             //Member
-            CreateMap<Member, MenberForDataTableModel>()
+            CreateMap<Member, MemberForDataTableModel>()
                 .ForMember(p=>p.RoomName,options=>options.MapFrom(s => "P."+ s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + s.Contract.AreaName))
                 .ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
                 .ForMember(p => p.DateOfBirth, options => options.MapFrom(c => c.DateOfBirth.ToShortDateString()))

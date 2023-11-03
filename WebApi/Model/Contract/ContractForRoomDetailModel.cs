@@ -49,7 +49,7 @@ namespace WebApi.Model.Contract
 		public Tenant? Tenant { get; set; }
 
 		public ICollection<InvoiceModel> Invoices { get; set; }
-		public ICollection<MenberForDataTableModel> Members { get; set; }
+		public ICollection<MemberForDataTableModel> Members { get; set; }
 
 
 	}

@@ -238,5 +238,33 @@ namespace Application.Implementation.ApplicationServices
 
             
         }
+
+        public AppResult CreateMember(int landlordId, int RoomId, Member member)
+        {
+
+            var room = _roomRepository.FindById(RoomId, r => r.Contracts);
+            if (room == null) { return new AppResult { Success = false, Message = "Lỗi không tìm thấy phòng !" }; }
+            var contract = room.Contracts.FirstOrDefault(r => r.Status == ContractStatus.Active && r.LandlordId == landlordId);
+            if (contract == null) { return new AppResult { Success = false, Message = "Lỗi không tìm thấy hợp đồng !" }; }
+
+            var currentMember = _memberRepository.FindAll(m => m.ContractId==contract.Id && m.IsActive == true);
+
+            if (currentMember == null) { { return new AppResult { Success = false, Message = "Lỗi không tìm thấy hợp đồng !" }; } }
+
+            if(currentMember.Count() >= room.MaxMember) { return new AppResult { Success = false, Message = "Phòng đã đủ số thành viên !" }; }
+
+            member.IsActive = true;
+            member.ContractId = contract.Id;
+            member.IsRepresent =false;
+            member.CreatedDate = DateTime.Now;
+            member.CreatedBy =contract.CreatedBy;
+            member.UpdatedDate = DateTime.Now;
+            member.UpdatedBy=contract.UpdatedBy;
+
+            _memberRepository.Add(member);
+
+
+            return new AppResult { Success = true, Message = "Ok!" };
+        }
     }
 }

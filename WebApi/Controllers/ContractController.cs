@@ -170,7 +170,7 @@ namespace WebApi.Controllers
             }
             catch
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create contract!" });
             }
         }
 
