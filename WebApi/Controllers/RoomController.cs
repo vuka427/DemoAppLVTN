@@ -103,7 +103,10 @@ namespace WebApi.Controllers
 					}
 				}
 
-				return Ok(roomResult);
+                roomResult.CurrentMember = room.Contracts.FirstOrDefault() !=null? room.Contracts.FirstOrDefault().Members.Count() : 1;
+
+
+                return Ok(roomResult);
 			}
 			catch
 			{

@@ -855,6 +855,9 @@ namespace Pesistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar");
 
+                    b.Property<DateTime>("PermanentDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(10)

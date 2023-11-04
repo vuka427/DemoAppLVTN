@@ -13,6 +13,7 @@ using Application.Implementation.ApplicationServices;
 using WebApi.Model.Invoice;
 using WebApi.Model.MemberModel;
 using WebApi.Model.Member;
+using AutoMapper.Execution;
 
 namespace WebApi.Controllers
 {
@@ -125,13 +126,60 @@ namespace WebApi.Controllers
             }
 
 
+            
+
             try
             {
+
+                var member = _mapper.Map<Domain.Entities.Member>(model);
+
+                var createResult = _contractService.CreateMember(landlordId, roomid, member);
+
+                _contractService.SaveChanges();
+
+                if (!createResult.Success)
+                {
+
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create member!" });
+                }
                 return Ok();
             }
             catch
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create branch!" });
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create memberr!" });
+            }
+        }
+
+        [HttpPut]
+        [Route("leave")]
+        public IActionResult MemberLeave( int roomid,int memberid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var leaveResult = _contractService.MemberLeave(landlordId, memberid, true);
+                if(!leaveResult.Success) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't update member!" }); }
+                _contractService.SaveChanges();
+
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't update member!" });
             }
         }
 

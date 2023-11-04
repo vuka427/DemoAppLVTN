@@ -266,5 +266,27 @@ namespace Application.Implementation.ApplicationServices
 
             return new AppResult { Success = true, Message = "Ok!" };
         }
+
+        public AppResult MemberLeave(int landlordId, int memberId, bool status)
+        {
+
+            var member = _memberRepository.FindById(memberId, m=>m.Contract);
+            if (member == null) { return new AppResult { Success = false, Message = "Lỗi không tìm thấy thành viên !" }; }
+            if (member.Contract.LandlordId != landlordId) { return new AppResult { Success = false, Message = "Lỗi không tìm thấy thành viên !" }; }
+            if (status)
+            {
+                member.IsActive = false;
+                member.UpdatedDate= DateTime.Now;
+            }
+            else
+            {
+                member.IsActive = true;
+                member.UpdatedDate= DateTime.Now;
+            }
+            _memberRepository.Update(member);
+           
+
+            return new AppResult { Success = true, Message = "Ok!" };
+        }
     }
 }

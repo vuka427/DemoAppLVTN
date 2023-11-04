@@ -150,7 +150,12 @@ namespace Application.Implementation.ApplicationServices
             room.Contracts.Clear(); 
             if (contract != null) { 
                   var ContractActice = _contractRepository.FindById(contract.Id,c=>c.Members, contract=>contract.Invoices, c=>c.Tenant);
-                  if (ContractActice != null) { room.Contracts.Add(ContractActice);}
+                 
+
+                  if (ContractActice != null) {
+                        ContractActice.Members = ContractActice.Members.Where(m=>m.IsActive== true).ToList();
+                        room.Contracts.Add(ContractActice);
+                }
             }
           
 			var area = _areaRepository.FindById(room.AreaId);

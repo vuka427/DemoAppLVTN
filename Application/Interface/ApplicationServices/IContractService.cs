@@ -16,6 +16,7 @@ namespace Application.Interface.ApplicationServices
 		Contract GetContractByRoomId(int landlordId, int RoomId);
         ICollection<Member> GetMemberOfDataTable(int landlordId, string status, int branchid);
         AppResult CreateMember(int landlordId, int RoomId, Member member);
+        AppResult MemberLeave(int landlordId, int memberId, bool status);
         void SaveChanges();
         void Dispose();
     }

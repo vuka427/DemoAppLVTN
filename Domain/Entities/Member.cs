@@ -14,7 +14,8 @@ namespace Domain.Entities
         public string PlaceOfIssuance { get; set; }
         public string PermanentAddress { get; set; }
 		public bool IsPermanent { get; set; }
-		public string Job { get; set; }
+        public DateTime PermanentDate { get; set; }
+        public string Job { get; set; }
 		public string Phone { get; set; }
 		public bool Gender { get; set; }
         public bool IsRepresent { get; set; }

@@ -4,6 +4,7 @@ using Domain.Enum;
 using WebApi.Model.Branch;
 using WebApi.Model.Contract;
 using WebApi.Model.Invoice;
+using WebApi.Model.Member;
 using WebApi.Model.MemberModel;
 using WebApi.Model.Room;
 using WebApi.Model.RoomIndex;
@@ -118,6 +119,10 @@ namespace WebApi.AutoMapper
                 .ForMember(p => p.EndingOn, options => options.MapFrom(c => c.EndingOn.ToShortDateString()))
                 ;
 
-		}
+            CreateMap<MemberCreateModel, Member>()
+                .ForMember(p => p.Gender, options => options.MapFrom(c => c.Gender=="female" ? false : true))
+                .ForMember(p => p.IsPermanent, options => options.MapFrom(c => c.IsPermanent=="yes" ? true : false));
+
+        }
     }
 }
