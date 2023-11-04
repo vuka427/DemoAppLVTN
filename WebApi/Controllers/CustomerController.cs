@@ -68,11 +68,10 @@ namespace WebApi.Controllers
             try
             {
                
-
                  var members =  _mapper.Map<List<MemberForDataTableModel>>(_contractService.GetMemberOfDataTable(landlord.Id, status,branchid));
 
                 int i = 1;
-                members.ForEach(m => { m.Index = 1; i++; }) ; 
+                members.ForEach(m => { m.Index = i; i++; }) ; 
 
                 if (!string.IsNullOrEmpty(param.search.value))
                 {

@@ -155,7 +155,7 @@ namespace Application.Implementation.ApplicationServices
                   if (ContractActice != null) {
                         ContractActice.Members = ContractActice.Members.Where(m=>m.IsActive== true).ToList();
                         room.Contracts.Add(ContractActice);
-                }
+                   }
             }
           
 			var area = _areaRepository.FindById(room.AreaId);
