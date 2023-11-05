@@ -60,7 +60,6 @@ namespace WebApi.Controllers
 				return Unauthorized();
 			}
 
-			
 			var invoice = _invoiceService.GetInvoice(landlordId,roomid,DateTime.Now);
 
 			var contract = _contractService.GetContractByRoomId(landlordId,roomid);

@@ -183,5 +183,116 @@ namespace WebApi.Controllers
         }
 
 
+
+        [HttpDelete]
+        [Route("delete")]
+        public IActionResult DeleteMember(int memberid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var leaveResult = _contractService.DeleteMember(landlordId, memberid);
+                if (!leaveResult.Success) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't delete member!" }); }
+                _contractService.SaveChanges();
+
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't delete member!" });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("detail")]
+        public IActionResult GetMember(int memberid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var member = _contractService.GetMemberById(landlordId, memberid);
+                if (member == null) { return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = " Không thể tìm thấy khách trọ !" }); }
+                var memberResult = _mapper.Map<MemberViewModel>(member);
+                return Ok(memberResult);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create memberr!" });
+            }
+        }
+
+
+        [HttpPut]
+        [Route("update")]
+        public IActionResult UpdateMember(MemberCreateModel model, int roomid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+
+            try
+            {
+
+                var member = _mapper.Map<Domain.Entities.Member>(model);
+
+                var createResult = _contractService.UpdateMember(landlordId, member);
+
+                _contractService.SaveChanges();
+
+                if (!createResult.Success)
+                {
+
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = createResult.Message });
+                }
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't update memberr!" });
+            }
+        }
+
+
     }
 }

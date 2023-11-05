@@ -288,5 +288,56 @@ namespace Application.Implementation.ApplicationServices
 
             return new AppResult { Success = true, Message = "Ok!" };
         }
+
+        public AppResult DeleteMember(int landlordId, int memberId)
+        {
+            var member = _memberRepository.FindById(memberId, m => m.Contract);
+            if (member == null) { return new AppResult { Success = false, Message = "Lỗi không tìm thấy thành viên !" }; }
+            if (member.Contract.LandlordId != landlordId) { return new AppResult { Success = false, Message = "Lỗi không tìm thấy thành viên !" }; }
+          
+
+            if(!member.IsRepresent) {
+                _memberRepository.Remove(member);
+            }
+            else
+            {
+                return new AppResult { Success = false, Message = "Lỗi không thế xóa người đại diện thuê phòng !" };
+            }
+            
+
+
+            return new AppResult { Success = true, Message = "Ok!" };
+        }
+
+        public AppResult UpdateMember(int landlordId, Member member)
+        {
+            var curentMember = _memberRepository.FindById(member.Id, m => m.Contract);
+            if (curentMember == null) { return new AppResult { Success = false, Message = "Lỗi không tìm thấy thành viên !" }; }
+            if (curentMember.Contract.LandlordId != landlordId) { return new AppResult { Success = false, Message = "Lỗi không tìm thấy thành viên !" }; }
+            
+            if(curentMember.IsActive == false) { return new AppResult { Success = false, Message = "khách trọ đã rời đi, không thể cập nhật thông tin !" }; }
+
+            member.IsActive = true;
+            member.ContractId = curentMember.ContractId;
+            member.CreatedBy = curentMember.CreatedBy;
+            member.UpdatedBy = curentMember.UpdatedBy;
+            member.CreatedDate = curentMember.CreatedDate;
+            member.UpdatedDate = DateTime.Now;
+            member.IsRepresent = curentMember.IsRepresent;
+               
+            
+            _memberRepository.Update(member);
+
+
+            return new AppResult { Success = true, Message = "Ok!" };
+        }
+
+        public Member GetMemberById(int landlordId, int memberId)
+        {
+            var member = _memberRepository.FindById(memberId, m => m.Contract);
+            if (member == null) { return null; }
+            if (member.Contract.LandlordId != landlordId) { return null; }
+            return member;
+        }
     }
 }

@@ -17,6 +17,9 @@ namespace Application.Interface.ApplicationServices
         ICollection<Member> GetMemberOfDataTable(int landlordId, string status, int branchid);
         AppResult CreateMember(int landlordId, int RoomId, Member member);
         AppResult MemberLeave(int landlordId, int memberId, bool status);
+        AppResult DeleteMember(int landlordId, int memberId);
+        AppResult UpdateMember(int landlordId, Member member);
+        Member GetMemberById(int landlordId, int memberId);
         void SaveChanges();
         void Dispose();
     }
