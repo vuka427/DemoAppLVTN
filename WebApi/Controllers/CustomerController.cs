@@ -253,7 +253,7 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Route("update")]
-        public IActionResult UpdateMember(MemberCreateModel model, int roomid)
+        public IActionResult UpdateMember(MemberCreateModel model)
         {
             var Identity = HttpContext.User;
             string CurrentUserId = "";

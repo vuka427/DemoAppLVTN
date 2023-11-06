@@ -175,7 +175,7 @@ namespace Application.Implementation.ApplicationServices
 
 		public bool ContractToEnd(int landlordId, int contractId)
 		{
-			var contract = _contractRepository.FindById(contractId,c=>c.Room);
+			var contract = _contractRepository.FindById(contractId,c=>c.Room ,c=>c.Members);
 			if (contract != null && contract.LandlordId == landlordId)
 			{
                 contract.Status = ContractStatus.Expirat;
@@ -187,6 +187,19 @@ namespace Application.Implementation.ApplicationServices
                         _roomRepository.Update(room);
                     }
                 }
+
+                if (contract.Members.Count>0)
+                {
+                    foreach (var member in contract.Members) {
+                        member.IsActive =false;
+                        member.EndingOn = DateTime.Now;
+                        member.UpdatedDate = DateTime.Now;
+
+                        _memberRepository.Update(member);
+                    }
+                    
+                }
+
               
                 _contractRepository.Update(contract);
                 return true;
@@ -277,6 +290,7 @@ namespace Application.Implementation.ApplicationServices
             {
                 member.IsActive = false;
                 member.UpdatedDate= DateTime.Now;
+                member.EndingOn = DateTime.Now;
             }
             else
             {
@@ -317,16 +331,22 @@ namespace Application.Implementation.ApplicationServices
             
             if(curentMember.IsActive == false) { return new AppResult { Success = false, Message = "khách trọ đã rời đi, không thể cập nhật thông tin !" }; }
 
-            member.IsActive = true;
-            member.ContractId = curentMember.ContractId;
-            member.CreatedBy = curentMember.CreatedBy;
-            member.UpdatedBy = curentMember.UpdatedBy;
-            member.CreatedDate = curentMember.CreatedDate;
-            member.UpdatedDate = DateTime.Now;
-            member.IsRepresent = curentMember.IsRepresent;
-               
             
-            _memberRepository.Update(member);
+            curentMember.FullName = member.FullName;
+            curentMember.DateOfBirth = member.DateOfBirth;
+            curentMember.Gender = member.Gender;
+            curentMember.Phone = member.Phone;
+            curentMember.Job = member.Job;
+            curentMember.CommencingOn = member.CommencingOn;
+            curentMember.Cccd = member.Cccd;
+            curentMember.PlaceOfIssuance = member.PlaceOfIssuance;
+            curentMember.DateOfIssuance = member.DateOfIssuance;
+            curentMember.PermanentAddress = member.PermanentAddress;
+            curentMember.IsPermanent = member.IsPermanent;
+            curentMember.PermanentDate = member.PermanentDate;
+            curentMember.UpdatedDate = DateTime.Now;
+            
+            _memberRepository.Update(curentMember);
 
 
             return new AppResult { Success = true, Message = "Ok!" };

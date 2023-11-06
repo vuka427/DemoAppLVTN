@@ -115,7 +115,6 @@ namespace Application.Implementation.ApplicationServices
             if (deletebranch.Services != null && deletebranch.Services.Count > 0)
             {
                 _serviceRepository.RemoveMultiple(deletebranch.Services.ToList());
-
             }
             _branchRepository.Remove(deletebranch);
 
@@ -239,5 +238,8 @@ namespace Application.Implementation.ApplicationServices
                 return new AppResult { Success = false, Message = "Không thêm được khu vực!" };
             }
         }
+
+
+
     }
 }

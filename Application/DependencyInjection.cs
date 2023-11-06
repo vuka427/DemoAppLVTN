@@ -22,8 +22,9 @@ namespace Application
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<IContractService, ContractService>();
 			services.AddTransient<IInvoiceService, InvoiceService>();
+            services.AddTransient<IStatisticService ,StatisticService>();
 
 
-		}
+        }
     }
 }

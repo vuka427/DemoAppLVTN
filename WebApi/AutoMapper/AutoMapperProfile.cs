@@ -74,7 +74,6 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.CommencingOn, options => options.MapFrom(c => c.CommencingOn.ToShortDateString()))
 				.ForMember(p => p.EndingOn, options => options.MapFrom(c => c.EndingOn.ToShortDateString()))
 				.ForMember(p => p.HouseType, options => options.MapFrom(s => s.HouseType==HouseType.Row ? "row" : "floor"))
-
 				 ;
 			
 			CreateMap<Contract, ContractForRoomDetailModel>()
@@ -84,7 +83,6 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.CommencingOn, options => options.MapFrom(c => c.CommencingOn.ToShortDateString()))
 				.ForMember(p => p.EndingOn, options => options.MapFrom(c => c.EndingOn.ToShortDateString()))
 				.ForMember(p => p.HouseType, options => options.MapFrom(s => s.HouseType==HouseType.Row ? "row" : "floor"))
-
 				 ;
 
 			// invoice 
@@ -99,6 +97,7 @@ namespace WebApi.AutoMapper
                 .ForMember(p => p.RoomNumber , options => options.MapFrom(s =>"P."+ s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row)? ", dãy " : ", tầng ") + s.Contract.AreaName   ))
 				.ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
 				;
+
 			CreateMap<Invoice, InvoiceDetailModel>()
 				.ForMember(p => p.Lessee, options => options.MapFrom(s => s.Contract.B_Lessee))
 				.ForMember(p => p.RoomNumber, options => options.MapFrom(s =>  s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + s.Contract.AreaName))
@@ -107,6 +106,7 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.Year, options => options.MapFrom(s => s.CreatedDate.Year))
 				.ForMember(p => p.Month, options => options.MapFrom(s => s.CreatedDate.Month))
 				;
+
             //Member
             CreateMap<Member, MemberForDataTableModel>()
                 .ForMember(p=>p.RoomName,options=>options.MapFrom(s => "P."+ s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + s.Contract.AreaName))
@@ -118,10 +118,10 @@ namespace WebApi.AutoMapper
                 .ForMember(p => p.CommencingOn, options => options.MapFrom(c => c.CommencingOn.ToShortDateString()))
                 .ForMember(p => p.EndingOn, options => options.MapFrom(c => c.EndingOn.ToShortDateString()))
                 ;
+
             CreateMap<Member, MemberViewModel>()
                 .ForMember(p => p.RoomName, options => options.MapFrom(s => "P."+ s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + s.Contract.AreaName))
                 .ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
-               
                 ;
 
             CreateMap<MemberCreateModel, Member>()
