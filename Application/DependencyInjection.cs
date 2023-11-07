@@ -23,6 +23,7 @@ namespace Application
             services.AddTransient<IContractService, ContractService>();
 			services.AddTransient<IInvoiceService, InvoiceService>();
             services.AddTransient<IStatisticService ,StatisticService>();
+            services.AddTransient< IEmailService, EmailService >();
 
 
         }

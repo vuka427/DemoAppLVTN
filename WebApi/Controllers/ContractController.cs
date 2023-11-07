@@ -35,10 +35,10 @@ namespace WebApi.Controllers
         private readonly IMapper _mapper;
         private readonly IContractService _contractService;
         private readonly IBoundaryService _boundaryService;
-        private readonly IEmailService _mailService;
+        private readonly ISendMailService _mailService;
        
 
-        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService, IEmailService mailService)
+        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService, ISendMailService mailService)
         {
             _branchService=branchService;
             _userManager=userManager;

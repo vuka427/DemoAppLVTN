@@ -27,7 +27,7 @@ namespace Pesistence.EmailService
 
 
 
-    public class EmailSender : IEmailService
+    public class EmailSender : ISendMailService
     {
         private readonly MailSettings mailSettings;
 

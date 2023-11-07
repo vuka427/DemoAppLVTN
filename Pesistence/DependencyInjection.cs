@@ -40,7 +40,7 @@ namespace Pesistence
             services.AddTransient<ITenantRepository, TenantRepository>();
 
             //add email service
-            services.AddTransient<IEmailService, EmailSender>();
+            services.AddTransient<ISendMailService, EmailSender>();
         }
     } 
 }

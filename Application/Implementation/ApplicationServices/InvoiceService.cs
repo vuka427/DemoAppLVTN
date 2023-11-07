@@ -23,20 +23,22 @@ namespace Application.Implementation.ApplicationServices
 		private readonly IRoomRepository _roomRepository;
 		private readonly IInvoiceRepository _invoiceRepository;
 		private readonly IContractRepository _contractRepository;
+		private readonly IEmailService _emailService;
 
-		public InvoiceService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IInvoiceRepository invoiceRepository, IContractRepository contractRepository)
-		{
-			_unitOfWork=unitOfWork;
-			_branchRepository=branchRepository;
-			_areaRepository=areaRepository;
-			_landlordRepository=landlordRepository;
-			_serviceRepository=serviceRepository;
-			_roomRepository=roomRepository;
-			_invoiceRepository=invoiceRepository;
-			_contractRepository=contractRepository;
-		}
+        public InvoiceService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IInvoiceRepository invoiceRepository, IContractRepository contractRepository, IEmailService emailService)
+        {
+            _unitOfWork=unitOfWork;
+            _branchRepository=branchRepository;
+            _areaRepository=areaRepository;
+            _landlordRepository=landlordRepository;
+            _serviceRepository=serviceRepository;
+            _roomRepository=roomRepository;
+            _invoiceRepository=invoiceRepository;
+            _contractRepository=contractRepository;
+            _emailService=emailService;
+        }
 
-		public AppResult CreateInvoice(int landlordId, int roomid, DateTime date, Invoice invoice)
+        public AppResult CreateInvoice(int landlordId, int roomid, DateTime date, Invoice invoice)
 		{
 			var room = _roomRepository.FindById(roomid, r => r.Contracts);
 			if (room == null) { return new AppResult { Success = false, Message = "Lỗi không lập được hóa đơn !" }; }
@@ -71,6 +73,8 @@ namespace Application.Implementation.ApplicationServices
 
 				_invoiceRepository.Add(invoice);
 
+				_emailService.SendMailCreateInvoice("atrox427@gmail.com", "adsadas",contract,invoice) ;
+
 			}
 			else
 			{
@@ -92,9 +96,10 @@ namespace Application.Implementation.ApplicationServices
 
 				currentInvoice.TotalPrice = servicePrice + contract.RentalPrice + (currentInvoice.NewElectricNumber-currentInvoice.OldElectricNumber)*contract.ElectricityCosts + (currentInvoice.NewWaterNumber - currentInvoice.OldWaterNumber)*contract.WaterCosts;
 
-				_invoiceRepository.Update(currentInvoice); 
+				_invoiceRepository.Update(currentInvoice);
+                _emailService.SendMailCreateInvoice("atrox427@gmail.com", "adsadas", contract, invoice);
 
-			}
+            }
 
 			return new AppResult { Success = false, Message = "Lỗi không lập được hóa đơn !" };
 		}
