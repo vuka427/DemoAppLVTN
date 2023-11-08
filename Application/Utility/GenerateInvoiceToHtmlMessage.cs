@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.ExtendMethods;
+using Domain.Entities;
+using Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +13,7 @@ namespace Application.Utility
         {
             StringBuilder Html = new StringBuilder();
 
-            Html.Append(@$" <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
+            Html.Append(@$" <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" >
                             <html xmlns=""http://www.w3.org/1999/xhtml"" xmlns:v=""urn:schemas-microsoft-com:vml"" xmlns:o=""urn:schemas-microsoft-com:office:office"">
 
                             <body class=""body"" style=""padding:0 !important; margin:0 !important; display:block !important; min-width:100% !important; width:100% !important; background:#f4f4f4; -webkit-text-size-adjust:none;"">
@@ -29,15 +31,15 @@ namespace Application.Utility
 										<table width=""100%"" border=""0"" cellspacing=""0"" cellpadding=""0"">
 											<tr>
 												<td  class="""" style=""font-size:16pt; font-weight:bold; text-align:left;"">Hệ thống quản lý phòng trọ</td>
-												<td class="""" style=""font-size:10pt;font-weight:bold; text-align:left;"">Nhà trọ XXX</td>
+												<td class="""" style=""font-size:10pt;font-weight:bold; text-align:left;"">Nhà trọ {contract.BranchName}</td>
 											</tr>
 											<tr>
 												<td  class="""" style=""font-size:16pt; font-weight:bold;text-align:left;""></td>
-												<td class="""" style=""font-size:10pt; text-align:left;"">Địa chỉ : </td>
+												<td class="""" style=""font-size:10pt; text-align:left;"">Địa chỉ : {contract.BranchAddress}</td>
 											</tr>
 											<tr>
 												<td  class="""" style=""font-size:16pt; font-weight:bold;  text-align:left;""></td>
-												<td class="""" style=""font-size:10pt; text-align:left;"">Số điện thoại : </td>
+												<td class="""" style=""font-size:10pt; text-align:left;"">Liên hệ : {contract.A_Phone}</td>
 											</tr>
 										</table>
 									</td>
@@ -45,7 +47,7 @@ namespace Application.Utility
 							</table>
 							<!-- END Header -->
                             ");
-
+            string houseType = (contract.HouseType==HouseType.Row) ? "dãy" : "tầng";
             Html.Append(@$"<!-- giới thiệu -->
 							<table width=""100%"" border=""0"" cellspacing=""0"" cellpadding=""0"">
 								<tr>
@@ -53,25 +55,25 @@ namespace Application.Utility
 										<table width=""100%"" border=""0"" cellspacing=""0"" cellpadding=""0"">
 											<tr>
 												<td class=""h3"" style="" padding-bottom: 10px; color:#333333; font-weight:bold; font-family:'Montserrat', Arial, sans-serif; font-size:20px; line-height:25px; text-align:center;"">
-												Thông báo tiền trọ tháng 10
+												Thông báo tiền trọ tháng {invoice.CreatedDate.Month} 
 												</td>
 											</tr>
 											<tr>
 												<td class=""h3"" style="" padding-bottom: 20px; color:#333333;  font-family:'Montserrat', Arial, sans-serif; font-size:20px; line-height:25px; text-align:center;"">
-												phòng 2.4
+												phòng { contract.RoomNumber }, {houseType} {contract.AreaName}
 												</td>
 											</tr>
 											<tr>
 												<td class=""h4"" style=""padding-bottom: 0px; color:#333333; font-family:'Montserrat', Arial, sans-serif; font-size:16px; line-height:10px; text-align:left;"">
 												<multiline>
-												Xin chào, tên j đó
+												Xin chào, {contract.B_Lessee.ToUpper()}!
 												</multiline>
 												</td>
 											</tr>
 											<tr>
 												<td class=""text"" style=""padding-bottom: 10px; color:#555555; font-family:Arial, sans-serif; font-size:15px; line-height:30px; text-align:left; min-width:auto !important;"">
 													<multiline>
-													   Nhà trọ xxx , xin thông báo tiền thuê phòng tháng 10  của quý khách là <span style=""color: red"">11,000,000</span>  vnd. <br>
+													   Nhà trọ {contract.BranchName} , xin thông báo tiền thuê phòng tháng {invoice.CreatedDate.Month}   của quý khách là <span style=""color: red"">{invoice.TotalPrice.ToPriceUnitVND("")}</span>  VND. <br>
 													   Xin quý khách vui lòng thanh toán đúng hẹn ! <br>
 													   Rất mong nhận được sự hợp tác của quý đối tác khách hàng.<br>
 														Xin chân thành cảm ơn!
@@ -93,36 +95,78 @@ namespace Application.Utility
 							</table>
 							<!-- giới thiệu -->
                             ");
+
             Html.Append(@$"<!-- CTA -->
 							
-							<table width=""100%"" border=""0"" cellspacing=""0"" cellpadding=""0"">
-								<table   width=""100%"" style="" text-align: left; color: black);background-color: #f4f4f4;font-size: 16px; border: 1px solid black; border-collapse: collapse;"">
+							<table  width=""100%"" border=""0"" cellspacing=""0"" cellpadding=""0"" style=""border-spacing: 0px !important;"" >
+								<table   width=""100%"" style="" text-align: left; color: black);background-color: #f4f4f4;font-size: 16px; border: 1px solid black; border-collapse: collapse !important; border-spacing: 0px !important;"">
 								<thead style=""  border: 1px solid black;"">
 									<tr style=""  border: 1px solid black;"">
-										<th style=""text-align: -webkit-match-parent ;border: 1px solid black; border-collapse: collapse;"">STT</th>
-										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse;"">Tên dịch vụ</th>
-										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse;"">Chỉ số đầu</th>
-										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse;"">Chỉ số cuối</th>
-										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse;"">Số lượng</th>
-										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse;"">Đơn giá</th>
-										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse;"">Thành tiền</th>
+										<th style=""text-align: -webkit-match-parent ;border: 1px solid black; border-collapse: collapse !important;"">STT</th>
+										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse !important;"">Tên dịch vụ</th>
+										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse !important;"">Chỉ số đầu</th>
+										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse !important;"">Chỉ số cuối</th>
+										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse !important;"">Số lượng</th>
+										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse !important;"">Đơn giá</th>
+										<th style=""text-align: -webkit-match-parent; border: 1px solid black; border-collapse: collapse !important;"">Thành tiền</th>
 									</tr>
 								</thead>
 								<tbody>
-									
-									<tr>
-										<td style=""border: 1px solid black; border-collapse: collapse;"">2</td>
-										<td style=""border: 1px solid black; border-collapse: collapse;"">Ti&ecirc;̀n đi&ecirc;̣n</td>
-										<td style=""border: 1px solid black; border-collapse: collapse;"">0</td>
-										<td style=""border: 1px solid black; border-collapse: collapse;"">4</td>
-										<td style=""border: 1px solid black; border-collapse: collapse;"">4 (Kwh)</td>
-										<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse; "">7.000&nbsp;₫</td>
-										<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse;"">28.000&nbsp;₫</td>
-									</tr>
-									
-									<tr>
+                            ");
+            Html.Append(@$" <tr>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">1</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">Tiền phòng</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">0</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">0</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">1</td>
+								<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse !important; ""> {contract.RentalPrice}₫</td>
+								<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse !important; ""> {contract.RentalPrice}₫</td>
+							</tr>		
+						");
+            Html.Append(@$" <tr>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">2</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">Tiền điện</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">{invoice.OldElectricNumber}</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">{invoice.NewElectricNumber}</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">{invoice.NewElectricNumber - invoice.OldElectricNumber} (Kwh)</td>
+								<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse !important; "">{invoice.ElectricityCosts.ToPriceUnitVND("")} ₫</td>
+								<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse !important; "">{((invoice.NewElectricNumber - invoice.OldElectricNumber) * invoice.ElectricityCosts).ToPriceUnitVND("")} ₫</td>
+							</tr>		
+						");
+
+            Html.Append(@$" <tr>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">3</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">Tiền nước</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">{invoice.OldWaterNumber}</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">{invoice.NewWaterNumber}</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">{invoice.NewWaterNumber - invoice.OldWaterNumber} (m<sup>2</sup>)</td>
+								<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse !important; "">{invoice.WaterCosts.ToPriceUnitVND("")} ₫</td>
+								<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse !important; "">{((invoice.NewWaterNumber - invoice.OldWaterNumber) * invoice.WaterCosts).ToPriceUnitVND("")} ₫</td>
+							</tr>		
+						");
+
+			int index = 4;
+            // duyệt trong invoice ra 
+            foreach (var serviceItem in invoice.ServiceItems)
+			{
+                Html.Append(@$" <tr>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">{index}</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">{serviceItem.ServiceName}</td>
+								<td colspan=""2"" style=""border: 1px solid black; border-collapse: collapse !important;""> <small>ghi chú :</small>{serviceItem.Description}</td>
+								<td style=""border: 1px solid black; border-collapse: collapse !important;"">{serviceItem.Quantity}</td>
+								<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse !important; "">{serviceItem.Price.ToPriceUnitVND("")} ₫</td>
+								<td style=""text-align: right !important; border: 1px solid black; border-collapse: collapse !important;""> {(serviceItem.Price*serviceItem.Quantity).ToPriceUnitVND("")}₫</td>
+							</tr>		
+						");
+
+				index++;
+            }
+
+            
+           
+            Html.Append(@$"<tr>
 										
-										<td colspan=""7"" style="" text-align: right !important;border: 1px solid black; border-collapse: collapse;"">Tổng : 6550.000 ₫</td>
+										<td colspan=""7"" style="" text-align: right !important;border: 1px solid black; border-collapse: collapse !important;"">Tổng : {invoice.TotalPrice.ToPriceUnitVND("")} VND</td>
 									</tr>
 								</tbody>
 							</table>
@@ -130,7 +174,10 @@ namespace Application.Utility
 									
 						
 							<!-- END CTA -->
+
                             ");
+
+
 
             Html.Append(@$"<!-- Footer -->
 							<table width=""100%"" border=""0"" cellspacing=""0"" cellpadding=""0"">
@@ -177,11 +224,8 @@ namespace Application.Utility
 							</table>
 						</body>
 						</html>
-                            ");
-            Html.Append(@$"
-                            ");
-            Html.Append(@$"
-                            ");
+                      ");
+           
 
             return Html.ToString();
 

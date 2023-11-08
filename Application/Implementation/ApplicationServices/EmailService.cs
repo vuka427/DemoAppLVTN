@@ -33,6 +33,9 @@ namespace Application.Implementation.ApplicationServices
 
             var result =  _sendMailService.SendEmailAsync(email,"Thông báo tiền trọ", htmlMessage);
 
+           
+
+
             return new AppResult {Success = true , Message="ok" };
         }
 

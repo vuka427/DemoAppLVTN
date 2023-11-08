@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Application.Implementation.ApplicationServices
 {
@@ -73,7 +74,13 @@ namespace Application.Implementation.ApplicationServices
 
 				_invoiceRepository.Add(invoice);
 
-				_emailService.SendMailCreateInvoice("atrox427@gmail.com", "adsadas",contract,invoice) ;
+				Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice("atrox427@gmail.com", "adsadas", contract, invoice); };
+
+                Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
+
+				task.Start();
+
+               
 
 			}
 			else
@@ -83,8 +90,10 @@ namespace Application.Implementation.ApplicationServices
 				currentInvoice.NewElectricNumber = invoice.NewElectricNumber;
 				currentInvoice.NewWaterNumber = invoice.NewWaterNumber;
 				currentInvoice.ServiceItems = invoice.ServiceItems;
+                currentInvoice.ElectricityCosts = contract.ElectricityCosts;
+                currentInvoice.WaterCosts = contract.WaterCosts;
 
-				decimal servicePrice = 0;
+                decimal servicePrice = 0;
 				foreach (var item in currentInvoice.ServiceItems)
 				{
 					servicePrice += item.Price * item.Quantity;
@@ -97,7 +106,12 @@ namespace Application.Implementation.ApplicationServices
 				currentInvoice.TotalPrice = servicePrice + contract.RentalPrice + (currentInvoice.NewElectricNumber-currentInvoice.OldElectricNumber)*contract.ElectricityCosts + (currentInvoice.NewWaterNumber - currentInvoice.OldWaterNumber)*contract.WaterCosts;
 
 				_invoiceRepository.Update(currentInvoice);
-                _emailService.SendMailCreateInvoice("atrox427@gmail.com", "adsadas", contract, invoice);
+
+                Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice("atrox427@gmail.com", "adsadas", contract, currentInvoice); };
+
+                Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
+
+                task.Start();
 
             }
 
