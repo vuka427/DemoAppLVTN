@@ -25,6 +25,7 @@ namespace Application.Implementation.ApplicationServices
 		private readonly IInvoiceRepository _invoiceRepository;
 		private readonly IContractRepository _contractRepository;
 		private readonly IEmailService _emailService;
+		private readonly ITenantRepository _tenantRepository;
 
         public InvoiceService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IInvoiceRepository invoiceRepository, IContractRepository contractRepository, IEmailService emailService)
         {
@@ -74,13 +75,22 @@ namespace Application.Implementation.ApplicationServices
 
 				_invoiceRepository.Add(invoice);
 
-				Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice("atrox427@gmail.com", "adsadas", contract, invoice); };
+				if (contract.TenantId != null && contract.TenantId.Value > 0)
+				{
+					var tenant = _tenantRepository.FindById(contract.TenantId.Value, t=>t.User);
 
-                Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
+					if(tenant != null && tenant.User != null)
+					{
+                        Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice(tenant.User.Email, "", contract, invoice); };
 
-				task.Start();
+                        Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
 
-               
+                        task.Start();
+                    }
+
+					
+				}
+
 
 			}
 			else
@@ -107,11 +117,21 @@ namespace Application.Implementation.ApplicationServices
 
 				_invoiceRepository.Update(currentInvoice);
 
-                Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice("atrox427@gmail.com", "adsadas", contract, currentInvoice); };
+                if (contract.TenantId != null && contract.TenantId.Value > 0)
+                {
+                    var tenant = _tenantRepository.FindById(contract.TenantId.Value, t => t.User);
 
-                Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
+                    if (tenant != null && tenant.User != null)
+                    {
+                        Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice(tenant.User.Email, "", contract, invoice); };
 
-                task.Start();
+                        Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
+
+                        task.Start();
+                    }
+
+
+                }
 
             }
 
@@ -234,7 +254,27 @@ namespace Application.Implementation.ApplicationServices
 			invoice.IsApproved= true;
 			_invoiceRepository.Update(invoice);
 
-			return true;
+         
+
+            if (contract.TenantId != null && contract.TenantId.Value > 0)
+            {
+                var tenant = _tenantRepository.FindById(contract.TenantId.Value, t => t.User);
+
+                if (tenant != null && tenant.User != null)
+                {
+                    Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailPayInvoice(tenant.User.Email, "", contract, invoice); };
+
+                    Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
+
+                    task.Start();
+                }
+
+
+            }
+
+
+
+            return true;
 		}
 	}
 }

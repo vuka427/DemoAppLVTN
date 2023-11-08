@@ -13,7 +13,7 @@ namespace Application.Interface.ApplicationServices
     {
       
         Task<AppResult> SendMailCreateInvoice(string email, string receiverName, Contract contract, Invoice invoice);
-        Task<AppResult> SendMailPayInvoice(string email, string receiverName, Invoice invoice);
+        Task<AppResult> SendMailPayInvoice(string email, string receiverName, Contract contract, Invoice invoice);
 
 
     }

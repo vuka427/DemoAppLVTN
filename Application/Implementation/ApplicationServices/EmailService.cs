@@ -18,6 +18,7 @@ namespace Application.Implementation.ApplicationServices
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISendMailService _sendMailService;
+        private readonly IEmailSendRepository _emailSendRepository;
 
         public EmailService(IUnitOfWork unitOfWork, ISendMailService sendMailService)
         {
@@ -29,19 +30,71 @@ namespace Application.Implementation.ApplicationServices
         {
             var htmlMessage = GenerateInvoiceToHtmlMessage.ConverterCreateInvoiceToHtml(contract,invoice);
 
+            var result = await _sendMailService.SendEmailAsync(email,"Thông báo tiền trọ", htmlMessage);
 
+            var mailSave = new EmailSend {
+                                TenantId = contract.TenantId,
+                                LandlordId = contract.LandlordId,
+                                EmailReceiver = email,
+                                EmailSender = "",
+                                Title ="Thông báo tiền trọ",
+                                Content = htmlMessage,
+                                CreatedBy = invoice.CreatedBy,
+                                CreatedDate= DateTime.Now,
+                                UpdatedBy = invoice.UpdatedBy,
+                                UpdatedDate= DateTime.Now
+                            };
 
-            var result =  _sendMailService.SendEmailAsync(email,"Thông báo tiền trọ", htmlMessage);
+            if (result.Success)
+            {
+                mailSave.Status = Domain.Enums.EmailStatus.Successed;
+            }
+            else
+            {
+                mailSave.Status = Domain.Enums.EmailStatus.Failed;
+            }
 
-           
+            _emailSendRepository.Add(mailSave);
 
-
-            return new AppResult {Success = true , Message="ok" };
+            _unitOfWork.Commit();
+            
+            return new AppResult { Success = true , Message="ok" };
         }
 
-        public Task<AppResult> SendMailPayInvoice(string email, string receiverName, Invoice invoice)
+        public async Task<AppResult> SendMailPayInvoice(string email, string receiverName, Contract contract, Invoice invoice)
         {
-            throw new NotImplementedException();
+            var htmlMessage = GenerateInvoiceToHtmlMessage.ConverterPayInvoiceToHtml(contract, invoice);
+
+            var result = await _sendMailService.SendEmailAsync(email, "Xác nhận đã thanh toán tiền trọ", htmlMessage);
+
+            var mailSave = new EmailSend
+            {
+                TenantId = contract.TenantId,
+                LandlordId = contract.LandlordId,
+                EmailReceiver = email,
+                EmailSender = "",
+                Title ="Xác nhận đã thanh toán tiền trọ",
+                Content = htmlMessage,
+                CreatedBy = invoice.CreatedBy,
+                CreatedDate= DateTime.Now,
+                UpdatedBy = invoice.UpdatedBy,
+                UpdatedDate= DateTime.Now
+            };
+
+            if (result.Success)
+            {
+                mailSave.Status = Domain.Enums.EmailStatus.Successed;
+            }
+            else
+            {
+                mailSave.Status = Domain.Enums.EmailStatus.Failed;
+            }
+
+            _emailSendRepository.Add(mailSave);
+
+            _unitOfWork.Commit();
+
+            return new AppResult { Success = true, Message="ok" };
         }
     }
 }

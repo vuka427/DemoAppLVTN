@@ -6,5 +6,7 @@ namespace Domain.Enums
 {
     public enum EmailStatus
     {
+        Successed,
+        Failed
     }
 }
