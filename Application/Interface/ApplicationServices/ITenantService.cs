@@ -11,7 +11,7 @@ namespace Application.Interface.ApplicationServices
         void DeleteTenant(int tenantid);
         Tenant GetTenantByUserId(string userid);
         Tenant GetTenantById(int tenantid);
-
+        void UpdateUser(Tenant tenant);
         void SaveChanges();
     }
 }

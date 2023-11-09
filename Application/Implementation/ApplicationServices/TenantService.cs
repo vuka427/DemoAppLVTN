@@ -28,6 +28,7 @@ namespace Application.Implementation.ApplicationServices
 
         public void DeleteTenant(int tenantid)
         {
+            
             _tenantRepository.Remove(tenantid);
         }
 
@@ -39,6 +40,11 @@ namespace Application.Implementation.ApplicationServices
         public Tenant GetTenantByUserId(string userid)
         {
             return _tenantRepository.FindAll(t => t.UserId == userid).FirstOrDefault();
+        }
+
+        public void UpdateUser(Tenant tenant)
+        {
+            _tenantRepository.Update(tenant);
         }
 
         public void SaveChanges()

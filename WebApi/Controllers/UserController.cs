@@ -126,7 +126,6 @@ namespace WebApi.Controllers
                     _landlordService.UpdateUser(landlord);
                     _landlordService.SaveChanges();
 
-
                     return Ok();
                 }
 
@@ -138,6 +137,15 @@ namespace WebApi.Controllers
                 if (tenant != null)
                 {
 
+                    tenant.FullName = model.FullName;
+                    tenant.DateOfBirth = model.DateOfBirth;
+                    tenant.Phone = model.Phone;
+                    tenant.Ccccd = model.Ccccd;
+                    tenant.Address = model.Address;
+                    tenant.UpdatedDate = DateTime.Now;
+
+                   _tenantService.UpdateUser(tenant);
+                   _tenantService.SaveChanges();
 
 
                     return Ok();
@@ -213,7 +221,9 @@ namespace WebApi.Controllers
                     if (tenant != null)
                     {
 
-
+                        tenant.AvatarUrl = fileNameRandom;
+                        _tenantService.UpdateUser(tenant);
+                        _tenantService.SaveChanges();
 
                         return Ok();
                     }

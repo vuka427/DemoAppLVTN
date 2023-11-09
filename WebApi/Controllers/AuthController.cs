@@ -139,7 +139,7 @@ namespace WebApi.Controllers
                 FullName = model.FullName ?? "no name",
                 DateOfBirth = DateTime.Now,
                 Address = "",
-                Phone = "",
+                Phone = model.Phone,
                 Ccccd ="",
                 CreatedBy = model.Username,
                 CreatedDate = DateTime.Now,

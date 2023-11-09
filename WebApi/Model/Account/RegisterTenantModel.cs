@@ -18,6 +18,10 @@ namespace WebApi.Model.Account
         [MaxLength(256, ErrorMessage = "Email có tối đa 256 ký tự"), MinLength(1, ErrorMessage = "Email tối thiểu 256 ký tự")]
         public string? Email { get; set; }
 
+        [Required(ErrorMessage = "Số điện thoại không được bỏ trống")]
+        [MaxLength(10, ErrorMessage = "Số điện thoại có tối đa 10 ký tự"), MinLength(10, ErrorMessage = "Số điện thoại tối thiểu 10 ký tự")]
+        public string? Phone { get; set; }
+
         [Required(ErrorMessage = "Mật khẩu không được bỏ trống")]
         [MaxLength(50, ErrorMessage = "mật khẩu có tối đa 50 ký tự"), MinLength(6, ErrorMessage = "Email tối thiểu 6 ký tự")]
         public string? Password { get; set; }

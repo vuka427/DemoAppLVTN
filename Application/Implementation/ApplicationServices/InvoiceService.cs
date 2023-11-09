@@ -268,8 +268,6 @@ namespace Application.Implementation.ApplicationServices
 
                     task.Start();
                 }
-
-
             }
 
 
