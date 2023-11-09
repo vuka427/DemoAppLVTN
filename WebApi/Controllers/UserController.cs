@@ -107,8 +107,7 @@ namespace WebApi.Controllers
             {
                 return StatusCode(
                             StatusCodes.Status500InternalServerError,
-                            new ResponseMessage { Status = "Error", Message = "Can find user profile!" }
-                   );
+                            new ResponseMessage { Status = "Error", Message = "Can find user profile!" });
             }
 
             if (userType == "landlord")

@@ -24,8 +24,9 @@ namespace Application.Implementation.ApplicationServices
         private readonly IRoomRepository _roomRepository;
         private readonly IContractRepository _contractRepository;
         private readonly IMemberRepository _memberRepository;
+        private readonly ITenantRepository _tenantRepository;
 
-        public ContractService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IContractRepository contractRepository, IMemberRepository memberRepository)
+        public ContractService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IContractRepository contractRepository, IMemberRepository memberRepository, ITenantRepository tenantRepository)
         {
             _unitOfWork=unitOfWork;
             _branchRepository=branchRepository;
@@ -35,6 +36,7 @@ namespace Application.Implementation.ApplicationServices
             _roomRepository=roomRepository;
             _contractRepository=contractRepository;
             _memberRepository=memberRepository;
+            _tenantRepository=tenantRepository;
         }
 
         public AppResult CreateContract(int landlordId, Contract contract)
@@ -359,5 +361,26 @@ namespace Application.Implementation.ApplicationServices
             if (member.Contract.LandlordId != landlordId) { return null; }
             return member;
         }
+
+        public bool LinkToTenant(int landlordId, int contractId, int tenantId)
+        {
+            var contract = _contractRepository.FindById(contractId, c => c.Room, c => c.Members);
+            if (contract != null && contract.LandlordId == landlordId)
+            {
+                var tenant = _tenantRepository.FindById(tenantId);
+                if (tenant!=null)
+                {
+                    contract.TenantId = tenant.Id; 
+                    _contractRepository.Update(contract);
+                }
+
+               
+                return true;
+            }
+
+            return false;
+
+        }
+
     }
 }

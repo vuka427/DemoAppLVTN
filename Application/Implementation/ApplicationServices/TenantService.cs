@@ -51,5 +51,10 @@ namespace Application.Implementation.ApplicationServices
         {
             _unitOfWork.Commit();
         }
+
+        public Tenant GetTenantByPhone(string phone)
+        {
+            return _tenantRepository.FindAll(t => t.Phone.Trim() == phone.Trim()).FirstOrDefault();
+        }
     }
 }

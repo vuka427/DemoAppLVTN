@@ -36,9 +36,9 @@ namespace WebApi.Controllers
         private readonly IContractService _contractService;
         private readonly IBoundaryService _boundaryService;
         private readonly ISendMailService _mailService;
-       
+        private readonly ITenantService _tenantService;
 
-        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService, ISendMailService mailService)
+        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService, ISendMailService mailService, ITenantService tenantService)
         {
             _branchService=branchService;
             _userManager=userManager;
@@ -47,6 +47,7 @@ namespace WebApi.Controllers
             _contractService=contractService;
             _boundaryService=boundaryService;
             _mailService=mailService;
+            _tenantService=tenantService;
         }
 
         [HttpPost]
@@ -327,9 +328,81 @@ namespace WebApi.Controllers
 
 		}
 
+        [HttpGet]
+        [Route("searchTenant")]
+        public async Task<IActionResult> SearchTenantByPhone(string phone)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+           
+            try
+            {
+                var tenant = _tenantService.GetTenantByPhone(phone);
+                if(tenant != null)
+                {
+                    return Ok(new { Success = true, Id = tenant.Id, FullName = tenant.FullName, Phone = tenant.Phone , DateOfBirth = tenant.DateOfBirth.ToShortDateString() });
+                }
+
+                return Ok(new { Success = false });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi! không render được file Pdf " });
+            }
+
+        }
+
+        [HttpPost]
+        [Route("linktotenant")]
+        public async Task<IActionResult> LinkToTenant(int contractid,int tenantid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            string CurrentLandlordId = "";
+            int landlordId = 0;
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+            }
+            var result = int.TryParse(CurrentLandlordId, out landlordId);
+            if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+            {
+                return Unauthorized();
+            }
+
+            var LinkResult = _contractService.LinkToTenant(landlordId, contractid, tenantid);
+            if (!LinkResult)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "không tìm thấy hợp đồng " });
+            }
+
+            try
+            {
+
+                _contractService.SaveChanges();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi!. không render được file Pdf " });
+            }
+
+        }
 
 
 
-
-	}
+    }
 }

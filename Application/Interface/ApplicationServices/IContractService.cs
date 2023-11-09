@@ -20,6 +20,7 @@ namespace Application.Interface.ApplicationServices
         AppResult DeleteMember(int landlordId, int memberId);
         AppResult UpdateMember(int landlordId, Member member);
         Member GetMemberById(int landlordId, int memberId);
+        bool LinkToTenant(int landlordId, int contractId, int tenantId);
         void SaveChanges();
         void Dispose();
     }
