@@ -97,7 +97,9 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.Lessee, options => options.MapFrom(s => s.Contract.B_Lessee)) 
                 .ForMember(p => p.RoomNumber , options => options.MapFrom(s =>"P."+ s.Contract.RoomNumber +  ((s.Contract.HouseType==HouseType.Row)? ", dãy " : ", tầng ") + s.Contract.AreaName   ))
 				.ForMember(p => p.BranchName, options => options.MapFrom(s => s.Contract.BranchName))
-				;
+                .ForMember(p => p.Year, options => options.MapFrom(s => s.CreatedDate.Year.ToString()))
+                .ForMember(p => p.Month, options => options.MapFrom(s => s.CreatedDate.Month.ToString()))
+                ;
 
 			CreateMap<Invoice, InvoiceDetailModel>()
 				.ForMember(p => p.Lessee, options => options.MapFrom(s => s.Contract.B_Lessee))
@@ -129,6 +131,8 @@ namespace WebApi.AutoMapper
                 .ForMember(p => p.Gender, options => options.MapFrom(c => c.Gender=="female" ? false : true))
                 .ForMember(p => p.IsPermanent, options => options.MapFrom(c => c.IsPermanent=="yes" ? true : false));
 
+            //tenant
+            CreateMap<Contract, RoomForTenantModel>();
         }
     }
 }

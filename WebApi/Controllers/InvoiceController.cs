@@ -251,7 +251,6 @@ namespace WebApi.Controllers
 				return Unauthorized();
 			}
 
-
 			try
 			{
 				var invoice = _invoiceService.GetInvoiceById(landlordId, invoiceid);
@@ -270,7 +269,47 @@ namespace WebApi.Controllers
 			}
 		}
 
-		[HttpPost]
+
+        [HttpGet]
+        [Route("tenant/detail")]
+        public async Task<IActionResult> GetInvoiceTenant(int invoiceid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
+
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return Unauthorized();
+            }
+            var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+            if (Tenant == null)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var invoice = _invoiceService.GetInvoiceTenantById(Tenant.Id, invoiceid);
+                if (invoice == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hóa đơn!" });
+                }
+
+                var resultData = _mapper.Map<InvoiceDetailModel>(invoice);
+
+                return Ok(resultData);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hóa đơn!" });
+            }
+        }
+
+        [HttpPost]
 		[Route("pay")]
 		public async Task<IActionResult> AgreeToPayInvoice(int invoiceid)
 		{
@@ -335,19 +374,30 @@ namespace WebApi.Controllers
             {
                 var invoices = _invoiceService.GetInvoiceTenantOfDataTable(Tenant.Id, status, month, year);
 
+
                 if (!string.IsNullOrEmpty(param.search.value))
                 {
                     invoices = invoices.Where(m => m.Contract.B_Lessee.Contains(param.search.value)
                                                 || m.Contract.RoomNumber.ToString().Contains(param.search.value)).ToList();
                 }
 
-                totalResultsCount = invoices.Count();
+                var Dataresult = _mapper.Map<List<InvoiceDataTableModel>>(invoices);
+				int index = 1;
+				foreach (var invoice in Dataresult)
+				{
+					invoice.Index= index;
+					index++;
+				}
 
-                var result = invoices.Skip(param.start).Take(param.length).ToList();
+                totalResultsCount = Dataresult.Count();
+
+                var result = Dataresult.Skip(param.start).Take(param.length).ToList();
 
                 filteredResultsCount = result.Count();
 
-                var Dataresult = _mapper.Map<List<InvoiceDataTableModel>>(result);
+               
+
+
 
                 return Json(new
                 {
@@ -356,7 +406,7 @@ namespace WebApi.Controllers
                     draw = param.draw,
                     recordsTotal = totalResultsCount,
                     recordsFiltered = filteredResultsCount,
-                    data = Dataresult
+                    data = result
                 });
             }
             catch

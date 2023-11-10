@@ -8,6 +8,8 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Application.Implementation.DomainServices;
 using Application.Interface.ApplicationServices;
+using WebApi.Model.Branch;
+using Application.Implementation.ApplicationServices;
 
 namespace WebApi.Controllers
 {
@@ -23,8 +25,9 @@ namespace WebApi.Controllers
         private readonly IMapper _mapper;
         private readonly IBoundaryService _boundaryService;
         private readonly IRoomService _roomService;
+        private readonly ITenantService _tenantService;
 
-        public RoomController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IBoundaryService boundaryService, IRoomService roomService)
+        public RoomController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IBoundaryService boundaryService, IRoomService roomService, ITenantService tenantService)
         {
             _branchService=branchService;
             _userManager=userManager;
@@ -32,6 +35,7 @@ namespace WebApi.Controllers
             _mapper=mapper;
             _boundaryService=boundaryService;
             _roomService=roomService;
+            _tenantService=tenantService;
         }
 
         [HttpGet]
@@ -404,8 +408,46 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("tenant/all")]
+        public async Task<IActionResult> GetRoomTenant()
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
 
-        
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return Unauthorized();
+            }
+            var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+            if (Tenant == null)
+            {
+                return Unauthorized();
+            }
+
+
+             var contract = _roomService.GetRoomForTenant(Tenant.Id);
+
+            try
+            {
+                var room = _mapper.Map<List<RoomForTenantModel>>(contract);
+                if(room == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm phòng!" });
+                }
+
+                return Ok(room);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy nhà trọ!" });
+            }
+        }
+
 
 
     }

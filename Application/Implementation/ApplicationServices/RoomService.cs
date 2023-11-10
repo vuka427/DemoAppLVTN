@@ -1,6 +1,7 @@
 ﻿using Application.Interface.ApplicationServices;
 using Domain.Common;
 using Domain.Entities;
+using Domain.Enum;
 using Domain.Interface;
 using Domain.IRepositorys;
 using System;
@@ -166,7 +167,14 @@ namespace Application.Implementation.ApplicationServices
 			return room;
 		}
 
-		public void SaveChanges()
+        public ICollection<Contract> GetRoomForTenant(int tenantId)
+        {
+            var contract  = _contractRepository.FindAll(c=>c.TenantId == tenantId && c.Status == ContractStatus.Active).ToList();
+
+            return contract;
+        }
+
+        public void SaveChanges()
         {
             _unitOfWork.Commit();
         }

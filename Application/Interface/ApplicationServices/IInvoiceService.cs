@@ -12,8 +12,8 @@ namespace Application.Interface.ApplicationServices
 	{
 		Invoice GetInvoice(int landlordId, int roomid, DateTime date);
 		Invoice GetInvoiceById(int landlordId, int invoiceId);
-
-		bool SetInvoiceIsApproved(int landlordId, int invoiceId);
+        Invoice GetInvoiceTenantById(int tenantId, int invoiceId);
+        bool SetInvoiceIsApproved(int landlordId, int invoiceId);
 
 		AppResult CreateInvoice(int landlordId, int roomid, DateTime date, Invoice invoice);
 

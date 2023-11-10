@@ -124,7 +124,7 @@ namespace Application.Implementation.ApplicationServices
 
                     if (tenant != null && tenant.User != null)
                     {
-                        Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice(tenant.User.Email, "", contract, invoice); };
+                        Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice(tenant.User.Email, "", contract, currentInvoice); };
 
                         Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
 
@@ -232,6 +232,24 @@ namespace Application.Implementation.ApplicationServices
 
 			return invoice.OrderByDescending(i=>i.CreatedDate).ToList();
 		}
+
+        public Invoice GetInvoiceTenantById(int tenantId, int invoiceId)
+        {
+            var invoice = _invoiceRepository.FindAll(i => i.Id == invoiceId, i => i.ServiceItems).FirstOrDefault();
+            if (invoice == null) { return null; }
+
+            var contracts = _contractRepository.FindAll(r => r.TenantId == tenantId, c => c.Invoices);
+            if (contracts == null) { return null; }
+
+            var contract = contracts.Where(c => c.Id == invoice.ContractId).FirstOrDefault();
+            if (contract == null) { return null; }
+
+            invoice.Contract = contract;
+            invoice.ContractId =contract.Id;
+
+
+            return invoice;
+        }
 
         public ICollection<Invoice> GetInvoiceTenantOfDataTable(int tenantId, string status, int month, int year)
         {

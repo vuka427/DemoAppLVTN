@@ -75,7 +75,7 @@ namespace Application.Utility
 													<multiline>
 													   Nhà trọ {contract.BranchName} , xin thông báo tiền thuê phòng tháng {invoice.CreatedDate.Month}   của quý khách là <span style=""color: red"">{invoice.TotalPrice.ToPriceUnitVND("")}</span>  VND. <br>
 													   Xin quý khách vui lòng thanh toán đúng hẹn ! <br>
-													   Rất mong nhận được sự hợp tác của quý đối tác khách hàng.<br>
+													   Rất mong nhận được sự hợp tác của quý khách hàng.<br>
 														Xin chân thành cảm ơn!
 													</multiline>
 												</td>
