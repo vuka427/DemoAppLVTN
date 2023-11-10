@@ -18,8 +18,10 @@ namespace Application.Interface.ApplicationServices
 		AppResult CreateInvoice(int landlordId, int roomid, DateTime date, Invoice invoice);
 
 		ICollection<Invoice> GetInvoiceOfDataTable(int landlordId, string status, int month, int year, int branchid);
+		ICollection<Invoice> GetInvoiceTenantOfDataTable(int tenantId, string status, int month, int year);
 
-		void SaveChanges();
+
+        void SaveChanges();
 	}
 	
 }

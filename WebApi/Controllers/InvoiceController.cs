@@ -12,6 +12,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using WebApi.Model.Branch;
 using WebApi.Model.JQDataTable;
 using System.Diagnostics.Contracts;
+using Application.Implementation.ApplicationServices;
 
 namespace WebApi.Controllers
 {
@@ -28,20 +29,22 @@ namespace WebApi.Controllers
 		private readonly IRoomService _roomService;
 		private readonly IInvoiceService _invoiceService;
 		private readonly IContractService _contractService;
+        private readonly ITenantService _tenantService;
 
-		public InvoiceController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IBoundaryService boundaryService, IRoomService roomService, IInvoiceService invoiceService, IContractService contractService)
-		{
-			_branchService=branchService;
-			_userManager=userManager;
-			_landlordService=landlordService;
-			_mapper=mapper;
-			_boundaryService=boundaryService;
-			_roomService=roomService;
-			_invoiceService=invoiceService;
-			_contractService=contractService;
-		}
+        public InvoiceController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IBoundaryService boundaryService, IRoomService roomService, IInvoiceService invoiceService, IContractService contractService, ITenantService tenantService)
+        {
+            _branchService=branchService;
+            _userManager=userManager;
+            _landlordService=landlordService;
+            _mapper=mapper;
+            _boundaryService=boundaryService;
+            _roomService=roomService;
+            _invoiceService=invoiceService;
+            _contractService=contractService;
+            _tenantService=tenantService;
+        }
 
-		[HttpGet]
+        [HttpGet]
 		[Route("info")]
 		public async Task<IActionResult> GetInfoRoomInvoice(int roomid)
 		{
@@ -305,6 +308,65 @@ namespace WebApi.Controllers
 		}
 
 
+        [HttpPost]
+        [Route("tenant/invoicefordatatable")]
+        public async Task<IActionResult> GetInvoiceTenantForDataTable([FromBody] DatatableParam param, [FromQuery] string status, [FromQuery] int month, [FromQuery] int year, [FromQuery] int branchid)
+        {
+            int filteredResultsCount;
+            int totalResultsCount;
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
 
-	}
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return Unauthorized();
+            }
+            var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+            if (Tenant == null)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var invoices = _invoiceService.GetInvoiceTenantOfDataTable(Tenant.Id, status, month, year);
+
+                if (!string.IsNullOrEmpty(param.search.value))
+                {
+                    invoices = invoices.Where(m => m.Contract.B_Lessee.Contains(param.search.value)
+                                                || m.Contract.RoomNumber.ToString().Contains(param.search.value)).ToList();
+                }
+
+                totalResultsCount = invoices.Count();
+
+                var result = invoices.Skip(param.start).Take(param.length).ToList();
+
+                filteredResultsCount = result.Count();
+
+                var Dataresult = _mapper.Map<List<InvoiceDataTableModel>>(result);
+
+                return Json(new
+                {
+                    // this is what datatables wants sending back
+
+                    draw = param.draw,
+                    recordsTotal = totalResultsCount,
+                    recordsFiltered = filteredResultsCount,
+                    data = Dataresult
+                });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get invoice!" });
+            }
+
+
+        }
+
+
+    }
 }

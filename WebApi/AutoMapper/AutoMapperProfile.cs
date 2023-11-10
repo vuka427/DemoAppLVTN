@@ -74,7 +74,8 @@ namespace WebApi.AutoMapper
 				.ForMember(p => p.CommencingOn, options => options.MapFrom(c => c.CommencingOn.ToShortDateString()))
 				.ForMember(p => p.EndingOn, options => options.MapFrom(c => c.EndingOn.ToShortDateString()))
 				.ForMember(p => p.HouseType, options => options.MapFrom(s => s.HouseType==HouseType.Row ? "row" : "floor"))
-				 ;
+                .ForMember(p => p.IsLinkTenant, options => options.MapFrom(s => (s.TenantId != null)? ((s.TenantId.Value > 0 )? true : false) : false))
+                 ;
 			
 			CreateMap<Contract, ContractForRoomDetailModel>()
 				.ForMember(p => p.B_DateOfBirth, options => options.MapFrom(c => c.B_DateOfBirth.ToShortDateString()))

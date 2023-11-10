@@ -175,6 +175,7 @@ namespace WebApi.Controllers
             }
         }
 
+
         [HttpPost]
         [Route("sendemail")]
         [AllowAnonymous]
@@ -189,7 +190,6 @@ namespace WebApi.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = result.Message });
             }
-            
         }
 
 
@@ -255,43 +255,85 @@ namespace WebApi.Controllers
 		[HttpGet]
 		[Route("detail")]
 		public async Task<IActionResult> GetContract(int contractid)
-		{
-			var Identity = HttpContext.User;
-			string CurrentUserId = "";
-			string CurrentLandlordId = "";
-			int landlordId = 0;
-			if (Identity.HasClaim(c => c.Type == "userid"))
+		{   
+            try
 			{
-				CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
-				CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
-			}
-			var result = int.TryParse(CurrentLandlordId, out landlordId);
-			if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
-			{
-				return Unauthorized();
-			}
 
-			var contract = _contractService.GetContractById(landlordId, contractid);
-			if (contract == null)
-			{
-				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "không tìm thấy hợp đồng " });
-			}
+			    var Identity = HttpContext.User;
+			    string CurrentUserId = "";
+			    string CurrentLandlordId = "";
+			    int landlordId = 0;
+			    if (Identity.HasClaim(c => c.Type == "userid"))
+			    {
+				    CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+				    CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString()??"";
+			    }
+			    var result = int.TryParse(CurrentLandlordId, out landlordId);
+			    if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+			    {
+				    return Unauthorized();
+			    }
 
-			try
-			{
+			    var contract = _contractService.GetContractById(landlordId, contractid);
+			    if (contract == null)
+			    {
+				    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "không tìm thấy hợp đồng " });
+			    }
+
+			
 
                 var contractResult  = _mapper.Map<ContractDetailModel>(contract);
+
 				return Ok(contractResult);
 			}
 			catch (Exception e)
 			{
-				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi!. không render được file Pdf " });
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi! tìm thấy chi tiết hóa đơn " });
 			}
 
 		}
 
+        [HttpGet]
+        [Route("tenant/detail")]
+        public async Task<IActionResult> GetContractForTenant(int contractId)
+        {
+            try
+            {
+                var Identity = HttpContext.User;
+                string CurrentUserId = "";
+                if (Identity.HasClaim(c => c.Type == "userid"))
+                {
+                    CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                }
 
-		[HttpPost]
+                if (string.IsNullOrEmpty(CurrentUserId))
+                {
+                    return Unauthorized();
+                }
+                var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+                if (Tenant == null)
+                {
+                    return Unauthorized();
+                }
+
+                var contract = _contractService.GetContractByTenantId(Tenant.Id, contractId );
+                if (contract == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy hợp đồng" });
+                }
+
+                var contractResult = _mapper.Map<ContractDetailModel>(contract);
+
+                return Ok(contractResult);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi! không tìm thấy chi tiết hóa đơn" });
+            }
+        }
+
+
+        [HttpPost]
 		[Route("end")]
 		public async Task<IActionResult> ContractToEnd(int contractid)
 		{
@@ -402,6 +444,90 @@ namespace WebApi.Controllers
 
         }
 
+        //
+
+        [HttpPost]
+        [Route("tenant/contractfordatatable")]
+        public async Task<IActionResult> GetContractTenantForDataTable([FromBody] DatatableParam param)
+        {
+            int filteredResultsCount;
+            int totalResultsCount;
+
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
+
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+            }
+            var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+            if (Tenant == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+            }
+
+            var contracts = _contractService.GetContractForTenant(Tenant.Id);
+
+            var sortColumn = param.order.FirstOrDefault().column.ToString();
+            var sortColumnDirection = param.order.FirstOrDefault().dir;
+
+            if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+            {
+                contracts = contracts.OrderBy(sortColumn + " " + sortColumnDirection);
+            }
+            else
+            {
+                contracts = contracts.OrderBy("CreatedDate asc");
+            }
+
+            if (!string.IsNullOrEmpty(param.search.value))
+            {
+                contracts = contracts.Where(m => m.B_Lessee.Contains(param.search.value)
+                                            || m.RoomNumber.ToString().Contains(param.search.value));
+            }
+
+            contracts = contracts.OrderByDescending(m => m.CreatedDate);
+
+            totalResultsCount = contracts.Count();
+
+            var result = contracts.Skip(param.start).Take(param.length).ToList();
+
+            filteredResultsCount = result.Count();
+
+
+            var Dataresult = _mapper.Map<List<ContractModel>>(result);
+
+            _contractService.Dispose();
+
+            int i = param.start+1;
+            foreach (var dataItem in Dataresult)
+            {
+                dataItem.Index = i;
+                i++;
+            }
+
+            try
+            {
+                return Json(new
+                {
+                    // this is what datatables wants sending back
+                    draw = param.draw,
+                    recordsTotal = totalResultsCount,
+                    recordsFiltered = filteredResultsCount,
+                    data = Dataresult
+                });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get contracts!" });
+            }
+
+
+        }
 
 
     }

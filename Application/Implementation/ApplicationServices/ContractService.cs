@@ -108,7 +108,6 @@ namespace Application.Implementation.ApplicationServices
                             _contractRepository.Update(oldContractItem);
                         }
                     }
-
                     _roomRepository.Update(room);
                     _contractRepository.Add(contract);
                     
@@ -118,11 +117,9 @@ namespace Application.Implementation.ApplicationServices
                 {
                     return new AppResult { Success = false, Message = "Lỗi không thêm đc hợp đồng!" };
                 }
-
             }
 
             return new AppResult { Success = false, Message = "Lỗi không thêm đc hợp đồng!" };
-
         }
 
 
@@ -144,7 +141,14 @@ namespace Application.Implementation.ApplicationServices
             return null;
 		}
 
-		public void SaveChanges()
+        public IQueryable<Contract> GetContractForTenant(int tenantId)
+        {
+            return _contractRepository.FindAll(c => c.TenantId == tenantId);
+        }
+
+        
+
+        public void SaveChanges()
         {
             _unitOfWork.Commit();
         }
@@ -382,5 +386,15 @@ namespace Application.Implementation.ApplicationServices
 
         }
 
+        public Contract GetContractByTenantId(int tenantId, int contractId)
+        {
+            var contract = _contractRepository.FindById(contractId);
+            if (contract != null && contract.TenantId != null && contract.TenantId == tenantId)
+            {
+                return contract;
+            }
+
+            return null;
+        }
     }
 }

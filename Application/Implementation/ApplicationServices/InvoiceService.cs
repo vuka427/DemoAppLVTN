@@ -27,7 +27,7 @@ namespace Application.Implementation.ApplicationServices
 		private readonly IEmailService _emailService;
 		private readonly ITenantRepository _tenantRepository;
 
-        public InvoiceService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IInvoiceRepository invoiceRepository, IContractRepository contractRepository, IEmailService emailService)
+        public InvoiceService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IInvoiceRepository invoiceRepository, IContractRepository contractRepository, IEmailService emailService, ITenantRepository tenantRepository)
         {
             _unitOfWork=unitOfWork;
             _branchRepository=branchRepository;
@@ -38,6 +38,7 @@ namespace Application.Implementation.ApplicationServices
             _invoiceRepository=invoiceRepository;
             _contractRepository=contractRepository;
             _emailService=emailService;
+            _tenantRepository=tenantRepository;
         }
 
         public AppResult CreateInvoice(int landlordId, int roomid, DateTime date, Invoice invoice)
@@ -229,13 +230,69 @@ namespace Application.Implementation.ApplicationServices
 				item.Contract = contract.FirstOrDefault(c=>c.Id==item.ContractId);
 			}
 
-
-
-
 			return invoice.OrderByDescending(i=>i.CreatedDate).ToList();
 		}
 
-		public void SaveChanges()
+        public ICollection<Invoice> GetInvoiceTenantOfDataTable(int tenantId, string status, int month, int year)
+        {
+            bool isAppro = false;
+            isAppro = (status =="unpaid") ? false : true;
+
+
+
+            var contract = _contractRepository.FindAll(c => c.TenantId==tenantId, c => c.Invoices).ToList();
+
+            if (contract == null)
+            {
+                return new List<Invoice>();
+            }
+
+            IEnumerable<Invoice> allInvoice = new List<Invoice>();
+            IEnumerable<Invoice> invoice = new List<Invoice>();
+
+            allInvoice = contract.SelectMany(c => c.Invoices);
+
+
+
+            if (status != "none" && month == 0 && year == 0) //status
+            {
+                invoice = allInvoice.Where(i => i.IsApproved == isAppro);
+            }
+            else if (status!= "none" && month == 0 && year != 0) //status + year 
+            {
+                invoice = allInvoice.Where(i => i.IsApproved == isAppro  && i.CreatedDate.Year == year);
+            }
+            else if (status!= "none" && month != 0 && year != 0) //status + year + month
+            {
+                invoice = allInvoice.Where(i => i.IsApproved == isAppro  && i.CreatedDate.Year == year && i.CreatedDate.Month == month);
+            }
+            else if (status== "none"  && month == 0 && year != 0) //year 
+            {
+                invoice = allInvoice.Where(i => i.CreatedDate.Year == year);
+            }
+            else if (status== "none" && month != 0 && year != 0) //year + month
+            {
+                invoice = allInvoice.Where(i => i.CreatedDate.Year == year && i.CreatedDate.Month == month);
+            }
+            else
+            {
+                invoice = allInvoice; //all
+            }
+
+            foreach (var item in invoice)
+            {
+                item.Contract = contract.FirstOrDefault(c => c.Id==item.ContractId);
+            }
+
+
+
+
+            return invoice.OrderByDescending(i => i.CreatedDate).ToList();
+        }
+
+
+
+        public void SaveChanges()
 		{
 			_unitOfWork.Commit();
 		}

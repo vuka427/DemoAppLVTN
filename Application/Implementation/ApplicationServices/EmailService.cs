@@ -20,10 +20,11 @@ namespace Application.Implementation.ApplicationServices
         private readonly ISendMailService _sendMailService;
         private readonly IEmailSendRepository _emailSendRepository;
 
-        public EmailService(IUnitOfWork unitOfWork, ISendMailService sendMailService)
+        public EmailService(IUnitOfWork unitOfWork, ISendMailService sendMailService, IEmailSendRepository emailSendRepository)
         {
             _unitOfWork=unitOfWork;
             _sendMailService=sendMailService;
+            _emailSendRepository=emailSendRepository;
         }
 
         public async Task<AppResult> SendMailCreateInvoice(string email, string receiverName,Contract contract, Invoice invoice)
