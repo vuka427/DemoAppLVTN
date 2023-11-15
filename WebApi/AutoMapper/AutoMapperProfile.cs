@@ -53,8 +53,8 @@ namespace WebApi.AutoMapper
 
 			//contract
 			CreateMap<ContractCreateModel, Contract>()
-				.ForMember(p => p.A_Gender, options => options.MapFrom(c => c.A_Gender=="female"?true : false))
-                .ForMember(p => p.B_Gender, options => options.MapFrom(c => c.A_Gender=="female"?true : false));
+				.ForMember(p => p.A_Gender, options => options.MapFrom(c => c.A_Gender=="female" ? false : true))
+                .ForMember(p => p.B_Gender, options => options.MapFrom(c => c.A_Gender=="female" ? false : true));
 
 			CreateMap<Contract, ContractModel>()
                 .ForMember(p => p.A_DateOfBirth,options => options.MapFrom(c=>c.A_DateOfBirth.ToShortDateString()))
@@ -132,7 +132,9 @@ namespace WebApi.AutoMapper
                 .ForMember(p => p.IsPermanent, options => options.MapFrom(c => c.IsPermanent=="yes" ? true : false));
 
             //tenant
-            CreateMap<Contract, RoomForTenantModel>();
+            CreateMap<Contract, RoomForTenantModel>()
+                .ForMember(p => p.Id, options => options.MapFrom(c => c.RoomId))
+                ;
         }
     }
 }

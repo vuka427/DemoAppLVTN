@@ -142,7 +142,29 @@ namespace Application.Implementation.ApplicationServices
             return room;
         }
 
-		public Room GetRoomForDetailById(int landlordId, int roomid)
+        public Room GetRoomDetailForTenantById(int tenantId, int roomid)
+        {
+            var room = _roomRepository.FindById(roomid, r => r.Devices, r => r.ImageRooms, r => r.Contracts);
+            if (room == null) { return new Room(); }
+            var contract = room.Contracts.FirstOrDefault(r => r.Status == Domain.Enum.ContractStatus.Active && r.TenantId == tenantId);
+
+            room.Contracts.Clear();
+            if (contract != null)
+            {
+                var ContractActice = _contractRepository.FindById(contract.Id, c => c.Members, contract => contract.Invoices, c => c.Tenant);
+
+
+                if (ContractActice != null)
+                {
+                    ContractActice.Members = ContractActice.Members.Where(m => m.IsActive== true).ToList();
+                    room.Contracts.Add(ContractActice);
+                }
+            }
+
+            return room;
+        }
+
+        public Room GetRoomForDetailById(int landlordId, int roomid)
 		{
 			var room = _roomRepository.FindById(roomid, r => r.Devices, r => r.ImageRooms, r=>r.Contracts);
 			if (room == null) { return new Room(); }

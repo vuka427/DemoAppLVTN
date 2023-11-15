@@ -121,7 +121,7 @@ namespace WebApi.Controllers
                     // this is what datatables wants sending back
                     draw = param.draw,
                     recordsTotal = totalResultsCount,
-                    recordsFiltered = filteredResultsCount,
+                    recordsFiltered = totalResultsCount,
                     data = Dataresult
                 });
             }

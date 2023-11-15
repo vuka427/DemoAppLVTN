@@ -91,10 +91,9 @@ namespace WebApi.Controllers
                 return Json(new
                 {
                     // this is what datatables wants sending back
-
                     draw = param.draw,
                     recordsTotal = totalResultsCount,
-                    recordsFiltered = filteredResultsCount,
+                    recordsFiltered = totalResultsCount,
                     data = result
                 });
             }
@@ -123,9 +122,6 @@ namespace WebApi.Controllers
             {
                 return Unauthorized();
             }
-
-
-            
 
             try
             {

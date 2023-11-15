@@ -233,6 +233,19 @@ namespace Application.Implementation.ApplicationServices
 			return invoice.OrderByDescending(i=>i.CreatedDate).ToList();
 		}
 
+        public ICollection<Invoice> GetInvoiceRoom(int landlordId, int roomId)
+        {
+            var contract = _contractRepository.FindAll(c => c.LandlordId==landlordId && c.RoomId == roomId, c => c.Invoices);
+
+
+           var  allInvoice = contract.SelectMany(c => c.Invoices).Where(i=>i.IsApproved == false).ToList();
+
+
+            return allInvoice;
+            
+
+        }
+
         public Invoice GetInvoiceTenantById(int tenantId, int invoiceId)
         {
             var invoice = _invoiceRepository.FindAll(i => i.Id == invoiceId, i => i.ServiceItems).FirstOrDefault();

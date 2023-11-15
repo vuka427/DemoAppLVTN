@@ -19,6 +19,7 @@ namespace Application.Interface.ApplicationServices
 
 		ICollection<Invoice> GetInvoiceOfDataTable(int landlordId, string status, int month, int year, int branchid);
 		ICollection<Invoice> GetInvoiceTenantOfDataTable(int tenantId, string status, int month, int year);
+        ICollection<Invoice> GetInvoiceRoom(int landlordId, int roomId);
 
 
         void SaveChanges();

@@ -119,8 +119,53 @@ namespace WebApi.Controllers
 		}
 
 
+        [HttpGet]
+        [Route("tenant/detail/full")]
+        public IActionResult GetRoomTenantForDetail(int roomid)
+        {
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
 
-		[HttpPost]
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return Unauthorized();
+            }
+            var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+            if (Tenant == null)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var room = _roomService.GetRoomDetailForTenantById(Tenant.Id, roomid);
+                var roomResult = _mapper.Map<RoomModel>(room);
+                if (roomResult != null)
+                {
+                    foreach (var imageItem in roomResult.ImageRooms)
+                    {
+                        imageItem.Url =  "http://localhost:5135/contents/room/image/"+ imageItem.Url;
+                    }
+                }
+
+                roomResult.CurrentMember = room.Contracts.FirstOrDefault() !=null ? room.Contracts.FirstOrDefault().Members.Count() : 1;
+
+
+                return Ok(roomResult);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "can't create room!" });
+            }
+        }
+
+
+
+        [HttpPost]
         [Route("add")]
         public IActionResult CreateRoom(RoomCreateModel model)
         {
@@ -317,8 +362,6 @@ namespace WebApi.Controllers
                              }
 
                         }
-
-                        
                     }
 
                     _roomService.UploadRoomImages(landlordId, room.Id, files.ToArray());

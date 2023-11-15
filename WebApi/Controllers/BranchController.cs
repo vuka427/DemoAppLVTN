@@ -83,7 +83,7 @@ namespace WebApi.Controllers
 
                     draw = param.draw,
                     recordsTotal = totalResultsCount,
-                    recordsFiltered = filteredResultsCount,
+                    recordsFiltered = totalResultsCount,
                     data = Dataresult
                 });
             }

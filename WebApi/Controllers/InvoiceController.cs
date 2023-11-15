@@ -220,7 +220,7 @@ namespace WebApi.Controllers
 
 					draw = param.draw,
 					recordsTotal = totalResultsCount,
-					recordsFiltered = filteredResultsCount,
+					recordsFiltered = totalResultsCount,
 					data = Dataresult
 				});
 			}
@@ -300,6 +300,43 @@ namespace WebApi.Controllers
                 }
 
                 var resultData = _mapper.Map<InvoiceDetailModel>(invoice);
+
+                return Ok(resultData);
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hóa đơn!" });
+            }
+        }
+
+        [HttpGet]
+        [Route("room")]
+        public async Task<IActionResult> GetInvoiceRoom(int roomid)
+        {
+			try
+            {
+				var Identity = HttpContext.User;
+				string CurrentUserId = "";
+				string CurrentLandlordId = "";
+				int landlordId = 0;
+				if (Identity.HasClaim(c => c.Type == "userid"))
+				{
+					CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+					CurrentLandlordId = Identity.Claims.FirstOrDefault(c => c.Type == "landlordid").Value.ToString();
+				}
+				var result = int.TryParse(CurrentLandlordId, out landlordId);
+				if (string.IsNullOrEmpty(CurrentUserId) && string.IsNullOrEmpty(CurrentLandlordId) && !result)
+				{
+					return Unauthorized();
+				}
+
+                var invoice = _invoiceService.GetInvoiceRoom(landlordId, roomid);
+                if (invoice == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không tìm thấy hóa đơn!" });
+                }
+
+                var resultData = _mapper.Map<List<InvoiceDetailModel>>(invoice);
 
                 return Ok(resultData);
             }

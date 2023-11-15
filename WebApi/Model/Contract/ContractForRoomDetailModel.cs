@@ -46,7 +46,7 @@ namespace WebApi.Model.Contract
 
 		public int? TenantId { get; set; }
 
-		public Tenant? Tenant { get; set; }
+		//public Tenant? Tenant { get; set; }
 
 		public ICollection<InvoiceModel> Invoices { get; set; }
 		public ICollection<MemberForDataTableModel> Members { get; set; }

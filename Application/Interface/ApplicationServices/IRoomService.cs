@@ -13,6 +13,7 @@ namespace Application.Interface.ApplicationServices
         AppResult DeleteRoom(int landlordId, int roomid);
         Room GetRoomById(int landlordId, int roomid);
         Room GetRoomForDetailById(int landlordId, int roomid);
+        Room GetRoomDetailForTenantById(int tenantId, int roomid);
         ICollection<Contract> GetRoomForTenant(int tenantId);
         ImageRoom UploadRoomImage(int landlordId, int roomid, string fileName);
         AppResult UploadRoomImages(int landlordId, int roomid, string[] fileNames);
