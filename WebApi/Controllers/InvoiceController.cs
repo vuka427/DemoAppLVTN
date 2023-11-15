@@ -350,6 +350,7 @@ namespace WebApi.Controllers
 		[Route("pay")]
 		public async Task<IActionResult> AgreeToPayInvoice(int invoiceid)
 		{
+
 			var Identity = HttpContext.User;
 
 			string CurrentUserId = "";

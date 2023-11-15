@@ -32,6 +32,8 @@ namespace WebApi.Model.Contract
         public bool IsMezzanine { get; set; }
         public string TermsOfContract { get; set; }
         public decimal Deposit { get; set; }
+
+        public int RoomId { get; set; }
         public bool IsLinkTenant { get; set; }
 
 
