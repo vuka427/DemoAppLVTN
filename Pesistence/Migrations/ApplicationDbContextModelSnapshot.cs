@@ -670,6 +670,11 @@ namespace Pesistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Day")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<decimal>("ElectricityCosts")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(10)
@@ -697,6 +702,11 @@ namespace Pesistence.Migrations
 
                     b.Property<int>("OldWaterNumber")
                         .HasColumnType("int");
+
+                    b.Property<int>("StayDay")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<decimal>("TotalPrice")
                         .ValueGeneratedOnAdd()

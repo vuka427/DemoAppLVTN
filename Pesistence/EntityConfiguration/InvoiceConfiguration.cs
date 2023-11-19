@@ -42,6 +42,10 @@ namespace Pesistence.EntityConfiguration
                 .HasPrecision(10, 0)
                 .HasDefaultValue(0)
                 .IsRequired();
+            builder.Property(b => b.Day)
+                .HasDefaultValue(1);
+            builder.Property(b => b.StayDay)
+                .HasDefaultValue(1);
 
             builder.HasMany<ServiceItem>(i => i.ServiceItems)
                 .WithOne(s => s.Invoice)

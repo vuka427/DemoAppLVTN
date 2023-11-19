@@ -140,15 +140,12 @@ namespace WebApi.Controllers
 				return Unauthorized();
 			}
 
-			var previousDate = DateTime.Now.AddMonths(-1);
-			var previousInvoice = _invoiceService.GetInvoice(landlordId, model.RoomId, previousDate);
-
 			var invoice = new Invoice {
 				IsApproved = false,
 				NewElectricNumber = model.NewElectricNumber,
 				NewWaterNumber = model.NewWaterNumber,
-				OldElectricNumber = previousInvoice!=null ? previousInvoice.NewElectricNumber : 0,
-				OldWaterNumber = previousInvoice!= null ? previousInvoice.NewWaterNumber : 0,
+				OldElectricNumber = model.OldElectricNumber,
+				OldWaterNumber = model.OldWaterNumber,
 				ContractId = model.ContractId
 			};
 
@@ -162,7 +159,6 @@ namespace WebApi.Controllers
 
 			try
 			{
-				
 				return Ok();
 			}
 			catch
@@ -228,7 +224,6 @@ namespace WebApi.Controllers
 			{
 				return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get invoice!" });
 			}
-
 
 		}
 

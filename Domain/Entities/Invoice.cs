@@ -21,8 +21,9 @@ namespace Domain.Entities
         public int NewWaterNumber { get; set; }
         public decimal ElectricityCosts { get; set; }
         public decimal WaterCosts { get; set; }
+        public int Day { get; set; }
+        public int StayDay { get; set; }
         public decimal TotalPrice { get; set; }
-
         public int ContractId { get; set; }
         public Contract Contract { get; set; }
         public ICollection<ServiceItem> ServiceItems { get; set; }

@@ -94,13 +94,15 @@ namespace Application.Implementation.ApplicationServices
 
 
 			}
-			else
+			else // update
 			{
 				currentInvoice.UpdatedDate = DateTime.Now;
 				currentInvoice.UpdatedBy = landlord.User.UserName??"";
 				currentInvoice.NewElectricNumber = invoice.NewElectricNumber;
 				currentInvoice.NewWaterNumber = invoice.NewWaterNumber;
-				currentInvoice.ServiceItems = invoice.ServiceItems;
+                currentInvoice.OldElectricNumber = invoice.OldElectricNumber;
+                currentInvoice.OldWaterNumber = invoice.OldWaterNumber;
+                currentInvoice.ServiceItems = invoice.ServiceItems;
                 currentInvoice.ElectricityCosts = contract.ElectricityCosts;
                 currentInvoice.WaterCosts = contract.WaterCosts;
 
