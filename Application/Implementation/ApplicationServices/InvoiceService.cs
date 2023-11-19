@@ -71,8 +71,10 @@ namespace Application.Implementation.ApplicationServices
 					item.CreatedBy= landlord.User.UserName??"";
 					item.UpdatedBy= landlord.User.UserName??"";
 				}
-			 
-				invoice.TotalPrice = servicePrice + contract.RentalPrice + (invoice.NewElectricNumber-invoice.OldElectricNumber)*contract.ElectricityCosts + (invoice.NewWaterNumber - invoice.OldWaterNumber)*contract.WaterCosts;
+
+				invoice.TotalPrice = servicePrice + (contract.RentalPrice/invoice.Day*invoice.StayDay) + (invoice.NewElectricNumber-invoice.OldElectricNumber) * contract.ElectricityCosts + (invoice.NewWaterNumber - invoice.OldWaterNumber) * contract.WaterCosts;
+
+
 
 				_invoiceRepository.Add(invoice);
 
@@ -116,7 +118,7 @@ namespace Application.Implementation.ApplicationServices
 					item.UpdatedBy= landlord.User.UserName??"";
 				}
 
-				currentInvoice.TotalPrice = servicePrice + contract.RentalPrice + (currentInvoice.NewElectricNumber-currentInvoice.OldElectricNumber)*contract.ElectricityCosts + (currentInvoice.NewWaterNumber - currentInvoice.OldWaterNumber)*contract.WaterCosts;
+				currentInvoice.TotalPrice = servicePrice + (contract.RentalPrice/invoice.Day*invoice.StayDay)  + (currentInvoice.NewElectricNumber-currentInvoice.OldElectricNumber)*contract.ElectricityCosts + (currentInvoice.NewWaterNumber - currentInvoice.OldWaterNumber)*contract.WaterCosts;
 
 				_invoiceRepository.Update(currentInvoice);
 

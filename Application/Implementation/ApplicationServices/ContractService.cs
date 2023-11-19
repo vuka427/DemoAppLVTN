@@ -25,8 +25,9 @@ namespace Application.Implementation.ApplicationServices
         private readonly IContractRepository _contractRepository;
         private readonly IMemberRepository _memberRepository;
         private readonly ITenantRepository _tenantRepository;
+        private readonly IInvoiceRepository _invoiceRepository;
 
-        public ContractService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IContractRepository contractRepository, IMemberRepository memberRepository, ITenantRepository tenantRepository)
+        public ContractService(IUnitOfWork unitOfWork, IBranchRepository branchRepository, IAreaRepository areaRepository, ILandlordRepository landlordRepository, IServiceRepository serviceRepository, IRoomRepository roomRepository, IContractRepository contractRepository, IMemberRepository memberRepository, ITenantRepository tenantRepository, IInvoiceRepository invoiceRepository)
         {
             _unitOfWork=unitOfWork;
             _branchRepository=branchRepository;
@@ -37,6 +38,7 @@ namespace Application.Implementation.ApplicationServices
             _contractRepository=contractRepository;
             _memberRepository=memberRepository;
             _tenantRepository=tenantRepository;
+            _invoiceRepository=invoiceRepository;
         }
 
         public AppResult CreateContract(int landlordId, Contract contract)
@@ -181,7 +183,7 @@ namespace Application.Implementation.ApplicationServices
 
 		public bool ContractToEnd(int landlordId, int contractId)
 		{
-			var contract = _contractRepository.FindById(contractId,c=>c.Room ,c=>c.Members);
+			var contract = _contractRepository.FindById(contractId,c=>c.Room ,c=>c.Members, c=>c.Invoices);
 			if (contract != null && contract.LandlordId == landlordId)
 			{
                 contract.Status = ContractStatus.Expirat;
@@ -205,8 +207,20 @@ namespace Application.Implementation.ApplicationServices
                     }
                     
                 }
+                if (contract.Invoices.Count>0)
+                {
+                    foreach (var invoice in contract.Invoices)
+                    {
+                        invoice.IsApproved= true;
+                        invoice.UpdatedDate = DateTime.Now;
 
-              
+                        _invoiceRepository.Update(invoice);
+                    }
+
+                }
+
+
+
                 _contractRepository.Update(contract);
                 return true;
 			}

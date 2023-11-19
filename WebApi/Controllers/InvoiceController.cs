@@ -146,7 +146,11 @@ namespace WebApi.Controllers
 				NewWaterNumber = model.NewWaterNumber,
 				OldElectricNumber = model.OldElectricNumber,
 				OldWaterNumber = model.OldWaterNumber,
-				ContractId = model.ContractId
+				ContractId = model.ContractId,
+				Day = 1,
+				StayDay = 1,
+				
+				
 			};
 
 			if (model.Services!=null)

@@ -20,6 +20,8 @@ using System.IO;
 using WebApi.Services.ContractToPdf;
 using System.Drawing;
 using Microsoft.AspNetCore.Http.HttpResults;
+using WebApi.Model.Invoice;
+using Application.Implementation.ApplicationServices;
 
 namespace WebApi.Controllers
 {
@@ -37,8 +39,9 @@ namespace WebApi.Controllers
         private readonly IBoundaryService _boundaryService;
         private readonly ISendMailService _mailService;
         private readonly ITenantService _tenantService;
+        private readonly IInvoiceService _invoiceService;
 
-        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService, ISendMailService mailService, ITenantService tenantService)
+        public ContractController(IBranchService branchService, UserManager<AppUser> userManager, ILandlordService landlordService, IMapper mapper, IContractService contractService, IBoundaryService boundaryService, ISendMailService mailService, ITenantService tenantService, IInvoiceService invoiceService)
         {
             _branchService=branchService;
             _userManager=userManager;
@@ -48,6 +51,7 @@ namespace WebApi.Controllers
             _boundaryService=boundaryService;
             _mailService=mailService;
             _tenantService=tenantService;
+            _invoiceService=invoiceService;
         }
 
         [HttpPost]
@@ -335,7 +339,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
 		[Route("end")]
-		public async Task<IActionResult> ContractToEnd(int contractid)
+		public async Task<IActionResult> ContractToEnd(int contractid, InvoiceCreateModel model)
 		{
 			var Identity = HttpContext.User;
 			string CurrentUserId = "";
@@ -352,14 +356,38 @@ namespace WebApi.Controllers
 				return Unauthorized();
 			}
 
-			var contract = _contractService.ContractToEnd(landlordId, contractid);
-			if (!contract)
-			{
-				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "không tìm thấy hợp đồng " });
-			}
-
 			try
 			{
+                int day = model.LeaveDay.Day;
+                int dayInMonth = DateTime.DaysInMonth(model.LeaveDay.Year,model.LeaveDay.Month) ;
+
+
+                var invoice = new Invoice
+                {
+                    IsApproved = false,
+                    NewElectricNumber = model.NewElectricNumber,
+                    NewWaterNumber = model.NewWaterNumber,
+                    OldElectricNumber = model.OldElectricNumber,
+                    OldWaterNumber = model.OldWaterNumber,
+                    ContractId = model.ContractId,
+                    StayDay= day,
+                    Day= dayInMonth,
+                    
+                };
+
+                if (model.Services!=null)
+                {
+                    invoice.ServiceItems = _mapper.Map<List<ServiceItem>>(model.Services);
+                }
+
+                _invoiceService.CreateInvoice(landlordId, model.RoomId, DateTime.Now, invoice);
+
+                var contract = _contractService.ContractToEnd(landlordId, contractid);
+			    if (!contract)
+			    {
+				    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "không tìm thấy hợp đồng " });
+			    }
+                _invoiceService.SaveChanges();
                 _contractService.SaveChanges();
                 return Ok();
 			}

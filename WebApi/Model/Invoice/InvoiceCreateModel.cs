@@ -12,6 +12,8 @@
 
 		public int ContractId { get; set; }
 		public int RoomId { get; set; }
+
+		public DateTime LeaveDay { get; set; }
 		public ICollection<ServiceItemModel>? Services { get; set; } 
 	}
 }
