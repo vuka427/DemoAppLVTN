@@ -8,5 +8,6 @@ namespace Application.Interface.ApplicationServices
      public interface IStatisticService
     {
         GeneralStatisticDto GetGeneralStatistic(int landlordid);
+        StatisticForBranchDto GetBranchStatistic(int landlordid,int year, int branchid);
     }
 }

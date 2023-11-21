@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Enum;
 using WebApi.Model.Branch;
 using WebApi.Model.Contract;
+using WebApi.Model.Email;
 using WebApi.Model.Invoice;
 using WebApi.Model.Member;
 using WebApi.Model.MemberModel;
@@ -135,6 +136,14 @@ namespace WebApi.AutoMapper
             CreateMap<Contract, RoomForTenantModel>()
                 .ForMember(p => p.Id, options => options.MapFrom(c => c.RoomId))
                 ;
+
+            // email
+            CreateMap<EmailSend, EmailSendModel>()
+                .ForMember(p => p.Status, options => options.MapFrom( c => c.Status == Domain.Enums.EmailStatus.Successed? "Successed" : "Failed" ))
+                ;
+
         }
+
+
     }
 }

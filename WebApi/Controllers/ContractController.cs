@@ -9,19 +9,15 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using WebApi.Model.Contract;
 using System.Linq.Dynamic.Core;
-using Application.Implementation.DomainServices;
 using Application.Interface.ApplicationServices;
 
 using Application.Interface;
 using SelectPdf;
 
-using Microsoft.AspNetCore.Html;
-using System.IO;
 using WebApi.Services.ContractToPdf;
-using System.Drawing;
-using Microsoft.AspNetCore.Http.HttpResults;
+
 using WebApi.Model.Invoice;
-using Application.Implementation.ApplicationServices;
+
 
 namespace WebApi.Controllers
 {
@@ -133,7 +129,6 @@ namespace WebApi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get contracts!" });
             }
-
 
         }
 

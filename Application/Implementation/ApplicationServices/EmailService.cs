@@ -7,6 +7,7 @@ using Domain.Interface;
 using Domain.IRepositorys;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,8 +15,6 @@ namespace Application.Implementation.ApplicationServices
 {
     public class EmailService : IEmailService
     {
-
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISendMailService _sendMailService;
         private readonly IEmailSendRepository _emailSendRepository;
@@ -25,6 +24,11 @@ namespace Application.Implementation.ApplicationServices
             _unitOfWork=unitOfWork;
             _sendMailService=sendMailService;
             _emailSendRepository=emailSendRepository;
+        }
+
+        public IQueryable<EmailSend> GetAllEmail(int landlordid, int branchid)
+        {
+            return _emailSendRepository.FindAll(e=>e.LandlordId == landlordid);
         }
 
         public async Task<AppResult> SendMailCreateInvoice(string email, string receiverName,Contract contract, Invoice invoice)
