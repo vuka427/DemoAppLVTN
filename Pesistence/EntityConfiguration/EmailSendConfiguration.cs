@@ -30,7 +30,18 @@ namespace Pesistence.EntityConfiguration
                 .HasMaxLength(256);
             builder.Property(e=>e.Content)
                 .IsRequired()
-                .HasColumnType("text");
+                .HasDefaultValue("")
+                .HasColumnType("nvarchar(max)");
+            builder.Property(l => l.ReceiverName)
+               .IsRequired()
+               .HasDefaultValue("")
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256); 
+            builder.Property(l => l.RoomName)
+                .IsRequired()
+                .HasDefaultValue("")
+                .HasColumnType("nvarchar")
+                .HasMaxLength(256);
 
 
 

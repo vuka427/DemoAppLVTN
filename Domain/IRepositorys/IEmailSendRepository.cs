@@ -8,5 +8,7 @@ namespace Domain.IRepositorys
 {
     public interface IEmailSendRepository : IRepository<EmailSend,int>
     {
+        void AddEmailSend(EmailSend e);
+
     }
 }

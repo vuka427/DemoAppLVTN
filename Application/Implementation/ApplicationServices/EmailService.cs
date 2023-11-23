@@ -3,6 +3,7 @@ using Application.Interface.ApplicationServices;
 using Application.Utility;
 using Domain.Common;
 using Domain.Entities;
+using Domain.Enum;
 using Domain.Interface;
 using Domain.IRepositorys;
 using System;
@@ -17,7 +18,7 @@ namespace Application.Implementation.ApplicationServices
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISendMailService _sendMailService;
-        private readonly IEmailSendRepository _emailSendRepository;
+        private  IEmailSendRepository _emailSendRepository;
 
         public EmailService(IUnitOfWork unitOfWork, ISendMailService sendMailService, IEmailSendRepository emailSendRepository)
         {
@@ -28,18 +29,25 @@ namespace Application.Implementation.ApplicationServices
 
         public IQueryable<EmailSend> GetAllEmail(int landlordid, int branchid)
         {
+
+
             return _emailSendRepository.FindAll(e=>e.LandlordId == landlordid);
         }
 
+     
+
+
         public async Task<AppResult> SendMailCreateInvoice(string email, string receiverName,Contract contract, Invoice invoice)
         {
-            var htmlMessage = GenerateInvoiceToHtmlMessage.ConverterCreateInvoiceToHtml(contract,invoice);
+            var htmlMessage = GenerateInvoiceToHtmlMessage.ConverterCreateInvoiceToHtml(contract, invoice);
 
             var result = await _sendMailService.SendEmailAsync(email,"Thông báo tiền trọ", htmlMessage);
 
             var mailSave = new EmailSend {
                                 TenantId = contract.TenantId,
                                 LandlordId = contract.LandlordId,
+                                ReceiverName = contract.B_Lessee,
+                                RoomName=  "P."+ contract.RoomNumber +  ((contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + contract.AreaName +", " +contract.BranchName,
                                 EmailReceiver = email,
                                 EmailSender = "",
                                 Title ="Thông báo tiền trọ",
@@ -59,9 +67,19 @@ namespace Application.Implementation.ApplicationServices
                 mailSave.Status = Domain.Enums.EmailStatus.Failed;
             }
 
-            _emailSendRepository.Add(mailSave);
+            try
+            {
 
-            _unitOfWork.Commit();
+
+                _emailSendRepository.AddEmailSend(mailSave);
+
+               
+
+            } catch (Exception ex)
+            {
+                return new AppResult { Success = true, Message="không gửi mail đc" };
+            }
+           
             
             return new AppResult { Success = true , Message="ok" };
         }
@@ -76,6 +94,8 @@ namespace Application.Implementation.ApplicationServices
             {
                 TenantId = contract.TenantId,
                 LandlordId = contract.LandlordId,
+                ReceiverName = contract.B_Lessee,
+                RoomName=  "P."+ contract.RoomNumber +  ((contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + contract.AreaName +", " +contract.BranchName,
                 EmailReceiver = email,
                 EmailSender = "",
                 Title ="Xác nhận đã thanh toán tiền trọ",
@@ -95,9 +115,16 @@ namespace Application.Implementation.ApplicationServices
                 mailSave.Status = Domain.Enums.EmailStatus.Failed;
             }
 
-            _emailSendRepository.Add(mailSave);
+            try
+            {
 
-            _unitOfWork.Commit();
+                _emailSendRepository.AddEmailSend(mailSave);
+
+            }
+            catch (Exception ex)
+            {
+                return new AppResult { Success = true, Message="không gửi mail đc" };
+            }
 
             return new AppResult { Success = true, Message="ok" };
         }

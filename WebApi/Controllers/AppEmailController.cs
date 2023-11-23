@@ -9,6 +9,7 @@ using WebApi.Model.Invoice;
 using WebApi.Model.JQDataTable;
 using WebApi.Model;
 using WebApi.Model.Email;
+using AutoMapper.Execution;
 
 namespace WebApi.Controllers
 {
@@ -65,15 +66,26 @@ namespace WebApi.Controllers
 
            
 
-                var sendEmail = _emailService.GetAllEmail(landlord.Id, branchid);
+                var sendEmail = _emailService.GetAllEmail(landlord.Id, branchid).OrderByDescending(i => i.CreatedDate).ToList();
 
-                totalResultsCount = sendEmail.Count();
 
-                var result = sendEmail.Skip(param.start).Take(param.length).ToList();
+                if (!string.IsNullOrEmpty(param.search.value))
+                {
+                sendEmail = sendEmail.Where(m => m.ReceiverName.Contains(param.search.value) ||
+                                                 m.RoomName.Contains(param.search.value)).ToList();
+                }
 
-                filteredResultsCount = result.Count();
+                var Dataresult = _mapper.Map<List<EmailSendModel>>(sendEmail);
 
-                var Dataresult = _mapper.Map<List<EmailSendModel>>(result);
+                int i = 1;
+                Dataresult.ForEach(m => { m.Index = i; i++; });
+
+                totalResultsCount = Dataresult.Count();
+
+                var result = Dataresult.Skip(param.start).Take(param.length).ToList();
+
+                filteredResultsCount = Dataresult.Count();
+
 
             try
             {
@@ -84,7 +96,7 @@ namespace WebApi.Controllers
                     draw = param.draw,
                     recordsTotal = totalResultsCount,
                     recordsFiltered = totalResultsCount,
-                    data = Dataresult
+                    data = result
                 });
             }
             catch

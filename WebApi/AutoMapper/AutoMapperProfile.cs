@@ -140,6 +140,7 @@ namespace WebApi.AutoMapper
             // email
             CreateMap<EmailSend, EmailSendModel>()
                 .ForMember(p => p.Status, options => options.MapFrom( c => c.Status == Domain.Enums.EmailStatus.Successed? "Successed" : "Failed" ))
+                .ForMember(p => p.DateSend, options => options.MapFrom(c => c.CreatedDate.ToShortDateString() ))
                 ;
 
         }

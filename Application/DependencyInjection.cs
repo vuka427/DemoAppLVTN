@@ -24,6 +24,7 @@ namespace Application
 			services.AddTransient<IInvoiceService, InvoiceService>();
             services.AddTransient<IStatisticService ,StatisticService>();
             services.AddTransient< IEmailService, EmailService >();
+            services.AddTransient<IFeedbackService, FeedbackService>();
 
 
         }

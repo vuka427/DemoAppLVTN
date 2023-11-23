@@ -13,6 +13,9 @@ namespace Domain.Entities
         public string Status { get; set; }
         public MessageType MessageType { get; set; }
 
+        public string ReceiverName { get; set; }
+        public string RoomName { get; set; }
+
         public int TenantId { get; set; }
         public Tenant Tenant { get; set; }
         public int LandlordId { get; set; }

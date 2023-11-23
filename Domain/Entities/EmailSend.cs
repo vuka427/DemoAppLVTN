@@ -10,6 +10,10 @@ namespace Domain.Entities
     {
         public string EmailSender { get; set; }
         public string EmailReceiver { get; set; }
+
+        public string ReceiverName { get; set; }
+        public string RoomName { get; set; }
+
         public string Title { get; set; }
         public string Content { get; set; }
         public EmailStatus Status { get; set; }

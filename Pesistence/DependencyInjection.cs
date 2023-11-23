@@ -26,7 +26,7 @@ namespace Pesistence
             services.AddTransient<IBranchRepository, BranchRepository>();
             services.AddTransient<IContractRepository, ContractRepository>();
             services.AddTransient<IDeviceRepository, DeviceRepository>();
-            services.AddTransient<IEmailSendRepository, EmailSendRepository>();
+            services.AddScoped<IEmailSendRepository, EmailSendRepository>();
             services.AddTransient<IImageRoomRepository, ImageRoomRepository>();
             services.AddTransient<IInvoiceRepository, InvoiceRepository>();
             services.AddTransient<ILandlordRepository, LandlordRepository>();

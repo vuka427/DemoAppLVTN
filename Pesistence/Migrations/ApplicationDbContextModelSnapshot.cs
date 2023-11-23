@@ -562,7 +562,9 @@ namespace Pesistence.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -583,6 +585,20 @@ namespace Pesistence.Migrations
 
                     b.Property<int>("LandlordId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ReceiverName")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("RoomName")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasDefaultValue("");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -902,7 +918,7 @@ namespace Pesistence.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -916,6 +932,20 @@ namespace Pesistence.Migrations
 
                     b.Property<int>("MessageType")
                         .HasColumnType("int");
+
+                    b.Property<string>("ReceiverName")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("RoomName")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar")
+                        .HasDefaultValue("");
 
                     b.Property<string>("Status")
                         .IsRequired()
