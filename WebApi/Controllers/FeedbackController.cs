@@ -7,6 +7,8 @@ using Application.Interface.ApplicationServices;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using WebApi.Model.Invoice;
+using WebApi.Model.Feedback;
 
 namespace WebApi.Controllers
 {
@@ -86,10 +88,12 @@ namespace WebApi.Controllers
                 return Json(new
                 {
                     // this is what datatables wants sending back
+
                     draw = param.draw,
                     recordsTotal = totalResultsCount,
                     recordsFiltered = totalResultsCount,
                     data = result
+
                 });
             }
             catch
@@ -98,6 +102,48 @@ namespace WebApi.Controllers
             }
 
         }
+
+
+        [HttpPost]
+        [Route("create")]
+        public async Task<IActionResult> CreateFeedback(FeedbackCreateModel model)
+        {   try
+            {
+                var Identity = HttpContext.User;
+                string CurrentUserId = "";
+                if (Identity.HasClaim(c => c.Type == "userid"))
+                {
+                    CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                }
+
+                if (string.IsNullOrEmpty(CurrentUserId))
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+                }
+                var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+                if (Tenant == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+                }
+
+                var result = _feedbackService.CreateFeedback(Tenant.Id, model.contractId, new Message { Title = model.title, Content = model.content});
+                if (result.Success)
+                { 
+                    _feedbackService.SaveChanges();
+                    return Ok();
+
+                }
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không gửi được góp ý !" });
+
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi không gửi được góp ý !" });
+            }
+        }
+
+
+
 
     }
 }

@@ -553,5 +553,46 @@ namespace WebApi.Controllers
         }
 
 
+        [HttpGet]
+        [Route("tenant/current")]
+        public async Task<IActionResult> GetContractsForTenant()
+        {
+            try
+            {
+                var Identity = HttpContext.User;
+                string CurrentUserId = "";
+                if (Identity.HasClaim(c => c.Type == "userid"))
+                {
+                    CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+                }
+
+                if (string.IsNullOrEmpty(CurrentUserId))
+                {
+                    return Unauthorized();
+                }
+                var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+                if (Tenant == null)
+                {
+                    return Unauthorized();
+                }
+
+                var contract = _contractService.GetContractForTenant(Tenant.Id).Where(c=>c.Status == Domain.Enum.ContractStatus.Active);
+                if (contract == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Không tìm thấy hợp đồng" });
+                }
+
+                var contractResult = _mapper.Map<List<ContractDetailModel>>(contract);
+
+                return Ok(contractResult);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Lỗi! Không tìm thấy hợp đồng" });
+            }
+        }
+
+
+
     }
 }

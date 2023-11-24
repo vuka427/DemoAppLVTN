@@ -10,8 +10,7 @@ namespace Domain.Entities
     {
         public string Title { get; set; }
         public string Content { get; set; }
-        public string Status { get; set; }
-        public MessageType MessageType { get; set; }
+        public MessageStatus  Status { get; set; }
 
         public string ReceiverName { get; set; }
         public string RoomName { get; set; }

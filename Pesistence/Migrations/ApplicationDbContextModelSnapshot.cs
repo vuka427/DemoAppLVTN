@@ -930,9 +930,6 @@ namespace Pesistence.Migrations
                     b.Property<int>("LandlordId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MessageType")
-                        .HasColumnType("int");
-
                     b.Property<string>("ReceiverName")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -947,9 +944,8 @@ namespace Pesistence.Migrations
                         .HasColumnType("nvarchar")
                         .HasDefaultValue("");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int");
