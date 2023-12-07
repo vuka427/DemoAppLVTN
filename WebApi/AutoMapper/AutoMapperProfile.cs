@@ -4,6 +4,7 @@ using Domain.Enum;
 using WebApi.Model.Branch;
 using WebApi.Model.Contract;
 using WebApi.Model.Email;
+using WebApi.Model.Feedback;
 using WebApi.Model.Invoice;
 using WebApi.Model.Member;
 using WebApi.Model.MemberModel;
@@ -142,6 +143,10 @@ namespace WebApi.AutoMapper
                 .ForMember(p => p.Status, options => options.MapFrom( c => c.Status == Domain.Enums.EmailStatus.Successed? "Successed" : "Failed" ))
                 .ForMember(p => p.DateSend, options => options.MapFrom(c => c.CreatedDate.ToShortDateString() ))
                 ;
+            CreateMap<Message, FeedbackModel>()
+              .ForMember(p => p.Status, options => options.MapFrom(c => c.Status.ToString()))
+              .ForMember(p => p.CreatedDate, options => options.MapFrom(c => c.CreatedDate.ToShortDateString()))
+              ;
 
         }
 

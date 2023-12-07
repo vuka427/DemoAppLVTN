@@ -1,6 +1,7 @@
 ﻿using Application.Interface.ApplicationServices;
 using Domain.Common;
 using Domain.Entities;
+using Domain.Enum;
 using Domain.Interface;
 using Domain.IRepositorys;
 using System;
@@ -18,8 +19,9 @@ namespace Application.Implementation.ApplicationServices
         private readonly ITenantRepository _tenantRepository;
         private readonly IContractRepository _contractRepository;
 
-        public FeedbackService(IMessageRepository messageRepository, ITenantRepository tenantRepository, IContractRepository contractRepository)
+        public FeedbackService(IUnitOfWork unitOfWork, IMessageRepository messageRepository, ITenantRepository tenantRepository, IContractRepository contractRepository)
         {
+            _unitOfWork=unitOfWork;
             _messageRepository=messageRepository;
             _tenantRepository=tenantRepository;
             _contractRepository=contractRepository;
@@ -38,9 +40,11 @@ namespace Application.Implementation.ApplicationServices
                     message.CreatedDate = DateTime.Now;
                     message.UpdatedDate = DateTime.Now;
                     message.UpdatedBy="";
-                    message.Status = Domain.Enum.MessageStatus.Unread;
+                    message.Status = Domain.Enum.MessageStatus.Received;
                     message.TenantId = tenantid;
                     message.LandlordId= contract.LandlordId;
+                    message.ReceiverName = contract.B_Lessee;
+                    message.RoomName = "P."+ contract.RoomNumber +  ((contract.HouseType==HouseType.Row) ? ", dãy " : ", tầng ") + contract.AreaName +", " +contract.BranchName;
 
                     _messageRepository.Add(message);
                     return new AppResult { Success = true, Message = "ok!" };

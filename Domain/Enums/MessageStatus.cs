@@ -6,7 +6,9 @@ namespace Domain.Enum
 {
     public enum MessageStatus
     {
-        Read,
-        Unread
+      
+        Process,  
+        Received,
+        Done
     }
 }

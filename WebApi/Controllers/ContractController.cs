@@ -332,6 +332,8 @@ namespace WebApi.Controllers
         }
 
 
+
+
         [HttpPost]
 		[Route("end")]
 		public async Task<IActionResult> ContractToEnd(int contractid, InvoiceCreateModel model)
@@ -551,6 +553,51 @@ namespace WebApi.Controllers
 
 
         }
+
+        [HttpGet]
+        [Route("tenant/all")]
+        public async Task<IActionResult> GetContractTenantAll()
+        {
+            int filteredResultsCount;
+            int totalResultsCount;
+
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
+
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+            }
+            var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+            if (Tenant == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+            }
+
+            var contracts = _contractService.GetContractForTenant(Tenant.Id);
+
+
+            var Dataresult = _mapper.Map<List<ContractModel>>(contracts);
+
+         
+
+            try
+            {
+                return Ok(Dataresult);
+              
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get contracts!" });
+            }
+
+
+        }
+
 
 
         [HttpGet]

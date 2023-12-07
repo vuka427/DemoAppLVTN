@@ -32,6 +32,11 @@ namespace Pesistence.EntityConfiguration
                 .HasDefaultValue("")
                 .HasColumnType("nvarchar")
                 .HasMaxLength(256);
+            builder.Property(l => l.BranchName)
+               .IsRequired()
+               .HasDefaultValue("")
+               .HasColumnType("nvarchar")
+               .HasMaxLength(256);
         }
     }
 }

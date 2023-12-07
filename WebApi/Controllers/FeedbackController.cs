@@ -72,7 +72,72 @@ namespace WebApi.Controllers
                                                  m.RoomName.Contains(param.search.value)).ToList();
             }
 
-            var Dataresult = _mapper.Map<List<EmailSendModel>>(messages);
+            var Dataresult = _mapper.Map<List<FeedbackModel>>(messages);
+
+            int i = 1;
+            Dataresult.ForEach(m => { m.Index = i; i++; });
+
+            totalResultsCount = Dataresult.Count();
+
+            var result = Dataresult.Skip(param.start).Take(param.length).ToList();
+
+            filteredResultsCount = Dataresult.Count();
+
+            try
+            {
+                return Json(new
+                {
+                    // this is what datatables wants sending back
+
+                    draw = param.draw,
+                    recordsTotal = totalResultsCount,
+                    recordsFiltered = totalResultsCount,
+                    data = result
+
+                });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseMessage { Status = "Error", Message = "Can get feedback!" });
+            }
+
+        }
+
+        [HttpPost]
+        [Route("tenant/all")]
+        public async Task<IActionResult> GetMessageTenantForDataTable([FromBody] DatatableParam param)
+        {
+
+            int filteredResultsCount;
+            int totalResultsCount;
+
+            var Identity = HttpContext.User;
+            string CurrentUserId = "";
+            if (Identity.HasClaim(c => c.Type == "userid"))
+            {
+                CurrentUserId = Identity.Claims.FirstOrDefault(c => c.Type == "userid").Value.ToString();
+            }
+
+            if (string.IsNullOrEmpty(CurrentUserId))
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+            }
+            var Tenant = _tenantService.GetTenantByUserId(CurrentUserId);
+            if (Tenant == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "Can find user!" });
+            }
+
+
+            var messages = _feedbackService.GetAllMessageForTenant(Tenant.Id).OrderByDescending(i => i.CreatedDate).ToList();
+
+            if (!string.IsNullOrEmpty(param.search.value))
+            {
+                messages = messages.Where(m => m.ReceiverName.Contains(param.search.value) ||
+                                                 m.RoomName.Contains(param.search.value)).ToList();
+            }
+
+            var Dataresult = _mapper.Map<List<FeedbackModel>>(messages);
 
             int i = 1;
             Dataresult.ForEach(m => { m.Index = i; i++; });

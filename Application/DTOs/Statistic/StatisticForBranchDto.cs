@@ -25,6 +25,7 @@ namespace Application.DTOs.Statistic
         public int[] MemberIn { get; set; }
         public int[] MemberOut { get; set; }
         public int[] Rooms { get; set; }
+        public int TotalMember { get; set; }
 
     }
 }

@@ -9,5 +9,6 @@ namespace Application.Interface.ApplicationServices
     {
         GeneralStatisticDto GetGeneralStatistic(int landlordid);
         StatisticForBranchDto GetBranchStatistic(int landlordid,int year, int branchid);
+        StatisticForBranchDto GetTenatStatistic(int tenantid, int year, int contractid);
     }
 }

@@ -15,6 +15,7 @@ namespace Domain.Entities
         public string ReceiverName { get; set; }
         public string RoomName { get; set; }
 
+        public string BranchName { get; set; }
         public int TenantId { get; set; }
         public Tenant Tenant { get; set; }
         public int LandlordId { get; set; }
