@@ -390,7 +390,7 @@ namespace WebApi.Controllers
 			}
 			catch (Exception e)
 			{
-				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi!. không render được file Pdf " });
+				return StatusCode(StatusCodes.Status400BadRequest, new ResponseMessage { Status = "Error", Message = "lỗi! không tìm thấy hợp đồng" });
 			}
 
 		}

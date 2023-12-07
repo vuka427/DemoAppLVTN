@@ -204,7 +204,6 @@ namespace Application.Implementation.ApplicationServices
         {
             var result = new GeneralStatisticDto();
 
-
             var banches = _branchRepository.FindAll(b => b.LandlordId == landlordid, b => b.Areas).ToList();
             var totalMessage = _messageRepository.FindAll(b => b.LandlordId == landlordid).Count();
 
@@ -214,7 +213,6 @@ namespace Application.Implementation.ApplicationServices
             int totalRoom = 0;
             int rentalRoom = 0;
             
-
             foreach (var branch in banches)
             {
                 foreach (var area in branch.Areas)

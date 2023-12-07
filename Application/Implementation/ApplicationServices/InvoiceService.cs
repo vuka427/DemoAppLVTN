@@ -73,10 +73,10 @@ namespace Application.Implementation.ApplicationServices
 				}
 
 				invoice.TotalPrice = servicePrice + (contract.RentalPrice/invoice.Day*invoice.StayDay) + (invoice.NewElectricNumber-invoice.OldElectricNumber) * contract.ElectricityCosts + (invoice.NewWaterNumber - invoice.OldWaterNumber) * contract.WaterCosts;
+                invoice.TotalPrice = Math.Round(invoice.TotalPrice);
 
 
-
-				_invoiceRepository.Add(invoice);
+                _invoiceRepository.Add(invoice);
 
 				if (contract.TenantId != null && contract.TenantId.Value > 0)
 				{
@@ -84,7 +84,7 @@ namespace Application.Implementation.ApplicationServices
 
 					if(tenant != null && tenant.User != null)
 					{
-                        Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice(tenant.User.Email, "", contract, invoice); };
+                        Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice(tenant.User.Email, tenant.FullName, contract, invoice); };
 
                         Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
 
@@ -119,8 +119,9 @@ namespace Application.Implementation.ApplicationServices
 				}
 
 				currentInvoice.TotalPrice = servicePrice + (contract.RentalPrice/invoice.Day*invoice.StayDay)  + (currentInvoice.NewElectricNumber-currentInvoice.OldElectricNumber)*contract.ElectricityCosts + (currentInvoice.NewWaterNumber - currentInvoice.OldWaterNumber)*contract.WaterCosts;
+				currentInvoice.TotalPrice = Math.Round(currentInvoice.TotalPrice);
 
-				_invoiceRepository.Update(currentInvoice);
+                _invoiceRepository.Update(currentInvoice);
 
                 if (contract.TenantId != null && contract.TenantId.Value > 0)
                 {
@@ -128,7 +129,7 @@ namespace Application.Implementation.ApplicationServices
 
                     if (tenant != null && tenant.User != null)
                     {
-                        Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice(tenant.User.Email, "", contract, currentInvoice); };
+                        Func<Task<AppResult>> taskSend = () => { return _emailService.SendMailCreateInvoice(tenant.User.Email, tenant.FullName, contract, currentInvoice); };
 
                         Task<Task<AppResult>> task = new Task<Task<AppResult>>(taskSend);
 
