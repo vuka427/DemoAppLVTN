@@ -22,6 +22,27 @@ namespace Pesistence.AppDbContext
 
         }
 
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Area> Areas { get; set; }
+        public DbSet<Branch> Branchs { get; set; }
+        public DbSet<Contract> Contracts { get; set; }
+        public DbSet<Device> Devices { get; set; }
+        public DbSet<EmailSend> EmailSends { get; set; }
+        public DbSet<ImageRoom> ImageRooms { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<Landlord> landlords { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<PostNew> PostNews { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomIndex> roomIndices { get; set; }
+        public DbSet<Service> Services { get; set; }
+        public DbSet<ServiceItem> ServiceItems { get; set; }    
+        public DbSet<Tenant> Tenants { get; set; }   
+
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -36,12 +57,25 @@ namespace Pesistence.AppDbContext
                 }
             }
 
-            //new CategoryConfiguration().Configure(modelBuilder.Entity<Category>());
-            new ProductConfiguration().Configure(modelBuilder.Entity<Product>());
+            modelBuilder.ApplyConfiguration(new AdminConfiguration());
+            modelBuilder.ApplyConfiguration(new AreaConfiguration());
+            modelBuilder.ApplyConfiguration(new BranchConfiguration());
+            modelBuilder.ApplyConfiguration(new ContractConfiguration());
+            modelBuilder.ApplyConfiguration(new DeviceConfiguration());
+            modelBuilder.ApplyConfiguration(new EmailSendConfiguration());
+            modelBuilder.ApplyConfiguration(new ImageRoomConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
+            modelBuilder.ApplyConfiguration(new LandlordConfiguration());
+            modelBuilder.ApplyConfiguration(new MemberConfiguration());
+            modelBuilder.ApplyConfiguration(new MessageConfiguration());
+            modelBuilder.ApplyConfiguration(new PostNewConfiguration());
+            modelBuilder.ApplyConfiguration(new RoomConfiguration());
+            modelBuilder.ApplyConfiguration(new RoomIndexConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceItemConfiguration());
+            modelBuilder.ApplyConfiguration(new TenantConfiguration());
 
-            modelBuilder.ApplyConfiguration( new CategoryConfiguration());
         }
-
 
     }
 

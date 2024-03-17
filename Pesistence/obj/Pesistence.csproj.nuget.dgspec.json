@@ -201,6 +201,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
             "Microsoft.AspNetCore.Identity": {
               "target": "Package",
               "version": "[2.2.0, )"
@@ -238,6 +242,10 @@
             "Microsoft.Extensions.Identity.Core": {
               "target": "Package",
               "version": "[7.0.10, )"
+            },
+            "MimeKit": {
+              "target": "Package",
+              "version": "[4.2.0, )"
             }
           },
           "imports": [

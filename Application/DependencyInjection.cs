@@ -1,11 +1,13 @@
-﻿using Application.Implementation.DomainServices;
-using Application.Interface.IDomainServices;
-using Application.Interface.IRepositorys;
+﻿using Application.Implementation.ApplicationServices;
+using Application.Interface;
+using Application.Interface.ApplicationServices;
+using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 
 namespace Application
 {
@@ -13,8 +15,18 @@ namespace Application
     {
         public static void AddApplicationCore(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<ILandlordService, LandlordService>();
+            services.AddTransient<ITenantService, TenantService>();
+            services.AddTransient<IBranchService, BranchService>();
+            services.AddTransient<IRoomService, RoomService>();
+            services.AddTransient<IContractService, ContractService>();
+			services.AddTransient<IInvoiceService, InvoiceService>();
+            services.AddTransient<IStatisticService ,StatisticService>();
+            services.AddTransient< IEmailService, EmailService >();
+            services.AddTransient<IFeedbackService, FeedbackService>();
+
+
         }
     }
 }
